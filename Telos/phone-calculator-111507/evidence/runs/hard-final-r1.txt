@@ -1,0 +1,19 @@
+ROUND: 1
+ARTIFACT_SHA256: 0d408190bfc24a036aef696c62c46ed1d6ec97f885e3bd5c7530e1cc660e3d8f
+TREE_SHA256: 32734f1a4e933e929b51791c027d2a9ac6964ee519b2b8e90c1db5c9e09e179d
+VERIFIER_SHA256: 57c774e414b10f5d07b7bcdbdb837124fb68899b3af9467d59adf19ab399f0a6
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: 0d408190bfc24a036aef696c62c46ed1d6ec97f885e3bd5c7530e1cc660e3d8f
+VERIFIER_SHA256: 9108e277ff68b63f16b904c3f41751fa6a167d23dc1ba332fb368b3ecaca781c
+MEASUREMENT: Playwright 1.64.1 + cached Chromium; layout measured in Chromium, interactions dispatched as DOM click/KeyboardEvent on the contracted selectors because native input ACK is blocked by the host.
+H1 PASS — 12358 B，`</html>` 存在，外链计数 0，`file://` 加载 pageerror=0。
+H2 PASS — 320×568 与 390×844 各测 select/input 态；doc/body 均 320/320、390/390，无横向溢出；可见控件 7/3 个，最小宽 64.25/79、最小高 44，字号 18px。
+H3 PASS — 全局 `[data-op]` 恰为 `{+,-,*,/}` 的 4 个按钮且均在 picker 内；初始 visible/disabled/两项空；选 `+` 前 12+Enter 无变化；选后 enabled、input 聚焦、两项仍空。
+H4 PASS — 12、30 回车后 input=""、expression="12 + 30"；未回车 8 未出现；键盘 `=` 后 expression="12 + 30 + 8"、data-value=50；全新加载 `*` 2/3/4 点击等号得 24。
+H5 PASS — data-value/结果：50、3、24、10、3.75；五例全部 |差|≤1e-9，expression 均含全部操作数及允许字形。
+H6 PASS — key-op 后 picker visible、input disabled、expression/result 空且无 data 属性；随后 `*` 得 24；中途重置后 `+` 1/2 得 3。
+H7 PASS — 空输入 Enter 无变化且无 error；5/0 后 data-error="true"、文本非空、pageerror=0；恢复后 1+2=3。
+H8 PASS — 全流程 pageerror=0、console error=0；两次全新加载均为 data-value="50"、expression="12 + 30 + 8"；整套结果重复运行逐字节一致。
+HARD: PASS

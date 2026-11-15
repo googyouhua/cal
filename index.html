@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>手机计算器</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --ink: #f8fafc;
+    --muted: #a5b4cf;
+    --panel: rgba(22, 32, 51, 0.92);
+    --panel-edge: rgba(148, 163, 184, 0.22);
+    --field: #0d1524;
+    --accent: #f59e0b;
+    --accent-ink: #241600;
+    --danger: #fecdd3;
+    --danger-bg: rgba(190, 24, 93, 0.22);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+  }
+
+  body {
+    min-width: 0;
+    overflow-x: hidden;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(245, 158, 11, 0.15), transparent 34%),
+      radial-gradient(circle at 90% 100%, rgba(56, 189, 248, 0.13), transparent 38%),
+      #080d17;
+    color: var(--ink);
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+
+  .app {
+    width: min(100%, 460px);
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: 16px 12px max(16px, env(safe-area-inset-bottom));
+  }
+
+  .app-header {
+    margin: 0 2px 14px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(24px, 7vw, 30px);
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+  }
+
+  .subtitle {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .panel {
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid var(--panel-edge);
+    border-radius: 20px;
+    background: var(--panel);
+    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(12px);
+  }
+
+  .state-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 0;
+    margin-bottom: 10px;
+  }
+
+  .state-label {
+    min-width: 0;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  button {
+    min-width: 0;
+    min-height: 48px;
+    border: 1px solid transparent;
+    border-radius: 13px;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  button:focus-visible,
+  input:focus-visible {
+    outline: 3px solid #fbbf24;
+    outline-offset: 2px;
+  }
+
+  button:disabled,
+  input:disabled {
+    cursor: default;
+    opacity: 0.52;
+  }
+
+  .reset-button {
+    flex: 0 0 auto;
+    width: 102px;
+    min-height: 44px;
+    padding: 0 10px;
+    border-color: var(--panel-edge);
+    background: #18243a;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 650;
+  }
+
+  .op-picker {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .op-picker[hidden] {
+    display: none;
+  }
+
+  .op-button {
+    width: 100%;
+    min-height: 50px;
+    border-color: rgba(251, 191, 36, 0.25);
+    background: linear-gradient(180deg, #26344d, #1c293f);
+    color: #fde68a;
+    font-size: 24px;
+    font-weight: 750;
+    line-height: 1;
+  }
+
+  .input-label {
+    display: block;
+    margin: 12px 2px 6px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 650;
+  }
+
+  .calc-input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 56px;
+    padding: 11px 14px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 14px;
+    background: var(--field);
+    color: var(--ink);
+    font-size: 18px;
+    line-height: 1.25;
+    caret-color: var(--accent);
+  }
+
+  .calc-input::placeholder {
+    color: #72819b;
+    font-size: 15px;
+  }
+
+  .hint {
+    min-height: 18px;
+    margin: 6px 2px 10px;
+    color: #8291aa;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .display {
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 16px;
+    background: rgba(7, 12, 22, 0.76);
+  }
+
+  .display-label {
+    color: #8493ad;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  .expression {
+    min-height: 29px;
+    margin-top: 4px;
+    overflow-wrap: anywhere;
+    color: #dbeafe;
+    font-size: 17px;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+
+  .result {
+    min-height: 55px;
+    margin-top: 3px;
+    overflow-wrap: anywhere;
+    color: var(--accent);
+    font-size: clamp(30px, 10vw, 40px);
+    font-weight: 760;
+    line-height: 1.12;
+    word-break: break-word;
+  }
+
+  .result[data-error="true"] {
+    min-height: 55px;
+    padding: 9px 11px;
+    border: 1px solid rgba(251, 113, 133, 0.32);
+    border-radius: 11px;
+    background: var(--danger-bg);
+    color: var(--danger);
+    font-size: 17px;
+    line-height: 1.45;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .equals-button {
+    width: 100%;
+    min-height: 50px;
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: var(--accent-ink);
+    font-size: 25px;
+    font-weight: 800;
+  }
+
+  @media (max-width: 350px) {
+    .app {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    .panel {
+      padding: 10px;
+    }
+
+    .op-picker {
+      gap: 7px;
+    }
+  }
+</style>
+</head>
+<body>
+<main class="app" data-state="select">
+  <header class="app-header">
+    <h1>手机计算器</h1>
+    <p class="subtitle">先选运算类型，再逐个输入数字并按回车确认。</p>
+  </header>
+
+  <section class="panel" aria-label="计算器">
+    <div class="state-row">
+      <span class="state-label" id="state-label" aria-live="polite">请选择运算类型</span>
+      <button class="reset-button" type="button" data-testid="key-op" disabled>运算类型</button>
+    </div>
+
+    <div class="op-picker" data-testid="op-picker" role="group" aria-label="选择运算类型">
+      <button class="op-button" type="button" data-op="+" aria-label="加法">+</button>
+      <button class="op-button" type="button" data-op="-" aria-label="减法">-</button>
+      <button class="op-button" type="button" data-op="*" aria-label="乘法">*</button>
+      <button class="op-button" type="button" data-op="/" aria-label="除法">/</button>
+    </div>
+
+    <label class="input-label" for="calc-input">数字</label>
+    <input
+      class="calc-input"
+      id="calc-input"
+      data-testid="calc-input"
+      type="text"
+      inputmode="decimal"
+      autocomplete="off"
+      enterkeyhint="done"
+      spellcheck="false"
+      placeholder="输入数字后按回车"
+      aria-describedby="calc-hint"
+      disabled
+    >
+    <p class="hint" id="calc-hint">回车确认一个数；按 = 或下方按钮得出结果。</p>
+
+    <div class="display" aria-label="计算过程">
+      <div class="display-label">算式</div>
+      <div class="expression" data-testid="expression" aria-live="polite"></div>
+      <div class="display-label">结果</div>
+      <div class="result" data-testid="result" aria-live="polite"></div>
+    </div>
+
+    <div class="actions">
+      <button class="equals-button" type="button" data-testid="key-equals" disabled>=</button>
+    </div>
+  </section>
+</main>
+
+<script>
+  (() => {
+    "use strict";
+
+    const app = document.querySelector(".app");
+    const picker = document.querySelector('[data-testid="op-picker"]');
+    const input = document.querySelector('[data-testid="calc-input"]');
+    const expression = document.querySelector('[data-testid="expression"]');
+    const result = document.querySelector('[data-testid="result"]');
+    const equalsButton = document.querySelector('[data-testid="key-equals"]');
+    const resetButton = document.querySelector('[data-testid="key-op"]');
+    const stateLabel = document.querySelector("#state-label");
+
+    const operatorGlyphs = {
+      "+": "+",
+      "-": "-",
+      "*": "*",
+      "/": "/"
+    };
+
+    let state = "select";
+    let operator = null;
+    let operands = [];
+
+    function enterState(nextState) {
+      state = nextState;
+      app.dataset.state = nextState;
+    }
+
+    function clearResult() {
+      result.textContent = "";
+      result.removeAttribute("data-value");
+      result.removeAttribute("data-error");
+    }
+
+    function clearExpression() {
+      expression.textContent = "";
+    }
+
+    function renderExpression() {
+      if (!operator || operands.length === 0) {
+        clearExpression();
+        return;
+      }
+
+      expression.textContent = operands
+        .map((operand) => operand.display)
+        .join(` ${operatorGlyphs[operator]} `);
+    }
+
+    function updateStateLabel(label) {
+      stateLabel.textContent = label;
+    }
+
+    function resetToSelect() {
+      operator = null;
+      operands = [];
+      input.value = "";
+      input.disabled = true;
+      picker.hidden = false;
+      equalsButton.disabled = true;
+      resetButton.disabled = true;
+      clearExpression();
+      clearResult();
+      enterState("select");
+      updateStateLabel("请选择运算类型");
+    }
+
+    function chooseOperator(nextOperator) {
+      operator = nextOperator;
+      operands = [];
+      input.value = "";
+      input.disabled = false;
+      picker.hidden = true;
+      equalsButton.disabled = false;
+      resetButton.disabled = false;
+      clearExpression();
+      clearResult();
+      enterState("input");
+      updateStateLabel(`已选择 ${operatorGlyphs[nextOperator]}，请输入数字`);
+      input.focus();
+    }
+
+    function commitInput() {
+      if (state !== "input") {
+        return false;
+      }
+
+      const rawValue = input.value.trim();
+      if (rawValue === "") {
+        return false;
+      }
+
+      const numericValue = Number(rawValue);
+      if (!Number.isFinite(numericValue)) {
+        return false;
+      }
+
+      operands.push({ value: numericValue, display: rawValue });
+      input.value = "";
+      renderExpression();
+      return true;
+    }
+
+    function formatValue(value) {
+      return String(Object.is(value, -0) ? 0 : value);
+    }
+
+    function showDivisionByZero() {
+      result.textContent = "不能除以零";
+      result.removeAttribute("data-value");
+      result.setAttribute("data-error", "true");
+      input.value = "";
+      input.disabled = true;
+      equalsButton.disabled = true;
+      resetButton.disabled = false;
+      enterState("error");
+      updateStateLabel("无法计算，请选择运算类型重新开始");
+    }
+
+    function calculate() {
+      if (state !== "input") {
+        return;
+      }
+
+      commitInput();
+      if (operands.length === 0) {
+        return;
+      }
+
+      let accumulator = operands[0].value;
+      for (let index = 1; index < operands.length; index += 1) {
+        const nextValue = operands[index].value;
+        if (operator === "/" && nextValue === 0) {
+          showDivisionByZero();
+          return;
+        }
+
+        switch (operator) {
+          case "+":
+            accumulator += nextValue;
+            break;
+          case "-":
+            accumulator -= nextValue;
+            break;
+          case "*":
+            accumulator *= nextValue;
+            break;
+          case "/":
+            accumulator /= nextValue;
+            break;
+          default:
+            return;
+        }
+      }
+
+      const displayValue = formatValue(accumulator);
+      renderExpression();
+      result.textContent = displayValue;
+      result.setAttribute("data-value", displayValue);
+      result.removeAttribute("data-error");
+      input.value = "";
+      input.disabled = true;
+      equalsButton.disabled = true;
+      resetButton.disabled = false;
+      enterState("result");
+      updateStateLabel("计算完成，可继续查看或重新选择运算");
+    }
+
+    picker.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-op]");
+      if (!button) {
+        return;
+      }
+
+      const nextOperator = button.getAttribute("data-op");
+      if (Object.prototype.hasOwnProperty.call(operatorGlyphs, nextOperator)) {
+        chooseOperator(nextOperator);
+      }
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        commitInput();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "=" && state === "input") {
+        event.preventDefault();
+        calculate();
+      }
+    });
+
+    equalsButton.addEventListener("click", calculate);
+    resetButton.addEventListener("click", resetToSelect);
+  })();
+</script>
+</body>
+</html>

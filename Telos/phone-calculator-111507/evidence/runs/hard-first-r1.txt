@@ -1,0 +1,18 @@
+ROUND: 1
+ARTIFACT_SHA256: 0d408190bfc24a036aef696c62c46ed1d6ec97f885e3bd5c7530e1cc660e3d8f
+TREE_SHA256: 32734f1a4e933e929b51791c027d2a9ac6964ee519b2b8e90c1db5c9e09e179d
+VERIFIER_SHA256: 57c774e414b10f5d07b7bcdbdb837124fb68899b3af9467d59adf19ab399f0a6
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: 0d408190bfc24a036aef696c62c46ed1d6ec97f885e3bd5c7530e1cc660e3d8f
+VERIFIER_SHA256: 57c774e414b10f5d07b7bcdbdb837124fb68899b3af9467d59adf19ab399f0a6
+H1 PASS — `</html>` 存在；12358 bytes；外部 http(s)/协议相对资源=0；`file://` 加载 pageerror=0
+H2 PASS — 320×568 与 390×844 的 select/input 态均无横向溢出；控件最小宽 64.25/79px、最小高 44px；输入字号 18px
+H3 PASS — 运算符集合 `{+,-,*,/}`，picker 4 按钮；初始禁用且表达式/结果为空；盲键入无效；选中 `+` 后启用并聚焦，表达式/结果为空
+H4 PASS — 提交后输入清空，表达式含 12/30/+；未提交 8 不出现；键盘 `=` 得 50；全新加载点击 `=` 得 24
+H5 PASS — 五案例结果 50、3、24、10、3.75；全部表达式含操作数与允许的运算符字形
+H6 PASS — key-op 后 picker 可见、输入禁用、表达式/结果清空且无 data 属性；后续 `*` 得 24；全新加载 `-` 重置后 `+` 得 3
+H7 PASS — 空输入 Enter 无结果/错误；`/` 5、0 后 data-error=true、结果非空、页面存活且 pageerror=0；重置后 1/2 得 3
+H8 PASS — 两次全新加载均为 data-value=50、expression=`12 + 30 + 8`；pageerror=0、console error=0
+HARD: PASS
