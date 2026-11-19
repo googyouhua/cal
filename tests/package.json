@@ -1,0 +1,13 @@
+{
+  "name": "cal-phone-tests",
+  "private": true,
+  "type": "module",
+  "description": "Shared acceptance scenarios for /ws/cal_phone/index.html. Kekkai gate verifiers import this suite instead of re-implementing the browser harness.",
+  "scripts": {
+    "test": "node suite.mjs",
+    "test:json": "node suite.mjs --json"
+  },
+  "devDependencies": {
+    "playwright": "1.64.0"
+  }
+}

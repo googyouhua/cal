@@ -1,0 +1,30 @@
+ROUND: 4
+ARTIFACT_SHA256: d97565f096ed1c336eae9eac9ec75b1cc980bef6c0318027018a3f2291a8486a
+TREE_SHA256: 6185a012a3530c77ceda6f97701470d3ba31cd2766b07292e8fbf020e6fd2126
+VERIFIER_SHA256: 08aab274e6d3d6d1368a605766493180e0bfcc0d9ddc96a67914ed8bb085a495
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+**验收结果**
+
+产物哈希：`d97565f096ed1c336eae9eac9ec75b1cc980bef6c0318027018a3f2291a8486a`  
+量具哈希：`08aab274e6d3d6d1368a605766493180e0bfcc0d9ddc96a67914ed8bb085a495`  
+证据文件：`/ws/cal_phone/Telos/phone-calculator-number-entry-111612/evidence/attempts/first-r4-20261117-130315-427/hard-r4.txt`
+
+`expected_review_states=none`，因此未生成 render/manifest/shots。另在 `/tmp` 副本执行了隔离变异自检：删除 `</html>` 后 H1 正确 FAIL，正式证据未受影响。
+
+```text
+H1 PASS — bytes=29600,chars=28893,closingHtml=yes,externalRefs=0,fileLoads=1,pageErrors=0
+H2 PASS — digits 0–9 all enabled; input="12"; expression="12"; pageErrors=0
+H3 PASS — result=42; top operator="+"; operands=["12","30"]; historyResult="42"
+H4 PASS — input preserved as "12" after selecting +; result=42; operands=["12","30"]
+H5 PASS — keyboard.type("12") produced "12"; keyboard result=42; operator="+"; operands=["12","30"]
+H6 PASS — result=11; app operator="+"; history=2; prior +["12","30","8"]="50" unchanged
+H7 PASS — new top +["12","5","8"]="25"; original two snapshots unchanged; reload history=0
+H8 PASS — data-error="true"; error history=0; all digits enabled; recovered result=3, no error, history=1
+H9 PASS — cold equals and uncommitted-12 equals: history=0, result data-value=null, pageErrors=0
+H10 PASS — 320x568 and 390x844 all four states: document/body overflow=0; controls 20/20/22/28; min size 44x44 or larger; min font=16; keypad and 10 digits visible
+H11 PASS — pages=14; pageErrors=0; consoleErrors=0
+H12 PASS — records=3; two fresh-context histories JSON-stringify deep-equal; results=[30,11,50]
+```
+
+HARD: PASS

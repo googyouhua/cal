@@ -1,0 +1,22 @@
+ROUND: 1
+ARTIFACT_SHA256: 7decfae74dc48b98f25e643828185e71973792ad0d99a81fbab8aef95a108f28
+TREE_SHA256: db9d3c7cbe26a5d8adddbd7e09ec5bc971ab10860c7241af3ae870cc513b330d
+VERIFIER_SHA256: bbab4674d89ce6d7cfc9f53d50d9244b87188409aa3ff32ad3544c0b59bb763f
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: 7decfae74dc48b98f25e643828185e71973792ad0d99a81fbab8aef95a108f28
+VERIFIER_SHA256: d8f6fdf93bda37b7176555bd673d27045cdaf90dc4fea3bc417e1598f7904077
+H1 PASS — bytes=22182；closesHtml=true；外部资源引用 total=0（scriptSrc/linkHref/imgSrc/@import/url 均为 0）；file:// 加载 pageErrors=0；sha256 与 contract 一致
+H2 PASS — 320x568 result: doc/body=320/320，控件 min=102x44，font=18；edit: 320/320，min=44x44，edit=2/remove=3，font=18；390x844 result: 390/390，min=102x44，font=18；edit: 390/390，min=44x44，edit=2/remove=3，font=18；无水平溢出
+H3 PASS — ops=["+","-","*","/"] 且恰为4个button；初始 input disabled=true、history=0、op-picker/expression/result 状态正确；禁用态键入后 expression=""、history=0；选择 + 后 disabled=false、input 聚焦、expression/result 空、history=0
+H4 PASS — 回车提交 12/30 后 input 空、expression="12 + 30"；未回车输入 8 时 expression 不含 8（pending input=8）；键盘 = 后 result=50、expression="12 + 30 + 8"；全新加载 * 2/3/4 点击等号 result=24
+H5 PASS — +12/30/8=50；-10/4/3=3；*2/3/4=24；/100/5/2=10；+1.5/2.25=3.75；各 expression 均含全部操作数及合法运算符字形
+H6 PASS — +12/30/8=50 快照完整；key-op 后 picker 可见、input disabled、expression/result 空且无 data-value/data-error、history=1、item0 完全不变；再算 *2/3/4=24 后 history=2 且 item0 为 *
+H7 PASS — 空输入 Enter 不改变 expression/result/history 且无 data-error；5/0 除零后 data-error=true、文本="不能除以零"、pageErrors=0、history=0；恢复 +1/2/=result=3、history=1
+H8 PASS — 每次等号 history 依次为1/2/3/4 且新条目位于索引0；操作数 JSON 严格匹配；最终自顶向下为 +["1.5","2.25"]=3.75、*["2","3","4"]=24、-["10","4","3"]=3、+["12","30","8"]=50；每条 history-edit 可见
+H9 PASS — 较旧 * 记录进入编辑态：operator=*、chips=["2","3","4"]、input enabled+focused、picker 可见、history=2 且快照不变；切换到 + 后 operator=+、chips/history 快照不变
+H10 PASS — 删除中间 chip 后 ["2","4"]，追加10后 ["2","4","10"]，= 得16；history=3，新 item0 为 +["2","4","10"]=16，编辑态结束，原两条移至索引1/2且快照不变；新记录删空 chips 后按 = history仍为3、pageErrors=0
+H11 PASS — 两次计算后 history=2；reload 后 history=0、picker 可见、input disabled、expression/result 空、pageErrors=0；全新浏览器上下文 history=0
+H12 PASS — H3–H11 pageErrors=0、consoleErrors=0；两次全新加载各完成四计算序列，长度4/4，序列深度相等，sequenceSha256=4a2cf6c431826cbbd4dbc48a74ebaa111f452c3127ee4dbb31110e46fb251cde
+HARD: PASS

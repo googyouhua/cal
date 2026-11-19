@@ -1,0 +1,22 @@
+ROUND: 2
+ARTIFACT_SHA256: 630392827703060cfbccdefc549b71db6ec2656fb7870a20901aa7b6352d02a1
+TREE_SHA256: d29a0399df774e000b916fc51afe6dc31e1ddd1d9e459c54a6b774753f4d9d15
+VERIFIER_SHA256: 2e2286dad8fb1932bbb989438bd5f6479daae05cd9cb89555ebc176db7eb7508
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 2
+ARTIFACT_SHA256: 630392827703060cfbccdefc549b71db6ec2656fb7870a20901aa7b6352d02a1
+VERIFIER_SHA256: 2e2286dad8fb1932bbb989438bd5f6479daae05cd9cb89555ebc176db7eb7508
+H1 PASS — bytes=28358, htmlClose=yes, externalRefs=0, pageErrors=0, fileUrl=file:///ws/cal_phone-worktrees/keypad/index.html
+H2 PASS — 320x568 select: keypadBottom=513.98, minControl=60.75x44.00, medianDigitArea=2952, enterRatio=2.125, equalsRatio=2.098, docScroll=320/320, bodyScroll=320/320 | 320x568 result: keypadBottom=514.23, minControl=60.75x44.00, medianDigitArea=2952, enterRatio=2.125, equalsRatio=2.098, docScroll=320/320, bodyScroll=320/320 | 390x844 select: keypadBottom=515.8, minControl=80.00x44.00, medianDigitArea=3840, enterRatio=2.125, equalsRatio=2.075, docScroll=390/390, bodyScroll=390/390 | 390x844 result: keypadBottom=516.05, minControl=80.00x44.00, medianDigitArea=3840, enterRatio=2.125, equalsRatio=2.075, docScroll=390/390, bodyScroll=390/390
+H3 PASS — keypadVisible=yes, opCount=4, keys=14, equalsKeyEquals=yes, readOnly=true, inputMode=none, typedValue="", selectKeysDisabled=14/14, inputKeysEnabled=14/14, noPageErrors
+H4 PASS — value=12.5, duplicateDot=no-change, backspaces=["12.","12","1",""], emptyBackspaceNoop=yes, expressionAfterEnter="30 +", firstResult="34"/history1, firstOperands=["30","4"], stickyPlusResult="3.75"/history2, stickyPlusOperands=["1.5","2.25"]
+H5 PASS — first=42/1, stickyPlus=11/2, stickyStar=30/3, top=[["*",["5","6"],"30"],["+",["5","6"],"11"],["+",["12","30"],"42"]]
+H6 PASS — initialDisabled=14/14, opsAvailable=4/4, switches=+->*->+, switchedExpression="5 * 6", entry=*:["5","6"]=30, keyOpState=select, historyPreserved=yes
+H7 PASS — counts=[1,2,3,4], top4=[["+",["1.5","2.25"],"3.75"],["*",["2","3","4"],"24"],["-",["10","4","3"],"3"],["+",["12","30","8"],"50"]], emptyEnterNoop=yes, divZeroHistoryNoop=yes, reloadHistory=0, newContextHistory=0
+H8 PASS — editInputs=["12","30","8"], expression="12 + 5 + 8", new="+":["12","5","8"]=25, history=3, originalsShiftedUnchanged=yes
+H9 PASS — operatorSwitchInputs=["2","3","4"], editedExpression="10 + 3 + 5", afterRemove=["10","5"], afterEnter=["10","5","2"], new=+["10","5","2"]=17, history=3, originalsUnchanged=yes
+H10 PASS — emptyNoop=yes, abcNoop=yes, final=25/2 operands=["12","5","8"], pageErrors=0
+H11 PASS — errorState=yes, dataError=true, history=1, sourceUnchanged=yes, keypadVisible=yes, digitsEnabled=10/10, readOnly=true, recovery=+["1","2"]=3 history=2
+H12 PASS — H3-H11 pageErrors=0, consoleErrors=0, runPageErrors=[0,0], runConsoleErrors=[0,0], historiesDeepEqual=yes, entries=3
+HARD: PASS

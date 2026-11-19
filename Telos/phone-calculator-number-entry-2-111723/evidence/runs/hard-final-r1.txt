@@ -1,0 +1,21 @@
+ROUND: 1
+ARTIFACT_SHA256: d97565f096ed1c336eae9eac9ec75b1cc980bef6c0318027018a3f2291a8486a
+TREE_SHA256: 6185a012a3530c77ceda6f97701470d3ba31cd2766b07292e8fbf020e6fd2126
+VERIFIER_SHA256: 740e268e5db85b6dbb1881d4f30228ed3ed5b9f5a2f48e44eae9fbb3d126b33b
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: d97565f096ed1c336eae9eac9ec75b1cc980bef6c0318027018a3f2291a8486a
+H1 PASS — closingHtml=true bytes=29600 externalRefs=0 pageerrors=0
+H2 PASS — digitsEnabled=10/10 input="12" expression="12" pageerrors=0
+H3 PASS — result=42 top={"operator":"+","operands":["12","30"],"result":"42"}
+H4 PASS — inputAfterOperator="12" result=42 operands=["12","30"]
+H5 PASS — typed="12" result=42 top={"operator":"+","operands":["12","30"],"result":"42"}
+H6 PASS — result=11 operator="+" history=2 old={"operator":"+","operands":["12","30","8"],"result":"50","expression":"12 + 30 + 8"} unchanged=true
+H7 PASS — plusEdits=1 operands=3 top={"operator":"+","operands":["12","5","8"],"result":"25"} originalsUnchanged=true reloadHistory=0
+H8 PASS — errorFlag="true" history=0 digitsEnabled=10/10 recoveredResult=3 recoveredError=null recoveredHistory=1
+H9 PASS — cases=[{"label":"cold","history":0,"value":null,"pageerrors":0},{"label":"digits","history":0,"value":null,"pageerrors":0}]
+H10 PASS — 320x568.cold/input12/result2/edit3 and 390x844.cold/input12/result2/edit3: docOverflow=0, bodyOverflow=0, minControl=44x44, minFont=16, keypad+digits visible, history=2, operandInputs=3
+H11 PASS — pageerrors=0 consoleErrors=0
+H12 PASS — records=3/3 deepEqual=true first=[{"operator":"*","operands":["5","6"],"result":"30"},{"operator":"+","operands":["5","6"],"result":"11"},{"operator":"+","operands":["12","30","8"],"result":"50"}] second=[{"operator":"*","operands":["5","6"],"result":"30"},{"operator":"+","operands":["5","6"],"result":"11"},{"operator":"+","operands":["12","30","8"],"result":"50"}]
+HARD: PASS

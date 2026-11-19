@@ -1,0 +1,21 @@
+ROUND: 1
+ARTIFACT_SHA256: 908c79d399b8dbdc336f97b4560cf2f227adf966667f7207625cf17c3218f56c
+TREE_SHA256: a393dfad3c266dea9d519dd1e8a3b2a944ad5337b14a3c08333324dcebd86525
+VERIFIER_SHA256: 8b8159a05e84cc490fda876f6c4f7863414e88651dc063ce80b7ce2530ca97e0
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: 908c79d399b8dbdc336f97b4560cf2f227adf966667f7207625cf17c3218f56c
+H1 PASS — 实测 25292 bytes，含 `</html>`；script/link/img/@import/url(...) 外链数为 0；file:// 直载 pageerror=0。
+H2 PASS — 320×568、390×844 两种移动上下文在 result/edit 共 4 态：html/body scrollWidth 均未超出；可见控件最小尺寸分别为 64.25×44、44×44、79×44、44×44；输入字号最小 18/16/18/16px。
+H3 PASS — 保留 `+`，连续计算后 history=3、结果 [5,11,50]；空等号 no-op；新计算操作数为 ["5","6"]、["2","3"]；旧记录逐字段不变；pageerror=0。
+H4 PASS — result 态切换 `*` 后历史仍为1，5/6=30；input 态切回 `+` 后 expression="2 + 3"，结果5，最终 history=3；前两条快照不变。
+H5 PASS — 初始 disabled=true、四个运算符集合正确；键盘 `=` 得50；五案例结果 50/3/24/10/3.75，算式含全部操作数及合法字形。
+H6 PASS — 四条记录逐次递增且最新在索引0；最终自顶向下为 `+[1.5,2.25]=3.75`、`*[2,3,4]=24`、`-[10,4,3]=3`、`+[12,30,8]=50`；每条编辑按钮可见；空回车和除零均不增历史。
+H7 PASS — key-op 后回到 select、operator 清除、expr/result 清空、历史快照不变；reload 与全新浏览器上下文均为 history=0、select 态、pageerror=0。
+H8 PASS — 编辑旧 `+[12,30,8]`，中间值改5后 expression="12 + 5 + 8"，结果25；新顶条为 `+["12","5","8"]=25`，原两条快照不变。
+H9 PASS — 编辑 `*` 记录并切到 `+`，值保持；改为 [10,3,5] 后删中间、追加2，结果17；新顶条为 `+["10","5","2"]=17`，原记录顺序与快照不变。
+H10 PASS — 空值与 "abc" 均 no-op：history=1、result 无 data-value、pageerror=0；再填5得25、history=2、操作数 ["12","5","8"]。
+H11 PASS — 编辑除零进入 error、data-error="true"、history=1、源记录不变、控件可用且聚焦；切 `+` 恢复后 1/2=3，history=2。
+H12 PASS — H3–H11 pageerror=0、console error=0；两次全新加载同一序列所得历史序列化深度一致，顶到底为 `*[5,6]=30`、`+[5,6]=11`、`+[12,30,8]=50`。
+HARD: PASS

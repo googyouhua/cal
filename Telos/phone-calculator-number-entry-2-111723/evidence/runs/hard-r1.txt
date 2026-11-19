@@ -1,0 +1,22 @@
+ROUND: 1
+ARTIFACT_SHA256: d97565f096ed1c336eae9eac9ec75b1cc980bef6c0318027018a3f2291a8486a
+TREE_SHA256: 6185a012a3530c77ceda6f97701470d3ba31cd2766b07292e8fbf020e6fd2126
+VERIFIER_SHA256: 740e268e5db85b6dbb1881d4f30228ed3ed5b9f5a2f48e44eae9fbb3d126b33b
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: d97565f096ed1c336eae9eac9ec75b1cc980bef6c0318027018a3f2291a8486a
+VERIFIER_SHA256: 740e268e5db85b6dbb1881d4f30228ed3ed5b9f5a2f48e44eae9fbb3d126b33b
+H1 PASS — hasClosingHtml=true; bytes=29600,textLength=28893; externalReferences=[]; url=file:///ws/cal_phone/index.html; pageerrors=0; messages=none
+H2 PASS — digits=["0:true","1:true","2:true","3:true","4:true","5:true","6:true","7:true","8:true","9:true"]; inputValue=12; expression=12; pageerrors=0; messages=none
+H3 PASS — result=42; topOperator=+; topOperands=["12","30"]; topResult=42
+H4 PASS — preservedInput=12; result=42; topOperator=+; topOperands=["12","30"]
+H5 PASS — typedInput=12; result=42; topOperator=+; topOperands=["12","30"]
+H6 PASS — firstHistory=1; firstOperator=+; firstOperands=["12","30","8"]; firstResult=50; continuedResult=11; appOperator=+; historyCount=2; oldRecordUnchanged={"operator":"+","operands":["12","30","8"],"result":"50","expression":"12 + 30 + 8"}
+H7 PASS — initialHistory=2; initialResult=24; earlierRecordCount=1; operandInputs=3; editedResult=25; historyCount=3; newTopOperator=+; newTopOperands=["12","5","8"]; newTopResult=25; originalSnapshotsUnchanged=[{"operator":"*","operands":["2","3","4"],"result":"24","expression":"2 * 3 * 4"},{"operator":"+","operands":["12","30","8"],"result":"50","expression":"12 + 30 + 8"}]; historyAfterReload=0
+H8 PASS — divisionError=true; historyAfterError=0; digits=["0:true","1:true","2:true","3:true","4:true","5:true","6:true","7:true","8:true","9:true"]; recoveredResult=3; recoveredErrorAttribute=null; recoveredHistory=1
+H9 PASS — coldHistory=0; coldResultValue=null; coldPageerrors=0; messages=none; uncommittedHistory=0; uncommittedResultValue=null; uncommittedPageerrors=0; messages=none
+H10 PASS — 320x568.cold.docOverflow=0; 320x568.cold.bodyOverflow=0; 320x568.cold.controls=20,min=60.75x44.00; 320x568.cold.minFont=16; 320x568.cold.keypadVisible=true,digitsVisible=10; 320x568.uncommittedInput=12; 320x568.uncommitted.docOverflow=0; 320x568.uncommitted.bodyOverflow=0; 320x568.uncommitted.controls=20,min=60.75x44.00; 320x568.uncommitted.minFont=16; 320x568.uncommitted.keypadVisible=true,digitsVisible=10; 320x568.resultHistory=2; 320x568.resultValue=24; 320x568.result.docOverflow=0; 320x568.result.bodyOverflow=0; 320x568.result.controls=22,min=60.75x44.00; 320x568.result.minFont=16; 320x568.result.keypadVisible=true,digitsVisible=10; 320x568.operandInputs=3; 320x568.edit.docOverflow=0; 320x568.edit.bodyOverflow=0; 320x568.edit.controls=28,min=44.00x44.00; 320x568.edit.minFont=16; 320x568.edit.keypadVisible=true,digitsVisible=10; 390x844.cold.docOverflow=0; 390x844.cold.bodyOverflow=0; 390x844.cold.controls=20,min=80.00x44.00; 390x844.cold.minFont=16; 390x844.cold.keypadVisible=true,digitsVisible=10; 390x844.uncommittedInput=12; 390x844.uncommitted.docOverflow=0; 390x844.uncommitted.bodyOverflow=0; 390x844.uncommitted.controls=20,min=80.00x44.00; 390x844.uncommitted.minFont=16; 390x844.uncommitted.keypadVisible=true,digitsVisible=10; 390x844.resultHistory=2; 390x844.resultValue=24; 390x844.result.docOverflow=0; 390x844.result.bodyOverflow=0; 390x844.result.controls=22,min=80.00x44.00; 390x844.result.minFont=16; 390x844.result.keypadVisible=true,digitsVisible=10; 390x844.operandInputs=3; 390x844.edit.docOverflow=0; 390x844.edit.bodyOverflow=0; 390x844.edit.controls=28,min=44.00x44.00; 390x844.edit.minFont=16; 390x844.edit.keypadVisible=true,digitsVisible=10
+H11 PASS — pages=14; pageerrors=0; messages=none; consoleErrors=0; messages=none
+H12 PASS — firstResult=50; secondResult=11; thirdResult=30; firstRecords=3; secondRecords=3; equal=true,first=[{"operator":"*","operands":["5","6"],"result":"30"},{"operator":"+","operands":["5","6"],"result":"11"},{"operator":"+","operands":["12","30","8"],"result":"50"}]; recordSequence=[{"operator":"*","operands":["5","6"],"result":"30"},{"operator":"+","operands":["5","6"],"result":"11"},{"operator":"+","operands":["12","30","8"],"result":"50"}]
+HARD: PASS

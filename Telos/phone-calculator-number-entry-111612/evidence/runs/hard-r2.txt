@@ -1,0 +1,22 @@
+ROUND: 2
+ARTIFACT_SHA256: d97565f096ed1c336eae9eac9ec75b1cc980bef6c0318027018a3f2291a8486a
+TREE_SHA256: 6185a012a3530c77ceda6f97701470d3ba31cd2766b07292e8fbf020e6fd2126
+VERIFIER_SHA256: 7d95d2671f68cfbadfd8fbcfb22f98bbf0c0f46cda392b4c8b16242d7c6565df
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 2
+ARTIFACT_SHA256: d97565f096ed1c336eae9eac9ec75b1cc980bef6c0318027018a3f2291a8486a
+VERIFIER_SHA256: 7d95d2671f68cfbadfd8fbcfb22f98bbf0c0f46cda392b4c8b16242d7c6565df
+H1 PASS — htmlClose=true length=29600 externalRefs=0 pageErrors=0 fileLoad=ok
+H2 PASS — viewport=390x844 mobile=true touch=true digitKeys=enabled input="12" expression="12" pageErrors=0
+H3 PASS — result=42 operator="+" operands=["12","30"] historyResult=42
+H4 PASS — afterPlusInput="12" result=42 operands=["12","30"]
+H5 PASS — typedInput="12" result=42 operator="+" operands=["12","30"]
+H6 FAIL — history=2; measured result=11,operator="+",history=2,priorRecords=1,priorUnchanged=true,priorHistory=[{"operator":"+","operands":["12","30","8"],"result":"50"}]
+H7 PASS — editedOperator="+" editedOperands=["12","5","8"] editedResult=25 originalsUnchanged=true reloadHistory=0
+H8 PASS — divisionByZeroError=true historyUnchanged=0 digitsEnabled=10/10 recoveryResult=3 recoveryDataError=null history+1=1
+H9 PASS — direct:history=0,result=null,pageErrors=0; after12:history=0,result=null,pageErrors=0
+H10 PASS — 320x568.cold:docOverflow=0,bodyOverflow=0,controls=20,minW=60.8,minH=44.0,minFont=16.0,keypad=true,digits=10/10; 320x568.input:docOverflow=0,bodyOverflow=0,controls=20,minW=60.8,minH=44.0,minFont=16.0,keypad=true,digits=10/10,state="input",input="12"; 320x568.result:docOverflow=0,bodyOverflow=0,controls=22,minW=60.8,minH=44.0,minFont=16.0,keypad=true,digits=10/10,state="result",history=2; 320x568.edit:docOverflow=0,bodyOverflow=0,controls=28,minW=44.0,minH=44.0,minFont=16.0,keypad=true,digits=10/10,state="edit",operands=3; 390x844.cold:docOverflow=0,bodyOverflow=0,controls=20,minW=80.0,minH=44.0,minFont=16.0,keypad=true,digits=10/10; 390x844.input:docOverflow=0,bodyOverflow=0,controls=20,minW=80.0,minH=44.0,minFont=16.0,keypad=true,digits=10/10,state="input",input="12"; 390x844.result:docOverflow=0,bodyOverflow=0,controls=22,minW=80.0,minH=44.0,minFont=16.0,keypad=true,digits=10/10,state="result",history=2; 390x844.edit:docOverflow=0,bodyOverflow=0,controls=28,minW=44.0,minH=44.0,minFont=16.0,keypad=true,digits=10/10,state="edit",operands=3
+H11 PASS — pages=14 pageErrors=0 consoleErrors=0
+H12 PASS — contexts=2 records=3/3 serializedEqual=true history=[{"operator":"*","operands":["5","6"],"result":30},{"operator":"+","operands":["5","6"],"result":11},{"operator":"+","operands":["12","30","8"],"result":50}]
+HARD: FAIL (H6)

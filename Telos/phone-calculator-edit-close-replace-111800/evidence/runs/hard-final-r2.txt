@@ -1,0 +1,23 @@
+ROUND: 2
+ARTIFACT_SHA256: 1a9f6d64f88747a9818b46f8943bc30cbf52d62e82e60559164291293d124f5b
+TREE_SHA256: d5d47e388b72d8c6fbafb037a99f9ebe3b634e7fedd7da81283698bbb1b5f0ce
+VERIFIER_SHA256: 0afbe639c4aef7106294e2ab91a72e1595faa0c60034cd22e42ec89e3f1166cf
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 2
+ARTIFACT_SHA256: 1a9f6d64f88747a9818b46f8943bc30cbf52d62e82e60559164291293d124f5b
+VERIFIER_SHA256: 857407b2732129080d1accfebb6707c3b3a7f8c8ebaada3a8ea7f11ed79322f5
+H1 PASS — bytes=33732, `</html>` present, external refs=0, pageerrors=0
+H2 PASS — state=edit, operands=3, edit-cancel visible/enabled, label="关闭"
+H3 PASS — result state restored exactly, history=2 unchanged, operator="*", expression="2 * 3 * 4", result="24"
+H4 PASS — edited/pending draft discarded, history=2 unchanged, operands/pending cleared, pageerrors=0
+H5 PASS — select snapshot restored, expression/result empty, operator absent, history=1
+H6 PASS — selected index 1 cleared to "", pending=[1], other values ["12","8"], expression unchanged
+H7 PASS — pending transfers correctly, values=["12","30","8"], operator changed to "*", history=1
+H8 FAIL — type7 gave ["12","7","8"]; click2 ["12","7",""]; click1 ["12","",8]; final click2 yielded ["12","7",""], but required last value was "8"; independent jsdom replay produced the same result
+H9 PASS — pending restored, result=50, history=2, operands=["12","30","8"], source record unchanged, pageerrors=0
+H10 PASS — empty and "abc" were no-ops, then "7" produced 27 with operands ["12","7","8"], source unchanged
+H11 PASS — edited values ["10","5","2"], result=17, history=3, prior records unchanged; reload history=0/state=select
+H12 PASS — 320×568: overflow=0/0, 29 controls, min=44×44, fonts=16px; 390×844: overflow=0/0, 29 controls, min=44×44, fonts=16px; cancel/keypad visible
+H13 PASS — 2 fresh contexts identical, records=3, pageerrors=0, console errors=0; sequence results 25, 24, 50
+HARD: FAIL (H8)

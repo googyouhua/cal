@@ -1,0 +1,24 @@
+ROUND: 1
+ARTIFACT_SHA256: fdd113a75b5bad6d5e113fd1214bc8d195d6a1e31169117854a4e9964c251d06
+TREE_SHA256: b876f77375ad09c0483814171208600977df57aedfbf8d579119f93e1927b458
+VERIFIER_SHA256: 7d95d2671f68cfbadfd8fbcfb22f98bbf0c0f46cda392b4c8b16242d7c6565df
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1  
+ARTIFACT_SHA256: `fdd113a75b5bad6d5e113fd1214bc8d195d6a1e31169117854a4e9964c251d06`  
+VERIFIER_SHA256: `7d95d2671f68cfbadfd8fbcfb22f98bbf0c0f46cda392b4c8b16242d7c6565df`
+
+H1 PASS — `</html>` 存在、29581 bytes、外部引用 0、file:// 直载 pageerror 0。  
+H2 PASS — 390×844 冷启动数字键 0–9 全部启用；输入 `"12"`，回车后 expression 包含 `"12"`，pageerror 0。  
+H3 PASS — result 42，顶条 operator `+`、operands `["12","30"]`、history-result 42。  
+H4 PASS — 输入 `"12"` 后点 `+` 仍保留 `"12"`；最终 result 42、operands `["12","30"]`。  
+H5 PASS — 键盘输入 `"12"`，物理 Enter/=/数字路径得到 result 42、operator `+`、operands `["12","30"]`。  
+H6 FAIL — result 11、operator `+` 正确，但实测 history=2，契约要求 3；此前 1 条快照未变。  
+H7 PASS — 编辑后新顶条为 `+["12","5","8"]=25`，原两条未变，reload 后 history=0。  
+H8 PASS — 除零错误生效且 history 不变，数字键仍启用；恢复计算 result 3、无 error、history +1。  
+H9 PASS — 冷启动直接 `=` 与输入 `12` 后 `=` 均为 history=0、result=null、pageerror=0。  
+H10 FAIL — 320×568/390×844 四态均无横向溢出、控件最小尺寸 44px、键盘可见；但可见控件字号不达 16px：`key-op=12`、`backspace=15`、结果/编辑态 `history-edit=14`。  
+H11 PASS — 共 14 页，pageerror 0、console error 0。  
+H12 PASS — 两个全新 context 各 3 条记录，`JSON.stringify` 结果完全一致。
+
+HARD: FAIL (H6,H10)

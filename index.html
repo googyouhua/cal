@@ -126,7 +126,7 @@
     border-color: var(--panel-edge);
     background: #18243a;
     color: var(--ink);
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 650;
   }
 
@@ -270,7 +270,7 @@
   .key[data-key="backspace"] {
     grid-area: back;
     color: #fecdd3;
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .key[data-key="enter"] {
@@ -324,6 +324,18 @@
     background: rgba(245, 158, 11, 0.16);
     color: #fef3c7;
     font-size: 20px;
+  }
+
+  .edit-cancel {
+    flex: 0 0 auto;
+    min-width: 64px;
+    min-height: 44px;
+    padding: 0 14px;
+    border-color: rgba(251, 113, 133, 0.32);
+    background: rgba(190, 24, 93, 0.2);
+    color: #fecdd3;
+    font-size: 16px;
+    font-weight: 700;
   }
 
   .operand-chips {
@@ -464,7 +476,7 @@
     border-color: rgba(251, 191, 36, 0.24);
     background: #1c293f;
     color: #fde68a;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
   }
 
@@ -550,6 +562,7 @@
         <span>编辑草稿</span>
         <span class="edit-operator" data-testid="edit-operator" aria-hidden="true">+</span>
         <span id="edit-hint">换运算符不会清空数字；回车追加数字。</span>
+        <button class="edit-cancel" type="button" data-testid="edit-cancel" aria-label="关闭编辑">关闭</button>
       </div>
       <div class="operand-chips" data-testid="operand-chips"></div>
     </section>
@@ -585,6 +598,7 @@
     const editDraftView = document.querySelector('[data-testid="edit-draft"]');
     const editOperatorView = document.querySelector('[data-testid="edit-operator"]');
     const operandChips = document.querySelector('[data-testid="operand-chips"]');
+    const editCancelButton = document.querySelector('[data-testid="edit-cancel"]');
 
     const operatorGlyphs = {
       "+": "+",
@@ -598,6 +612,8 @@
     let operands = [];
     let history = [];
     let editDraft = null;
+    let editSnapshot = null;
+    let pendingEdit = null;
 
     function enterState(nextState) {
       state = nextState;
@@ -614,9 +630,8 @@
     }
 
     function syncKeypad() {
-      const disabled = state === "select";
       keyButtons.forEach((button) => {
-        button.disabled = disabled;
+        button.disabled = false;
       });
       opButtons.forEach((button) => {
         button.disabled = false;
@@ -624,8 +639,16 @@
     }
 
     function appendCharacter(character) {
-      if (state === "select") {
-        return;
+      if (state === "result" || state === "error") {
+        operands = [];
+        clearExpression();
+        clearResult();
+      }
+      if (state === "select" || state === "result" || state === "error") {
+        enterState("input");
+        updateStateLabel(operator
+          ? `已开始新的 ${operatorGlyphs[operator]} 计算，请继续输入`
+          : "请输入数字，或先选择运算类型");
       }
       if (character === "." && input.value.includes(".")) {
         return;
@@ -634,8 +657,11 @@
     }
 
     function deleteLastCharacter() {
-      if (state === "select") {
+      if (state === "select" && input.value === "") {
         return;
+      }
+      if (state === "select") {
+        enterState("input");
       }
       input.value = input.value.slice(0, -1);
     }
@@ -655,18 +681,17 @@
     }
 
     function expressionText(activeOperator, activeOperands) {
-      if (!activeOperator || activeOperands.length === 0) {
+      if (activeOperands.length === 0) {
         return "";
       }
 
-      return activeOperands
-        .map((operand) => operand.display)
-        .join(` ${operatorGlyphs[activeOperator]} `);
+      const values = activeOperands.map((operand) => operand.display);
+      return activeOperator ? values.join(` ${operatorGlyphs[activeOperator]} `) : values.join(" ");
     }
 
     function liveExpressionText(activeOperator, activeOperands) {
       const base = expressionText(activeOperator, activeOperands);
-      if (!base || activeOperands.length !== 1) {
+      if (!activeOperator || !base || activeOperands.length !== 1) {
         return base;
       }
 
@@ -679,12 +704,102 @@
         return;
       }
 
-      if (!operator || operands.length === 0) {
+      if (operands.length === 0) {
         clearExpression();
         return;
       }
 
       expression.textContent = liveExpressionText(operator, operands);
+    }
+
+    function captureEditSnapshot() {
+      return {
+        state,
+        operator,
+        operands: operands.map(cloneOperand),
+        expressionText: expression.textContent || "",
+        resultText: result.textContent || "",
+        resultValue: result.getAttribute("data-value"),
+        resultError: result.getAttribute("data-error"),
+        label: stateLabel.textContent
+      };
+    }
+
+    function settlePendingEdit() {
+      if (!pendingEdit) {
+        return;
+      }
+
+      const pending = pendingEdit;
+      pendingEdit = null;
+      if (pending.chip) {
+        pending.chip.removeAttribute("data-pending");
+      }
+      if (!pending.entered && pending.input && pending.input.isConnected) {
+        pending.input.value = pending.original;
+        if (editDraft && editDraft.operands[pending.index]) {
+          editDraft.operands[pending.index] = {
+            value: Number(pending.original),
+            display: pending.original
+          };
+        }
+        if (pending.chip) {
+          pending.chip.setAttribute("data-value", pending.original);
+        }
+      }
+    }
+
+    function beginPendingEdit(operandInput, chip, index) {
+      if (state !== "edit" || !editDraft || !editDraft.operands[index]) {
+        return;
+      }
+      if (pendingEdit && pendingEdit.input === operandInput) {
+        return;
+      }
+
+      settlePendingEdit();
+      pendingEdit = {
+        index,
+        original: operandInput.value,
+        entered: false,
+        input: operandInput,
+        chip
+      };
+      operandInput.value = "";
+      chip.setAttribute("data-pending", "true");
+    }
+
+    function cancelEdit() {
+      if (state !== "edit" || !editSnapshot) {
+        return;
+      }
+
+      const snapshot = editSnapshot;
+      pendingEdit = null;
+      editSnapshot = null;
+      editDraft = null;
+      editDraftView.hidden = true;
+      operandChips.textContent = "";
+      operator = snapshot.operator;
+      operands = snapshot.operands.map(cloneOperand);
+      syncOperatorAttribute();
+      expression.textContent = snapshot.expressionText;
+      result.textContent = snapshot.resultText;
+      if (snapshot.resultValue === null) {
+        result.removeAttribute("data-value");
+      } else {
+        result.setAttribute("data-value", snapshot.resultValue);
+      }
+      if (snapshot.resultError === null) {
+        result.removeAttribute("data-error");
+      } else {
+        result.setAttribute("data-error", snapshot.resultError);
+      }
+      input.value = "";
+      resetButton.disabled = snapshot.state === "select";
+      enterState(snapshot.state);
+      updateStateLabel(snapshot.label);
+      input.focus();
     }
 
     function updateStateLabel(label) {
@@ -697,6 +812,8 @@
         operandChips.textContent = "";
         return;
       }
+
+      settlePendingEdit();
 
       editDraftView.hidden = false;
       editDraftView.setAttribute("data-operator", editDraft.operator);
@@ -718,9 +835,20 @@
         value.setAttribute("data-testid", "operand-input");
         value.setAttribute("aria-label", `编辑数字 ${operand.display}`);
         value.value = operand.display;
+        value.addEventListener("focus", () => beginPendingEdit(value, chip, index));
+        value.addEventListener("click", () => beginPendingEdit(value, chip, index));
+        value.addEventListener("focusout", () => {
+          if (pendingEdit && pendingEdit.input === value) {
+            settlePendingEdit();
+          }
+        });
         value.addEventListener("input", () => {
           if (state !== "edit" || !editDraft || !editDraft.operands[index]) {
             return;
+          }
+
+          if (pendingEdit && pendingEdit.input === value) {
+            pendingEdit.entered = true;
           }
 
           editDraft.operands[index] = {
@@ -742,6 +870,7 @@
             return;
           }
 
+          settlePendingEdit();
           editDraft.operands.splice(index, 1);
           renderEditDraft();
           renderExpression();
@@ -754,6 +883,10 @@
     }
 
     function beginEdit(entry) {
+      if (state !== "edit" || !editSnapshot) {
+        editSnapshot = captureEditSnapshot();
+      }
+      pendingEdit = null;
       operator = entry.operator;
       syncOperatorAttribute();
       editDraft = {
@@ -811,6 +944,8 @@
     }
 
     function resetToSelect() {
+      pendingEdit = null;
+      editSnapshot = null;
       operator = null;
       syncOperatorAttribute();
       operands = [];
@@ -826,6 +961,7 @@
     }
 
     function chooseOperator(nextOperator) {
+      settlePendingEdit();
       if (state === "edit" && editDraft) {
         editDraft.operator = nextOperator;
         renderEditDraft();
@@ -854,7 +990,7 @@
     }
 
     function commitInput() {
-      if (state !== "input" && state !== "result" && state !== "error" && state !== "edit") {
+      if (state !== "select" && state !== "input" && state !== "result" && state !== "error" && state !== "edit") {
         return false;
       }
 
@@ -866,6 +1002,11 @@
       const numericValue = Number(rawValue);
       if (!Number.isFinite(numericValue)) {
         return false;
+      }
+
+      if (state === "select") {
+        enterState("input");
+        updateStateLabel("请输入数字，或先选择运算类型");
       }
 
       if (state === "edit" && editDraft) {
@@ -891,6 +1032,8 @@
     }
 
     function showDivisionByZero(activeOperator) {
+      pendingEdit = null;
+      editSnapshot = null;
       operator = activeOperator;
       syncOperatorAttribute();
       operands = [];
@@ -921,6 +1064,8 @@
       if (state !== "input" && state !== "result" && state !== "error" && state !== "edit") {
         return;
       }
+
+      settlePendingEdit();
 
       const wasEditing = state === "edit" && editDraft !== null;
       let activeOperator;
@@ -1002,6 +1147,8 @@
       input.value = "";
       resetButton.disabled = false;
       editDraft = null;
+      editSnapshot = null;
+      pendingEdit = null;
       editDraftView.hidden = true;
       operandChips.textContent = "";
       enterState("result");
@@ -1039,7 +1186,32 @@
       }
     });
 
+    document.addEventListener("keydown", (event) => {
+      if (event.ctrlKey || event.metaKey || event.altKey) {
+        return;
+      }
+      if (event.target instanceof Element && event.target.closest('[data-testid="operand-input"]')) {
+        return;
+      }
+
+      const key = event.key;
+      if (/^[0-9]$/.test(key) || key === ".") {
+        appendCharacter(key);
+      } else if (key === "Backspace") {
+        deleteLastCharacter();
+      } else if (key === "Enter") {
+        commitInput();
+      } else if (key === "=") {
+        calculate();
+      } else {
+        return;
+      }
+      event.preventDefault();
+    });
+
     resetButton.addEventListener("click", resetToSelect);
+    editCancelButton.addEventListener("click", cancelEdit);
+    input.addEventListener("focus", settlePendingEdit);
     syncKeypad();
   })();
 </script>

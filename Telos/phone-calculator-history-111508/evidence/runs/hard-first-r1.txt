@@ -1,0 +1,22 @@
+ROUND: 1
+ARTIFACT_SHA256: 7decfae74dc48b98f25e643828185e71973792ad0d99a81fbab8aef95a108f28
+TREE_SHA256: db9d3c7cbe26a5d8adddbd7e09ec5bc971ab10860c7241af3ae870cc513b330d
+VERIFIER_SHA256: bbab4674d89ce6d7cfc9f53d50d9244b87188409aa3ff32ad3544c0b59bb763f
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: 7decfae74dc48b98f25e643828185e71973792ad0d99a81fbab8aef95a108f28
+VERIFIER_SHA256: bbab4674d89ce6d7cfc9f53d50d9244b87188409aa3ff32ad3544c0b59bb763f
+H1 PASS — 文件 22182 字节，含 `</html>`；外部引用五类均为 0；file URL 加载时 pageerror=0。
+H2 PASS — 320×568 与 390×844 的 result/edit 四种状态均无横向溢出；可见控件最小尺寸 44×44，calc-input 字号 18px。
+H3 PASS — 运算符恰为 `+,-,*,/`；初始 input 禁用、expression/result 为空、history 可见且为 0；禁用时键入无效；选择 `+` 后启用并聚焦。
+H4 PASS — 键盘 `=` 提交未确认的 8，表达式为 `12 + 30 + 8`，结果 50；点击 key-equals 对 `2×3×4` 得到 24。
+H5 PASS — 五组结果分别为 50、3、24、10、3.75，误差均为 0，表达式均含操作数与合法运算符字形。
+H6 PASS — key-op 后回到 select 态并清空表达式/结果，历史快照不变；再次计算后 history=2 且最新项为 `*`。
+H7 PASS — 空回车不产生操作数、错误或历史；除零设置 `data-error="true"`、显示非空错误文案且 history=0；错误后 `+ 1/2` 得到 3、history=1。
+H8 PASS — 四次计算每次恰好新增一条；最终顺序为 `+[1.5,2.25]=3.75`、`*[2,3,4]=24`、`-[10,4,3]=3`、`+[12,30,8]=50`，均含可见 history-edit。
+H9 PASS — 编辑较旧 `*[2,3,4]` 条目时草稿、焦点和 picker 状态正确，历史快照不变；切换为 `+` 后 chip 与历史仍不变。
+H10 PASS — 删除 3 后为 `[2,4]`，追加 10 后为 `[2,4,10]`，计算结果 16 并新增一条；原记录不变；删空后按 `=` 仍保持 history=3 且 pageerror=0。
+H11 PASS — reload 后 history=0、恢复 select 态且 pageerror=0；全新浏览器上下文 history 同样为 0。
+H12 PASS — H3–H11 共追踪 14 个页面，pageerror=0、console error=0；两次全新加载的四计算历史序列深度相等。
+HARD: PASS

@@ -1,0 +1,22 @@
+ROUND: 1
+ARTIFACT_SHA256: 1166d4f926d7bfffd381f7cf918ce9144d2c0d97ba081cbe9a4152ab7a4dc19b
+TREE_SHA256: d87e32bed710a9432215006c4e9304176fc9899b244e3611ed9b347b9924f966
+VERIFIER_SHA256: 2e2286dad8fb1932bbb989438bd5f6479daae05cd9cb89555ebc176db7eb7508
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: 1166d4f926d7bfffd381f7cf918ce9144d2c0d97ba081cbe9a4152ab7a4dc19b
+VERIFIER_SHA256: 2e2286dad8fb1932bbb989438bd5f6479daae05cd9cb89555ebc176db7eb7508
+H1 PASS — bytes=28072, htmlClose=yes, externalRefs=0, pageErrors=0, fileUrl=file:///ws/cal_phone-worktrees/keypad/index.html
+H2 PASS — 320x568 select: keypadBottom=513.98, minControl=60.75x44.00, medianDigitArea=2952, enterRatio=2.125, equalsRatio=2.098, docScroll=320/320, bodyScroll=320/320 | 320x568 result: keypadBottom=514.23, minControl=60.75x44.00, medianDigitArea=2952, enterRatio=2.125, equalsRatio=2.098, docScroll=320/320, bodyScroll=320/320 | 390x844 select: keypadBottom=515.8, minControl=80.00x44.00, medianDigitArea=3840, enterRatio=2.125, equalsRatio=2.075, docScroll=390/390, bodyScroll=390/390 | 390x844 result: keypadBottom=516.05, minControl=80.00x44.00, medianDigitArea=3840, enterRatio=2.125, equalsRatio=2.075, docScroll=390/390, bodyScroll=390/390
+H3 PASS — keypadVisible=yes, opCount=4, keys=14, equalsKeyEquals=yes, readOnly=true, inputMode=none, typedValue="", selectKeysDisabled=14/14, inputKeysEnabled=14/14, noPageErrors
+H4 FAIL — Error: expression reflects committed 30 with +; expression="30"; measured=value=12.5, duplicateDot=no-change, backspaces=["12.","12","1",""], emptyBackspaceNoop=yes, expressionAfterEnter="30", firstResult="34"/history1, firstOperands=["30","4"], stickyPlusResult="3.75"/history2, stickyPlusOperands=["1.5","2.25"] at file:///ws/cal_phone-worktrees/keypad/Telos/phone-calculator-keypad-111513/evidence/verify.mjs:592:13 at async withFreshPage (file:///ws/cal_phone-worktrees/keypad/Telos/phone-calculator-keypad-111513/evidence/verify.mjs:184:12) at async file:///ws/cal_phone-worktrees/keypad/Telos/phone-calculator-keypad-111513/evidence/verify.mjs:953:24
+H5 PASS — first=42/1, stickyPlus=11/2, stickyStar=30/3, top=[["*",["5","6"],"30"],["+",["5","6"],"11"],["+",["12","30"],"42"]]
+H6 PASS — initialDisabled=14/14, opsAvailable=4/4, switches=+->*->+, switchedExpression="5 * 6", entry=*:["5","6"]=30, keyOpState=select, historyPreserved=yes
+H7 PASS — counts=[1,2,3,4], top4=[["+",["1.5","2.25"],"3.75"],["*",["2","3","4"],"24"],["-",["10","4","3"],"3"],["+",["12","30","8"],"50"]], emptyEnterNoop=yes, divZeroHistoryNoop=yes, reloadHistory=0, newContextHistory=0
+H8 PASS — editInputs=["12","30","8"], expression="12 + 5 + 8", new="+":["12","5","8"]=25, history=3, originalsShiftedUnchanged=yes
+H9 PASS — operatorSwitchInputs=["2","3","4"], editedExpression="10 + 3 + 5", afterRemove=["10","5"], afterEnter=["10","5","2"], new=+["10","5","2"]=17, history=3, originalsUnchanged=yes
+H10 PASS — emptyNoop=yes, abcNoop=yes, final=25/2 operands=["12","5","8"], pageErrors=0
+H11 PASS — errorState=yes, dataError=true, history=1, sourceUnchanged=yes, keypadVisible=yes, digitsEnabled=10/10, readOnly=true, recovery=+["1","2"]=3 history=2
+H12 PASS — H3-H11 pageErrors=0, consoleErrors=0, runPageErrors=[0,0], runConsoleErrors=[0,0], historiesDeepEqual=yes, entries=3
+HARD: FAIL (H4)

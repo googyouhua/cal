@@ -1,0 +1,22 @@
+ROUND: 1
+ARTIFACT_SHA256: 7decfae74dc48b98f25e643828185e71973792ad0d99a81fbab8aef95a108f28
+TREE_SHA256: db9d3c7cbe26a5d8adddbd7e09ec5bc971ab10860c7241af3ae870cc513b330d
+VERIFIER_SHA256: bbab4674d89ce6d7cfc9f53d50d9244b87188409aa3ff32ad3544c0b59bb763f
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: 7decfae74dc48b98f25e643828185e71973792ad0d99a81fbab8aef95a108f28
+VERIFIER_SHA256: bbab4674d89ce6d7cfc9f53d50d9244b87188409aa3ff32ad3544c0b59bb763f
+H1 PASS — bytes=22182, closing-html=present, external-refs={"script[src]":0,"link[href]":0,"img[src]":0,"@import":0,"url(...)":0}, file-load-pageerrors=0
+H2 PASS — 320x568/result: scroll/client doc=320/320 body=320/320, min=102.00x44.00, controls=5, font=18; 320x568/edit: scroll/client doc=320/320 body=320/320, min=44.00x44.00, controls=12, font=18; 390x844/result: scroll/client doc=390/390 body=390/390, min=102.00x44.00, controls=5, font=18; 390x844/edit: scroll/client doc=390/390 body=390/390, min=44.00x44.00, controls=12, font=18
+H3 PASS — ops=["+","-","*","/"], initial disabled=true, blank expression/result, history-visible=true/count=0, disabled typing ignored, + enables+focuses input, history=0
+H4 PASS — keyboard: expression-before="12 + 30", uncommitted-has-8=false, expression-after="12 + 30 + 8", result=50 (delta 0), history=1; click: */2/3/4 result=24 (delta 0), history=1
+H5 PASS — +["12","30","8"]=50 (delta 0); -["10","4","3"]=3 (delta 0); *["2","3","4"]=24 (delta 0); /["100","5","2"]=10 (delta 0); +["1.5","2.25"]=3.75 (delta 0)
+H6 PASS — first={"operator":"+","operands":["12","30","8"],"expressionText":"12 + 30 + 8","resultValue":"50","resultText":"50"}; key-op preserved history and cleared result/value/error; newest=*["2","3","4"]=24, history=2
+H7 PASS — empty-Enter left blank/no-error/history=0; /5/0 data-error=true text="不能除以零", history=0/pageerrors=0; post-error +1/2=3 (delta 0), history=1
+H8 PASS — #1:+["12","30","8"]=50; #2:-["10","4","3"]=3; #3:*["2","3","4"]=24; #4:+["1.5","2.25"]=3.75; final-order=+["1.5","2.25"]=3.75 | *["2","3","4"]=24 | -["10","4","3"]=3 | +["12","30","8"]=50
+H9 PASS — history-before=+["1.5","2.25"]=3.75 | *["2","3","4"]=24; edit draft *=chips[2,3,4], input enabled/focused, picker visible; changed to + with chips and history unchanged
+H10 PASS — removed-3=>[2,4], appended-10=>[2,4,10], =16 (delta 0), history=3, newest=+["2","4","10"]=16, edit ended, originals unchanged; delete-all + = kept history=3 and pageerrors=0
+H11 PASS — two calculations history=2; reload history=0, select state restored, pageerrors=0; new context history=0
+H12 PASS — H3-H11 tracked pages=14, pageerrors=0, console-errors=0; two fresh 4-calc histories deep-equal, entries=[{"operator":"+","operands":["1.5","2.25"],"resultValue":"3.75","expressionText":"1.5 + 2.25"},{"operator":"*","operands":["2","3","4"],"resultValue":"24","expressionText":"2 * 3 * 4"},{"operator":"-","operands":["10","4","3"],"resultValue":"3","expressionText":"10 - 4 - 3"},{"operator":"+","operands":["12","30","8"],"resultValue":"50","expressionText":"12 + 30 + 8"}]
+HARD: PASS

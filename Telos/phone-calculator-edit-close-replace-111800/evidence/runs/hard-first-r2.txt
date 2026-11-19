@@ -1,0 +1,23 @@
+ROUND: 2
+ARTIFACT_SHA256: 1a9f6d64f88747a9818b46f8943bc30cbf52d62e82e60559164291293d124f5b
+TREE_SHA256: d5d47e388b72d8c6fbafb037a99f9ebe3b634e7fedd7da81283698bbb1b5f0ce
+VERIFIER_SHA256: 0afbe639c4aef7106294e2ab91a72e1595faa0c60034cd22e42ec89e3f1166cf
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 2
+ARTIFACT_SHA256: 1a9f6d64f88747a9818b46f8943bc30cbf52d62e82e60559164291293d124f5b
+VERIFIER_SHA256: 0afbe639c4aef7106294e2ab91a72e1595faa0c60034cd22e42ec89e3f1166cf
+H1 PASS — checks=4/4; bytes=33732; externalRefs=[]; ms=168
+H2 PASS — checks=11/11; operators=["+","-","*","/"]; cancelName="关闭"; ms=536
+H3 PASS — checks=16/16; beforeState="result"; restoredHistory=2; ms=790
+H4 PASS — checks=16/16; historyAfter=2; ms=826
+H5 PASS — checks=19/19; historyAfter=1; ms=500
+H6 PASS — checks=7/7; initialValues=["12","30","8"]; ms=513
+H7 PASS — checks=9/9; expression="12 + 30 + 8"; ms=595
+H8 PASS — checks=12/12; finalExpression="9 + 7 + 8"; ms=650
+H9 PASS — checks=12/12; result="50"; history=2; sourceUnchanged=true; ms=532
+H10 PASS — checks=13/13; invalidNoopState="edit"; finalResult="27"; finalHistory=2; ms=632
+H11 PASS — checks=15/15; result="17"; history=3; reloadHistory=0; ms=1083
+H12 PASS — checks=18/18; 320x568Controls=29; 320x568MinSize="44.0"; 390x844Controls=29; 390x844MinSize="44.0"; ms=1601
+H13 PASS — checks=5/5; records=[3,3]; pages=15; ms=2016
+HARD: PASS

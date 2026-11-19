@@ -1,0 +1,5 @@
+{"era":1,"model_profile":"astra-flash-3.8-v1","sha256":"7d95d2671f68cfbadfd8fbcfb22f98bbf0c0f46cda392b4c8b16242d7c6565df","thread_id":"01a1e6d5-3ba2-7d83-8308-2be1445eb186","round":1,"reason":"first","ts":"2026-11-17T00:17:07.672Z"}
+{"era":1,"retired":"7d95d267","reason":"r2 instrument asserts H6 history=3 for a sequence that produces one prior plus one new record under H3/H7/H12, and lint flags its numeric-only H11 dispatch; recast for a fresh independent instrument","round":2,"ts":"2026-11-17T00:21:18.287Z"}
+{"era":2,"model_profile":"astra-flash-3.8-v1","sha256":"4c4ba6c2f7497a7c24e5c05a567fff7f530b7b32c1282eec510090a732831742","thread_id":"01a1e6e1-a781-73a0-bc74-09ae8516ac22","round":3,"reason":"recast","ts":"2026-11-17T00:31:25.342Z"}
+{"era":2,"retired":"4c4ba6c2","reason":"H6 契约自相矛盾已按人类决策修正：两次计算产生两条记录，history 期望由 3 改为 2，前两条改为前一条；旧量具硬编码 expectedHistory=3","round":3,"ts":"2026-11-17T12:42:57.708Z"}
+{"era":3,"model_profile":"astra-flash-3.8-v1","sha256":"08aab274e6d3d6d1368a605766493180e0bfcc0d9ddc96a67914ed8bb085a495","thread_id":"01a1e99a-c11b-7f93-8756-f15fe01a208c","round":4,"reason":"recast","ts":"2026-11-17T13:15:00.769Z"}

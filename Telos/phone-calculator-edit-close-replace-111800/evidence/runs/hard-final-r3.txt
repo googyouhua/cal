@@ -1,0 +1,26 @@
+ROUND: 3
+ARTIFACT_SHA256: 1a9f6d64f88747a9818b46f8943bc30cbf52d62e82e60559164291293d124f5b
+TREE_SHA256: d5d47e388b72d8c6fbafb037a99f9ebe3b634e7fedd7da81283698bbb1b5f0ce
+VERIFIER_SHA256: 132ba362301633df7f0e4b814dba87b77e517107c731e81077e1b02d0ec9096d
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 3
+ARTIFACT_SHA256: 1a9f6d64f88747a9818b46f8943bc30cbf52d62e82e60559164291293d124f5b
+VERIFIER_SHA256: e2abcbc758f0a1ca22868772080763399cb2e02707b17a0e10efd1b8b2f3aae1
+METHOD: Real Chromium/Playwright loaded `file:///ws/cal_phone/index.html`; host seccomp blocked trusted input injection, so DOM focus/click and InputEvent drove the same mounted handlers. Layout and errors were measured in Chromium. Two final runs produced byte-identical verdicts.
+
+H1 PASS — bytes=33732, `</html>` present, external refs=0, storage refs=0; exact picker `[+,-,*,/]` and all required hooks/keypad keys present; initial `state=select`; Playwright pageerror=0.
+H2 PASS — `edit-cancel` initially invisible; after `history-edit`: `state=edit`, draft visible, 3 operand inputs, cancel visible/enabled with text `关闭` and aria-label `关闭编辑`; pageerror=0.
+H3 PASS — prepared `+12/30/8=50` and `*2/3/4=24`; editing older `+` cleared result `data-value`; cancel restored `state=result`, operator `*`, expression `2 * 3 * 4`, result `24`, identical 2-record history, 0 inputs/pending, draft hidden, calc input empty and focused.
+H4 PASS — after filling middle `5` and pending last operand, cancel restored the complete H3-equivalent snapshot; history remained 2 records byte-for-byte, with 0 inputs/pending; cumulative pageerror=0.
+H5 PASS — `key-op` returned `state=select`, empty expression/result, no operator, history=1; cancel restored that exact select snapshot and hid `edit-cancel`.
+H6 PASS — 3 initial values `["12","30","8"]`; clicking middle gave `["12","","8"]`, one pending chip, unchanged expression `12 + 30 + 8`, draft operator `+`, history=1, focus index=1.
+H7 PASS — index0 pending yielded `["","30","8"]`; index2 pending yielded `["12","30",""]`, each with exactly one pending chip; choosing `*` restored `["12","30","8"]`, pending=0, draft operator `*`, history=1.
+H8 PASS — typed middle `7`, expression `12 + 7 + 8` without old `30`; transition to last gave `["12","7",""]`; returning restored last to `8`; final pending last had blank input while its chip/data value remained `8`; filling first `9` gave `9 + 7 + 8`, history=1 throughout.
+H9 PASS — settling untouched middle and pressing `=` produced result=50, history=2, newest `+["12","30","8"]=50`; source record unchanged, 0 inputs/pending, pageerror=0.
+H10 PASS — empty and `abc` values produced no-op with `state=edit`, result data-value null and history=1; `7` produced 27, history=2, newest `+["12","7","8"]=27`, source unchanged, pageerror=0.
+H11 PASS — values progressed `["10","3","4"]` → `["10","5"]` → `["10","5","2"]`; result=17, history=3, unchanged prior records; reload gave history=0, `state=select`, local/session storage lengths 0.
+H12 PASS — at 320×568 and 390×844: document/body overflow=0, 29 visible controls, minimum width=height=44px, minimum font-size=16px; `edit-cancel`, keypad and all digit keys visible.
+H13 PASS — two fresh isolated contexts both produced 3 deep-equal records: `+["12","5","8"]=25`, `*["2","3","4"]=24`, `+["12","30","8"]=50`; pageerror=0, console errors=0. Supplemental regressions also passed: edited subtraction is left-to-right (`12-30-8=-26`) and division by zero sets `data-error="true"` without adding history.
+
+HARD: PASS

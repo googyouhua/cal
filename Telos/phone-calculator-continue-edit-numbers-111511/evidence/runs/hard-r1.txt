@@ -1,0 +1,22 @@
+ROUND: 1
+ARTIFACT_SHA256: fb2cbdd845306853995b0375467280faa1b23ec7462dfa2958da862ff534f3bd
+TREE_SHA256: 72f1d0ac11003816be11d499514f6a68931ca9e763e9b09b608b3b2e19277bb5
+VERIFIER_SHA256: 85a8db90e11517cc5a406e3f5ce4ce629b0ca8229abec8982070c3ada041fece
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: fb2cbdd845306853995b0375467280faa1b23ec7462dfa2958da862ff534f3bd
+VERIFIER_SHA256: 85a8db90e11517cc5a406e3f5ce4ce629b0ca8229abec8982070c3ada041fece
+H1 PASS — htmlClose=true,bytes=24075,externalRefs=0 (script=0,link=0,img=0,import=0,url=0),pageerrors=0
+H2 PASS — 320x568/result:docOverflow=0,bodyOverflow=0,controls=9,minW=64.25,minH=44.00,calcFont=18,operandFonts=none | 320x568/edit:docOverflow=0,bodyOverflow=0,controls=15,minW=44.00,minH=44.00,calcFont=18,operandFonts=16/16/16 | 390x844/result:docOverflow=0,bodyOverflow=0,controls=9,minW=79.00,minH=44.00,calcFont=18,operandFonts=none | 390x844/edit:docOverflow=0,bodyOverflow=0,controls=15,minW=44.00,minH=44.00,calcFont=18,operandFonts=16/16/16
+H3 PASS — firstResult=50,switchState=input,focused=true,historyAfterSwitch=1,secondResult=24,history=2,item0=*
+H4 PASS — errorState=true,dataError=true,historyAtError=0,pickerAtError=true,recoveredState=input,focused=true,result=3,history=1,pageerrors=0
+H5 PASS — initialOps=4,disabled=true,focus=true,keyboardResult=50 | +12/30/8=50 | -10/4/3=3 | *2/3/4=24 | /100/5/2=10 | +1.5/2.25=3.75
+H6 PASS — records=4,increments=1,top=+["1.5","2.25"] > *["2","3","4"] > -["10","4","3"] > +["12","30","8"],emptyEnterHistory=4,divisionHistory=4
+H7 PASS — resetState=select,disabled=true,historyAfterReset=2,historyAfterReload=0,freshContextHistory=0,pageerrors=0
+H8 PASS — editState=true,draftOperator=+,operands=12/30/8,editedResult=25,history=3,oldRecordsUnchanged=true
+H9 PASS — operatorChanged=+,valuesAfterChange=2/3/4,valuesAfterRemove=10/5,valuesAfterAppend=10/5/2,result=17,history=3,oldRecordsUnchanged=true
+H10 PASS — emptyNoOp=true,nonFiniteNoOp=true,result=25,history=2,operands=12/5/8,pageerrors=0
+H11 PASS — editDivZeroError=true,historyAtError=1,sourceUnchanged=true,pickerAtError=true,recoveryResult=3,history=2,pageerrors=0
+H12 PASS — H3-H11pages=15,pageerrors=0,consoleErrors=0,runs=2,records=3,historyEqual=true,runPageerrors=0,runConsoleErrors=0
+HARD: PASS

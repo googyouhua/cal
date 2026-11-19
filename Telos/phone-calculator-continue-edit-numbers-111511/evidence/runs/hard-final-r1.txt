@@ -1,0 +1,21 @@
+ROUND: 1
+ARTIFACT_SHA256: fb2cbdd845306853995b0375467280faa1b23ec7462dfa2958da862ff534f3bd
+TREE_SHA256: 72f1d0ac11003816be11d499514f6a68931ca9e763e9b09b608b3b2e19277bb5
+VERIFIER_SHA256: 85a8db90e11517cc5a406e3f5ce4ce629b0ca8229abec8982070c3ada041fece
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: fb2cbdd845306853995b0375467280faa1b23ec7462dfa2958da862ff534f3bd
+H1 PASS — 24075 bytes；`</html>` 存在；script/link/img/@import/url 外部引用计数均为 0；Playwright file URL 加载 pageerror=0。
+H2 PASS — 320×568 与 390×844 的 result/edit 共 4 组；html/body 均无横向溢出；可见控件最小尺寸 44×44px；calc-input 18px，operand-input 均为 16px。
+H3 PASS — result 态 picker 可见且 4 个运算符均可点击；改选 `*` 后为 input、聚焦、expression/result 空、history=1 不变；2/3/4 计算结果 24，history=2 且顶部为 `*`。
+H4 PASS — `/` 5/0 进入 error、`data-error=true`、history=0、picker 可见；点 `+` 恢复 input 并聚焦；1/2 计算得 3，history=1，pageerror=0。
+H5 PASS — 初始值与禁用/空态正确；未提交的 8 不进入 expression，键盘 `=` 提交后得 50；五案例结果 50、3、24、10、3.75 全部在 1e-9 内。
+H6 PASS — 历史逐次 1→2→3→4，顶部记录顺序正确；operands JSON 精确匹配；空回车及除零均未增加 history。
+H7 PASS — key-op 后 select、input 禁用、expression/result 空且 history 快照不变；刷新及全新浏览器上下文 history 均为 0，pageerror=0。
+H8 PASS — 编辑旧 `+` 记录，输入 12/30/8 改为 12/5/8，expression 含 5 不含 30；结果 25，history=3，旧两条快照内容及顺序不变。
+H9 PASS — 编辑中切换为 `+` 后三个值保持 2/3/4；改为 10/3/5，删除中间项得 10/5，追加 2 得 10/5/2；结果 17，history=3，旧记录不变。
+H10 PASS — 空值和 `abc` 均 no-op：history=1、result 无 data-value、pageerror=0；改为 5 后结果 25、history=2、新 operands 为 `["12","5","8"]`。
+H11 PASS — 编辑除零进入 error、`data-error=true`、history=1、源记录快照不变、picker 可见、pageerror=0；恢复后 1/2 得 3，history=2。
+H12 PASS — H3–H11 pageerror=0、console error=0；两次全新加载的序列化历史深度相等，均为 edited `+` 25、`*` 24、原 `+` 50。
+HARD: PASS

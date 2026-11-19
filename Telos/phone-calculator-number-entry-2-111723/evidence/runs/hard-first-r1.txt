@@ -1,0 +1,22 @@
+ROUND: 1
+ARTIFACT_SHA256: d97565f096ed1c336eae9eac9ec75b1cc980bef6c0318027018a3f2291a8486a
+TREE_SHA256: 6185a012a3530c77ceda6f97701470d3ba31cd2766b07292e8fbf020e6fd2126
+VERIFIER_SHA256: 740e268e5db85b6dbb1881d4f30228ed3ed5b9f5a2f48e44eae9fbb3d126b33b
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: d97565f096ed1c336eae9eac9ec75b1cc980bef6c0318027018a3f2291a8486a
+VERIFIER_SHA256: 740e268e5db85b6dbb1881d4f30228ed3ed5b9f5a2f48e44eae9fbb3d126b33b
+H1 PASS — bytes=29600, `</html>` 存在，外部引用=0，file:// 加载 pageerror=0
+H2 PASS — 数字键 0–9 全部 enabled，输入值=12，expression 包含 12，pageerror=0
+H3 PASS — result=42，顶条 `+` operands=`["12","30"]`，history-result=42
+H4 PASS — 保留草稿 12，提交后 result=42，顶条 operands=`["12","30"]`
+H5 PASS — 键盘输入 12，提交后 result=42，顶条 `+["12","30"]`
+H6 PASS — 首个结果 50，续算结果 11，app operator=`+`，history=2，旧记录逐字段不变
+H7 PASS — 编辑后顶条 `+["12","5","8"]`=25，原两条快照不变，reload 后 history=0
+H8 PASS — 除零 error=true、history 不变、数字键 enabled；恢复后 result=3、error=null、history+1
+H9 PASS — 两种未完成输入均为 history=0、result data-value=null、pageerror=0
+H10 PASS — 320×568/390×844 四状态 overflow=0/0，最小控件≥44×44，最小字号=16，数字键均可见
+H11 PASS — 14 个页面累计 pageerror=0、console error=0
+H12 PASS — 两 context 均得到 50/11/30，records=3 且 JSON 序列化深度一致
+HARD: PASS

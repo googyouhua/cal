@@ -1,0 +1,22 @@
+ROUND: 3
+ARTIFACT_SHA256: d97565f096ed1c336eae9eac9ec75b1cc980bef6c0318027018a3f2291a8486a
+TREE_SHA256: 6185a012a3530c77ceda6f97701470d3ba31cd2766b07292e8fbf020e6fd2126
+VERIFIER_SHA256: 4c4ba6c2f7497a7c24e5c05a567fff7f530b7b32c1282eec510090a732831742
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 3
+ARTIFACT_SHA256: d97565f096ed1c336eae9eac9ec75b1cc980bef6c0318027018a3f2291a8486a
+VERIFIER_SHA256: 4c4ba6c2f7497a7c24e5c05a567fff7f530b7b32c1282eec510090a732831742
+H1 PASS — htmlClose=true bytes=29600 textLength=28893 externalRefs=0 fileLoad=ok pageErrors=0
+H2 PASS — viewport=390x844 mobile=true touch=true digitKeys=10/10 input="12" expression="12" pageErrors=0
+H3 PASS — result="42" operator="+" operands=["12","30"] historyResult="42"
+H4 PASS — afterPlusInput="12" result="42" operands=["12","30"]
+H5 PASS — typedInput="12" result="42" operator="+" operands=["12","30"]
+H6 FAIL — H6 measured firstResult="50",result="11",operator="+",history=2,expectedHistory=3,priorRecords=1,priorUnchanged=true
+H7 PASS — editedOperator="+" editedOperands=["12","5","8"] editedResult="25" originalsUnchanged=true reloadHistory=0
+H8 PASS — divisionByZeroError=true historyUnchanged=0 digitsEnabled=10/10 recoveryResult="3" recoveryDataError=null history+1=1
+H9 PASS — direct:history=0,result=null,pageErrors=0;after12:history=0,result=null,pageErrors=0
+H10 PASS — 320x568/390x844 cold,input,result,edit:docOverflow=0,bodyOverflow=0,controls=20/22/28,minW=60.8/80.0/44.0,minH=44.0,minFont=16.0,keypad=true,digits=10/10,input="12",history=2,operands=3
+H11 PASS — pages=14 pageErrors=0 consoleErrors=0
+H12 PASS — contexts=2 records=3/3 serializedEqual=true history=[{"operator":"*","operands":["5","6"],"result":30},{"operator":"+","operands":["5","6"],"result":11},{"operator":"+","operands":["12","30","8"],"result":50}]
+HARD: FAIL (H6)

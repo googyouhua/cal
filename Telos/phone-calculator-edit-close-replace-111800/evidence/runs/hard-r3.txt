@@ -1,0 +1,24 @@
+ROUND: 3
+ARTIFACT_SHA256: 1a9f6d64f88747a9818b46f8943bc30cbf52d62e82e60559164291293d124f5b
+TREE_SHA256: d5d47e388b72d8c6fbafb037a99f9ebe3b634e7fedd7da81283698bbb1b5f0ce
+VERIFIER_SHA256: 132ba362301633df7f0e4b814dba87b77e517107c731e81077e1b02d0ec9096d
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 3
+ARTIFACT_SHA256: 1a9f6d64f88747a9818b46f8943bc30cbf52d62e82e60559164291293d124f5b
+VERIFIER_SHA256: 132ba362301633df7f0e4b814dba87b77e517107c731e81077e1b02d0ec9096d
+
+H1 PASS — htmlClose=true; bytes=33732; externalRefs=0; pageerrors=0
+H2 PASS — result="50"; cancelVisibleBefore=false; state="edit"; inputs=3; cancelVisibleEnabled=true
+H3 PASS — state="result"; operator="*"; expression="2 * 3 * 4"; result="24"; history=2; focus="calc-input"
+H4 PASS — editedThenPendingDiscarded=true; state="result"; history=2; operandInputs=0; pending=0; pageerrors=0
+H5 PASS — state="select"; expression=""; result=null; operator=null; history=1; cancelVisible=false
+H6 PASS — values=["12","30","8"]; clickedValue=""; pendingChip=1; expression="12 + 30 + 8"; focusedInput=1
+H7 PASS — restoredMiddle=30; restoredValues=["12","30","8"]; pending=0; operator="*"; history=1
+H8 PASS — immediateAfterLastClick=["12","7",""]; pendingAfterLastClick=[null,null,"true"]; settledLastValue="8"; expressionAfterEdit="9 + 7 + 8"; history=1
+H9 PASS — state="result"; result="50"; history=2; newRecord={"operator":"+","operands":["12","30","8"],"result":"50","resultText":"50","expression":"12 + 30 + 8"}; sourceUnchanged=true; pageerrors=0
+H10 PASS — emptyNoOp=true; nonfiniteNoOp=true; fixedResult="27"; fixedHistory=2; divisionByZero="error-no-history"; pageerrors=0
+H11 PASS — editedResult="17"; history=3; newRecord={"operator":"+","operands":["10","5","2"],"result":"17","resultText":"17","expression":"10 + 5 + 2"}; oldRecordsUnchanged=true; reload={"history":0,"state":"select"}
+H12 PASS — 320x568.overflows=[0,0]; 320x568.controls=29; 320x568.minSize=[44,44]; 320x568.fonts=[16,16,16,16]; 320x568.cancelKeypadVisible=[true,true]; 390x844.overflows=[0,0]; 390x844.controls=29; 390x844.minSize=[44,44]; 390x844.fonts=[16,16,16,16]; 390x844.cancelKeypadVisible=[true,true]
+H13 PASS — records=[3,3]; historyEqual=true; pageerrors=0; consoleErrors=0
+HARD: PASS

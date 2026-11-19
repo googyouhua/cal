@@ -1,0 +1,24 @@
+ROUND: 2
+ARTIFACT_SHA256: 630392827703060cfbccdefc549b71db6ec2656fb7870a20901aa7b6352d02a1
+TREE_SHA256: d29a0399df774e000b916fc51afe6dc31e1ddd1d9e459c54a6b774753f4d9d15
+VERIFIER_SHA256: 2e2286dad8fb1932bbb989438bd5f6479daae05cd9cb89555ebc176db7eb7508
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 2
+ARTIFACT_SHA256: 630392827703060cfbccdefc549b71db6ec2656fb7870a20901aa7b6352d02a1
+VERIFIER_SHA256: 6fdd4a8225eaca825e0e0f8790304e6341120221e34ce998dddaab21b3810800
+
+H1 PASS — `</html>` 存在；28358 bytes；声明的五类资源扫描面网络目标均为 0；Playwright `file://` 加载 pageerror=0。
+H2 PASS — 320×568 与 390×844 的 select/result 均实测；无横向溢出；keypad 底部分别为 514.234/516.047，均小于视口高；控件最小尺寸 60.75×44/80×44；回车/等号面积比分别为 2.125/2.098 与 2.125/2.075。
+H3 PASS — keypad 可见，op-picker 在 keypad 内且有 4 个运算符；必需按键齐全且 equals 同时具有两个 hook；readOnly=true、inputMode=none；聚焦后 `page.keyboard.type("123")` 后 value 仍为 `""`；select 键盘控件全禁用，选 `+` 后全启用且输入仍只读。
+H4 PASS — `12.5`、重复小数点忽略、退格序列 `12. → 12 → 1 → ""`、空退格 no-op；30 回车后 expression=`30 +`、history=0；再输入 4 得 34，history=1，记录 `+["30","4"]`；继续粘性 `+` 的 1.5/2.25 得 3.75，history=2。
+H5 PASS — `12+30=42`；粘性 `+` 下 `5+6=11`，新记录 `+["5","6"]`，旧记录快照不变；切 `*` 后 `5*6=30`，history=3，前两条逐字段不变。
+H6 PASS — 初始 select/禁用/空 operator 均正确；`+→*→+` 状态正确；input 态切 `*` 保留 5、6，expression 含 `*` 不含 `+`，结果 30；key-op 回 select、operator 清除、history 快照不变。
+H7 PASS — 四条记录实际得到 `+["1.5","2.25"]=3.75`、`*["2","3","4"]=24`、`-["10","4","3"]=3`、`+["12","30","8"]=50`；空回车及 `/` 5/0 均不增历史；reload 后 history=0/select；新上下文 history=0。
+H8 PASS — 编辑旧 `+["12","30","8"]`；3 个输入初值正确；中间改为 5 后 expression 反映 5 且无 30；结果 25，history=3，新顶部 `+["12","5","8"]`，两条旧记录完整快照不变。
+H9 PASS — 编辑旧 `*` 记录后切 `+`，三输入保持 `["2","3","4"]`；改值并删除中间 chip 得 `["10","5"]`，编辑态追加后为 `["10","5","2"]`；结果 17，history=3，旧记录顺序及快照不变。
+H10 PASS — 空值与 `abc` 点击等号均 no-op：history=1、无 result `data-value`、仍在 edit、pageerror=0；修复为 5 后结果 25，history=2，操作数 `["12","5","8"]`。
+H11 PASS — `100/5/2=10`；编辑除数为 0 后进入 error、`data-error="true"`、history=1、源记录不变；keypad 可见、数字键可用、输入只读；切 `+` 后 `1+2=3`，history=2。
+H12 PASS — H3–H11 pageerror=0、console error=0；两次全新加载的三条序列均为 `*["5","6"]=30`、`+["5","6"]=11`、`+["12","30","8"]=50`，JSON 序列化深度相等。
+
+HARD: PASS

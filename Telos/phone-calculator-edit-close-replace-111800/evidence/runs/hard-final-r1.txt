@@ -1,0 +1,22 @@
+ROUND: 1
+ARTIFACT_SHA256: 1a9f6d64f88747a9818b46f8943bc30cbf52d62e82e60559164291293d124f5b
+TREE_SHA256: 03b9aae2a387fcaddb115048c8324e8a8424bfdf3254cd6bd32f570171aecdb2
+VERIFIER_SHA256: f9a66f1c04ee1a5316c45e3978a8c5a72f247cb8242a91982c25608b6abff110
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: 1a9f6d64f88747a9818b46f8943bc30cbf52d62e82e60559164291293d124f5b
+H1 PASS — 文件存在 `</html>`，字节数 33732，外部 http(s)/协议相对引用 0，初始 pageerror 0。
+H2 PASS — 进入编辑后 `state=edit`、`edit-draft` 可见、`operand-input=3`、`edit-cancel` 可见且 enabled，文本“关闭”/aria-label“关闭编辑”。
+H3 PASS — 编辑前 `state=result`、operator=`*`、expression=`2 * 3 * 4`、result=`24`、history=2；取消后这些字段与 history 深度均精确恢复，operand-input=0、calc-input 为空且聚焦。
+H4 PASS — 改中间值并产生 pending 后取消，完整恢复编辑前快照；history 仍 2 条且逐字段一致，无 operand-input、无 pending。
+H5 PASS — `key-op` 后 state=select、expression/result 为空、无 operator、history=1；编辑取消后精确恢复 select 与 history，`edit-cancel` 不可见。
+H6 PASS — 点索引 1 后 values=`["12","","8"]`，仅索引 1 chip 为 `data-pending="true"`，expression 仍为 `12 + 30 + 8`，焦点在该 input，history=1。
+H7 PASS — 切到索引 0 后 values=`["","30","8"]`；切到索引 2 后 values=`["12","30",""]`；点 `*` 后结算为 `["12","30","8"]`、pending=0、draft-operator=`*`、history=1。
+H8 FAIL — 索引 1 输入 `7` 后点击索引 2，values=`["12","7",""]`；再点索引 1，values=`["12","","8"]`；再点索引 2，values=`["12","7",""]`，索引 2 input value 实测为空串而断言要求 `"8"`（chip data-value 仍为 `"8"`）；expression=`12 + 7 + 8`，history=1，pageerror=0。
+H9 PASS — 中间 pending 未输入直接 `=` 后 result=`50`、history=2，新记录 `+["12","30","8"]=50`，源记录逐字段不变，无 operand-input/pending，pageerror=0。
+H10 PASS — 输入后删空及 `abc` 均保持 state=edit、history=1、result[data-value] 为空；再输入 `7` 后 result=`27`、history=2，新记录 `+["12","7","8"]=27`，源记录不变。
+H11 PASS — 换符后三值为 `["10","3","4"]`；删除后为 `["10","5"]`；追加 `2` 后为 `["10","5","2"]`，计算结果 17、history=3，旧记录不变；reload 后 state=select、history=0。
+H12 PASS — 320×568：innerWidth=320、doc/body overflow=0、控件最小宽高 44/44、calc/operand font-size=16/16/16/16；390×844 同样 overflow=0、最小 44/44、字号 16；两态 `edit-cancel` 与数字键盘均可见。
+H13 PASS — 两个独立 context 各 3 条记录，序列化 history 完全一致；全局 pageerror=0、console.error=0。
+HARD: FAIL (H8)
