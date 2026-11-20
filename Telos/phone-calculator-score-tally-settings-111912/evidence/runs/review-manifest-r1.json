@@ -1,0 +1,48 @@
+{
+  "round": 1,
+  "artifact_sha256": "02618f655c782932d6e921a394ca458313c84408f3e4f87e3a1af33c85f308e3",
+  "verifier_sha256": "363a68b30bae6f775c218fd32af36d843b3fac1118e041ac57bc8dd5811e9e2b",
+  "metrics_sha256": "47d3f147edb38637276f6d1cc8403edfcb4e7e574bcc1ed558dbaf70ae244ed5",
+  "shots": [
+    {
+      "file": "S1.png",
+      "sha256": "9d25ae9e7c5960dd73069f463c7d966a550cdcf42066960e8944e6bbf7337969",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "S2.png",
+      "sha256": "adadb7891ad36e5e1b7a9365f2e9f41e67d05e46d21497a2aa423ff3b5c3ad1a",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "S3.png",
+      "sha256": "19f2645b58df5f227bef1d7e2e6c72ac5ec7c9a994412d3e5449403857c445d5",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "S4.png",
+      "sha256": "176bb1787e52486156076b79b607f4c1a6f9b4474547a537f8f5e3fc38c71920",
+      "width": 320,
+      "height": 568
+    }
+  ],
+  "adhoc": [
+    {
+      "file": "adhoc-r1-1.txt",
+      "sha256": "fe6023876e8a9b6d50f7e5e1efac8463980a262f876ac1cc1100a6617c79238c",
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import { launchBrowser, openApp } from \"file:///ws/cal_phone/tests/lib/browser.mjs\"; const b = await launchBrowser(); const a = await openApp(b, \"/ws/cal_phone/index.html\"); console.log(\"PROBE_OK\", await a.page.title(), await a.page.locator(\"main.app\").getAttribute(\"data-state\"), a.pageErrors.length, a.consoleErrors.length); await a.close(); await b.close();"
+      ],
+      "exit": 0,
+      "ts": "2026-11-20T01:33:43.579Z"
+    }
+  ],
+  "tree_sha256": "9c07e45c094df393a0a7277a2e693b7d09f6b2bcf19c50da6f5a4067714f98e5",
+  "runner_sha256": "6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8"
+}

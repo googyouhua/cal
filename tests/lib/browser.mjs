@@ -25,6 +25,9 @@ export function loadPlaywright() {
 
 export async function launchBrowser() {
   const { chromium } = loadPlaywright();
+  if (process.env.PLAYWRIGHT_WS_ENDPOINT) {
+    return chromium.connect(process.env.PLAYWRIGHT_WS_ENDPOINT);
+  }
   return chromium.launch({ headless: true });
 }
 

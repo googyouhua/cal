@@ -1,0 +1,19 @@
+ROUND: 2
+ARTIFACT_SHA256: 19be2cc23b0e7319a25c015b24fbea71ae19f3706c257cd1219f3c34e25203e6
+TREE_SHA256: c19c290bab6887e30c5a310a8e7a30d3af5c750d64148068ea365ffbfbf440f0
+VERIFIER_SHA256: b2032df9da58018c44a12d14ec0acc8b7253808b49e0dd0ad0efdace24a62a25
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 2
+ARTIFACT_SHA256: 19be2cc23b0e7319a25c015b24fbea71ae19f3706c257cd1219f3c34e25203e6
+VERIFIER_SHA256: b2032df9da58018c44a12d14ec0acc8b7253808b49e0dd0ad0efdace24a62a25
+H1 PASS — 24 checks: gear visible at 44×44, right=380, top=8; dialog modal/open; focus entered panel; Escape, Done, and backdrop closes all returned focus to gear; indicator on/off correct.
+H2 PASS — 26 checks: 21 options `0…10`, defaults correct; t=1/base=10 persisted through reload; `+9.5` = 19.5; reset retained settings; reload cleared history; storage-throw context still auto-confirmed with 0 pageerrors.
+H3 PASS — 50 checks: t=0 stayed pending; t=0.5 confirmed; timer reset produced `95`; trailing dot held; panel pause/resume, manual Enter, equals=18.7, reset, operator change, 2px progress, and reduced-motion paths all passed.
+H4 PASS — 39 checks: results 27.7, 37.7, 25, 0, −1.5; invalid base restored to 10; divide-by-zero flagged; snapshot bases [20,10]; edited base remained 10 with `10 + 2 + 5` = 17; base markers correct.
+H5 PASS — 31 checks: operand withdrawal, non-empty input deletion, base preservation with continued result 12, result/error no-op, edit-chip 2→1, operand-input Backspace no-op, and cold empty state all passed.
+H6 PASS — 4 checks: shared suite returned 18 scenarios, all pass; `cold-start.keys-enabled` present and `cold-start.keys-disabled` absent.
+H7 PASS — 80 checks across 320×568 CDP and 390×844, six states each: overflow 0, minimum controls 44×44, minimum input/select font 16px, and all panel/gear geometry constraints passed.
+H8 PASS — 7 checks: `</html>` present, 52524 bytes, external references [], pageerrors 0, console errors 0, suite clean failures 0, four valid review captures.
+H9 PASS — 6 checks: both fresh-context histories deep-equal with one record: `{operator:"+", operands:["9.5","9.2","9.0"], data-base:"10", result:"37.7"}`.
+HARD: PASS

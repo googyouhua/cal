@@ -1,0 +1,37 @@
+ROUND: 8
+ARTIFACT_SHA256: 8ad74b699fff10e04095b9be125ccb0a99f292e361d52286ec036ea1410871c4
+TREE_SHA256: 440b38599a11de8bd3d478a64a839e27875c08d092b5ca166747dec2731a0b17
+VERIFIER_SHA256: b2032df9da58018c44a12d14ec0acc8b7253808b49e0dd0ad0efdace24a62a25
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+COMMAND: ["node","/tmp/measure-operator-r8.mjs"]
+CWD: /ws/cal_phone
+EXIT: 0
+
+[stdout]
+S1_plus_aria_pressed=null
+S1_plus_border_top_color=rgba(251, 191, 36, 0.25)
+S1_plus_color=rgb(253, 230, 138)
+S1_plus_background_image=linear-gradient(rgb(38, 52, 77), rgb(28, 41, 63))
+S1_plus_box_shadow=none
+S1_minus_aria_pressed=null
+S1_minus_border_top_color=rgba(251, 191, 36, 0.25)
+S1_minus_color=rgb(253, 230, 138)
+S1_all_aria_pressed=+:null,-:null,*:null,/:null
+S1_top_control_text=运算类型
+S1_state_label=请选择运算类型
+S3_plus_aria_pressed=true
+S3_plus_border_top_color=rgb(56, 189, 248)
+S3_plus_color=rgb(248, 250, 252)
+S3_plus_background_image=linear-gradient(rgb(35, 70, 106), rgb(23, 45, 71))
+S3_plus_box_shadow=rgba(56, 189, 248, 0.5) 0px 0px 0px 1px inset
+S3_minus_aria_pressed=false
+S3_minus_border_top_color=rgba(251, 191, 36, 0.25)
+S3_minus_color=rgb(253, 230, 138)
+S3_all_aria_pressed=+:true,-:false,*:false,/:false
+S3_top_control_text=运算：+
+S1_plus_equals_S3_plus_border=false
+S1_plus_equals_S3_plus_color=false
+S1_plus_equals_S3_plus_background=false
+
+[stderr]

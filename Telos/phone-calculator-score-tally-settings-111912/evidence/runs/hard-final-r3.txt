@@ -1,0 +1,18 @@
+ROUND: 3
+ARTIFACT_SHA256: d082cd6f1088dd99d76cc9ba3ec3a478ba95f7219c1cb9de7fa63c34d3901d05
+TREE_SHA256: 5228d68a0bba8a69a1df337c12d9b54ac5867abba63cb8a94f657eeebca50148
+VERIFIER_SHA256: b2032df9da58018c44a12d14ec0acc8b7253808b49e0dd0ad0efdace24a62a25
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 3
+ARTIFACT_SHA256: d082cd6f1088dd99d76cc9ba3ec3a478ba95f7219c1cb9de7fa63c34d3901d05
+H1 PASS — 390×844 齿轮可见，rect=44×44@(336,8)，aria-haspopup=dialog；打开后 DIALOG/open/modal=true，焦点在面板内；Esc、完成、遮罩三种关闭均回到齿轮焦点；t=1 指示点可见，t=0 且基数关后隐藏；page/console error=0。
+H2 PASS — 全新 context：21 档选项为 0,0.5,…,10，默认选中 0；基数 unchecked/disabled/value=0；存储键不存在。t=1、基数 10 持久化后 reload 恢复，+9.5=19.5；重置保留设置；reload 后历史=0；Storage 读写抛错时 t=1 自动确认仍生效且 pageerror=0。
+H3 PASS — t=0 等 1.2s 仍保留“9.5”且无操作数；t=0.5 等 0.95s 确认；t=1 输入“9”后 0.6s 再输“5”，最终确认“95”；“9.”不提前确认；面板期间暂停、关闭后完整计时；手动回车只确认一次；等号结果 18.7、历史=1；重置回 select；换运算符后确认 9；进度条可见、active=true、height=2，结束后 inactive；reduced-motion 正常确认；错误=0。
+H4 PASS — 基数关 27.7；基数 10 得 37.7、data-base=10、operands=[9.5,9.2,9.0]；100/4=25；0×5=0 且 data-base=0；-2.5+1=-1.5；未选运算符不含基数，选 + 后显示基数 10；实时改 20 生效；空基数回退 10 得 12；除零进入 error 且历史不变；旧/新快照 data-base 分别为 10/20、结果 15/25；编辑旧记录 marker=基数10，第二操作数改 5 后 [2,5] 按快照 10 重算为 17，未泄漏当前基数 20；base-marker 可见。
+H5 PASS — 两笔操作数逐次退格：表达式 9.5 + 9.2 → 9.5 + → 空，状态行分别播报撤回 9.2/9.5；输入“95”退格仅变为“9”；基数 10 在撤回后保留并继续算出 12；result 态仍为 3、error 态仍为 data-error=true；编辑草稿 chip 2→1，操作数输入框内 Backspace 后仍为 1、输入值为空；冷启动空退格无变化。
+H6 PASS — runSuite：results.length=18，206 checks，18/18 scenarios PASS，0 failed；cold-start 含 cold-start.keys-enabled，不含 cold-start.keys-disabled。
+H7 PASS — 320×568@2（CDP 预导航覆盖）与 390×844 各六态：doc/body 横向溢出均为 0；可见控件 21–27 个，最小 44×44，输入/select 最小字号 16。面板几何：320 态=304×383.6875@(6,58)、right=310 与齿轮 right=310；390 态=320×383.6875@(60,58)、right=380 与齿轮 right=380。S1–S4 PNG 均非空、互异且非纯色：390×844/95,223B/2933色、390×844/81,318B/2542色、390×844/100,302B/3374色、320×568/52,238B/2018色；S3 截图开始于输入后 73ms，active=true、height=2。
+H8 PASS — 产物以 </html> 闭合，字节数 54,281≥1,024；script src/link href/img src/@import/url(...) 外链计数=0；全部页面 pageerror=0、console error=0。
+H9 PASS — 两个全新 context 各自经 UI 设 t=0、基数 10，执行 +9.5/9.2/9.0；各 records=1，序列化结果深度一致：data-base=10、operands=[9.5,9.2,9.0]、result=37.7、expression=10 + 9.5 + 9.2 + 9.0；错误均为 0。
+HARD: PASS

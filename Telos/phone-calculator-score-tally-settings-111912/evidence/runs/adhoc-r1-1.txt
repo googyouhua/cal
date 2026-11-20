@@ -1,0 +1,14 @@
+ROUND: 1
+ARTIFACT_SHA256: 02618f655c782932d6e921a394ca458313c84408f3e4f87e3a1af33c85f308e3
+TREE_SHA256: 9c07e45c094df393a0a7277a2e693b7d09f6b2bcf19c50da6f5a4067714f98e5
+VERIFIER_SHA256: 363a68b30bae6f775c218fd32af36d843b3fac1118e041ac57bc8dd5811e9e2b
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+COMMAND: ["node","--input-type=module","-e","import { launchBrowser, openApp } from \"file:///ws/cal_phone/tests/lib/browser.mjs\"; const b = await launchBrowser(); const a = await openApp(b, \"/ws/cal_phone/index.html\"); console.log(\"PROBE_OK\", await a.page.title(), await a.page.locator(\"main.app\").getAttribute(\"data-state\"), a.pageErrors.length, a.consoleErrors.length); await a.close(); await b.close();"]
+CWD: /ws/cal_phone
+EXIT: 0
+
+[stdout]
+PROBE_OK 手机计算器 select 0 0
+
+[stderr]

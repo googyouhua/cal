@@ -1,0 +1,19 @@
+ROUND: 1
+ARTIFACT_SHA256: 8ad74b699fff10e04095b9be125ccb0a99f292e361d52286ec036ea1410871c4
+TREE_SHA256: 440b38599a11de8bd3d478a64a839e27875c08d092b5ca166747dec2731a0b17
+VERIFIER_SHA256: ac26b9f10dca3f5495c2501f58a8f6850012acf839a1799bf6149caba66168d0
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: 8ad74b699fff10e04095b9be125ccb0a99f292e361d52286ec036ea1410871c4
+REFUSED — 环境设备不可用，非产物代码 FAIL：Playwright `chromium.launch({headless:true})` 被宿主 seccomp 以 `sandbox_host_linux.cc:41 ... Operation not permitted` / SIGTRAP 终止；未进入任何页面断言。
+H1 FAIL — 拒测/ENV：无可用 Playwright 页面，无法读取齿轮、dialog 与焦点状态。
+H2 FAIL — 拒测/ENV：无可用页面，设置持久化及 Storage 异常分支未执行。
+H3 FAIL — 拒测/ENV：无可用页面，自动确认、进度条及 reduced-motion 未执行。
+H4 FAIL — 拒测/ENV：无可用页面，基数计算、快照与编辑重算未执行。
+H5 FAIL — 拒测/ENV：无可用页面，退格撤回与编辑态输入未执行。
+H6 FAIL — 拒测/ENV：`runSuite({artifact})` 在 `launchBrowser/chromium.launch` 阶段抛出 `browserType.launch: Target page, context or browser has been closed`；无法取得 18 场景结果。
+H7 FAIL — 拒测/ENV：无可用页面或 CDP 会话，布局、溢出、控件尺寸与字号未执行。
+H8 FAIL — 拒测/ENV：静态部分通过——55587 bytes、以 `</html>` 结束、外部引用 0；但必需的运行时 pageerror/console error 汇总无法执行。
+H9 FAIL — 拒测/ENV：无两个可运行的全新 context，设置序列与历史确定性未执行。
+HARD: FAIL (H1,H2,H3,H4,H5,H6,H7,H8,H9)

@@ -1,0 +1,18 @@
+ROUND: 4
+ARTIFACT_SHA256: 31d7e739ea60e699bc70c0b7a9efd8cc592e8b1a16bbd246825665cd3fe97410
+TREE_SHA256: 4cf69d5fce9590764474743fdb88c79988f42999b9199a2b328026aff66dd936
+VERIFIER_SHA256: 34d6ce4357e7e52f6c7d38021d2523b1623352449c8ee1b7998d711ef88d9c64
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 4
+ARTIFACT_SHA256: 31d7e739ea60e699bc70c0b7a9efd8cc592e8b1a16bbd246825665cd3fe97410
+H1 PASS — 21/21 检查；390×844 齿轮可见且 44×44、right=380、top=8、aria-haspopup=dialog；面板 tagName=dialog、open=true、:modal=true、焦点进入；Esc/完成/遮罩均关闭且焦点回齿轮，aria-expanded 状态正确；指示点 t=1 可见、复位后不可见；pageerror=0。
+H2 PASS — 24/24 检查；21 档 option 为 0,0.5,…,10，默认 0、基数关/disabled/值 0、存储为空；写入后持久化 JSON 非空，reload 保持 t=1、基数 10，+9.5=19.5，reset 不清设置，history reload=0；Storage 抛错时仍自动确认 9.5，pageerror/console error=0。
+H3 PASS — 69/69 检查；t=0 保留 9.5，t=0.5 自动确认，输入中断合并为 95，9. 不提前确认，面板暂停后恢复计时，手动回车仅一次，= 得 18.7、历史 1，重置回 select，换运算符后确认 9；进度条 active=true、高度 2px，确认后停止；reduced-motion 仍确认。
+H4 PASS — 64/64 检查；基数关/10/100/0/-2.5 结果分别为 27.7、37.7、25、0、-1.5，data-base 对应缺省、10、100、0、-2.5；未选运算符时不拼基数，10→20 实时重绘，空基数回退 10 且结果 19.5，除零 data-error=true；快照 20→25、10→15，旧记录 marker=基数 10，按自身基数重算实测 10+5+3=18（第二槽 2→5 独立实测为 10+2+5=17）。
+H5 PASS — 46/46 检查；9.5/9.2 逐次撤回为 9.5+ 再为空，状态行含被撤值、history=0、state=input；95 退格为 9 且算式不变；基数 10 保留并可继续算得 12；result 保持 3、error 保持 data-error=true；编辑草稿 chip 2→1，操作数框内 Backspace 仍为 1；冷启动退格无变化。
+H6 PASS — 18/18 scenarios、0 failed checks；包含 self-contained/layout/determinism；cold-start 含 cold-start.keys-enabled，且不含 cold-start.keys-disabled。
+H7 PASS — 94/94 检查；320×568（CDP）与 390×844 各六态横向溢出均 0px，可见控件最小 44×44，input/select 最小字号 16px；面板分别为 304px/320px、right 310/380、top 58、右缘与齿轮差值 0px。
+H8 PASS — 55617 bytes、</html> 闭合、外部引用 0；汇总 H1–H7 的 43 个页面，pageerror=0、console error=0。
+H9 PASS — 两个全新 context 的 records 均为 1；历史逐字段一致：operator=+、operands=["9.5","9.2","9.0"]、data-base=10、result=37.7、expression="10 + 9.5 + 9.2 + 9.0"。
+HARD: PASS

@@ -1,0 +1,20 @@
+ROUND: 2
+ARTIFACT_SHA256: 8ad74b699fff10e04095b9be125ccb0a99f292e361d52286ec036ea1410871c4
+TREE_SHA256: 440b38599a11de8bd3d478a64a839e27875c08d092b5ca166747dec2731a0b17
+VERIFIER_SHA256: 34d6ce4357e7e52f6c7d38021d2523b1623352449c8ee1b7998d711ef88d9c64
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 2
+ARTIFACT_SHA256: 8ad74b699fff10e04095b9be125ccb0a99f292e361d52286ec036ea1410871c4
+VERIFIER_SHA256: 50c0b05deb9b70d2d86fa6f0ff6e00202d3303004ccd5c587942658885d9656e
+H1 PASS — 齿轮 44×44、right=380、top=8；dialog=DIALOG/open/modal；三种关闭方式后均回到齿轮；指示点 on→off；pageerror=0
+H2 PASS — 21 档选项且默认 0；基数默认关闭/disabled/“0”；relaod 后 t=1、基数 10，`+9.5`=19.5；重置保留设置；历史刷新后 0；Storage 抛错时自动确认 9.5 且无 pageerror
+H3 PASS — t=0 不确认；t=.5 确认 9.5；t=1 重置计时后合并为 95；`9.` 延后确认；面板暂停并完整恢复；手动回车仅一次；`=` 立即得 18.7 且仅 1 条历史；重置、换运算符正确；进度条 active/2px 后转 inactive；reduced-motion 仍确认
+H4 PASS — 基数关闭 27.7、基数 10 为 37.7、100/4=25、0×5=0、-2.5+1=-1.5；实时重绘 10→20；空基数回退 10 并算得 15；除零进入 error；快照基数 20/10 对应 25/15；编辑标记“基数 10”；字面 `nth(1)=5` 得 17（10+2+5），首操作数=5 得 18（10+5+3）
+H5 PASS — 逐次撤回 9.2、9.5；输入 95 退格仅变 9；基数 10 保留后可再算得 12；result/error 退格无效；编辑 chip 2→1，操作数输入框退格不触发主撤回；冷启动退格无变化
+H6 PASS — 18/18 scenarios、206/206 checks；cold-start.keys-enabled 存在，keys-disabled 不存在
+H7 PASS — 320×568（CDP）与 390×844 六态均无横向溢出；控件≥43.5px、输入/选择字号≥15.5px；面板 304px/320px 且锚定正确；S1–S4 为 390×844、390×844、390×844、320×568，PNG 均非纯色且互异
+H8 PASS — 55587 bytes；`</html>` 存在；外链=0；pageerror=0；console error=0
+H9 PASS — 两个全新 context 各 1 条记录，历史深度一致：基数 10、结果 37.7、算式 `10 + 9.5 + 9.2 + 9.0`
+REVIEW-SHOTS: S1,S2,S3,S4 PASS — S1=390×844:2b0157ec2586 S2=390×844:92a1dd0baa84 S3=390×844:50a1073975c3 S4=320×568:4ce521f2172e
+HARD: PASS

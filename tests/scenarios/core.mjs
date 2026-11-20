@@ -267,4 +267,4 @@ export const reset = {
   },
 };
 
-export const scenarios = [selfContained, coldStart(), compute, arithmetic, historyOrder, reset];
+export const scenarios = [selfContained, coldStart({ keyMode: "enabled" }), compute, arithmetic, historyOrder, reset];

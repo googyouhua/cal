@@ -23,6 +23,10 @@
     box-sizing: border-box;
   }
 
+  [hidden] {
+    display: none !important;
+  }
+
   html,
   body {
     margin: 0;
@@ -41,6 +45,7 @@
   }
 
   .app {
+    position: relative;
     width: min(100%, 460px);
     min-height: 100dvh;
     margin: 0 auto;
@@ -49,6 +54,7 @@
 
   .app-header {
     margin: 0 2px 6px;
+    padding-right: 52px;
   }
 
   h1 {
@@ -152,6 +158,13 @@
     line-height: 1;
   }
 
+  .op-button[aria-pressed="true"] {
+    border-color: #38bdf8;
+    background: linear-gradient(180deg, #23466a, #172d47);
+    color: #f8fafc;
+    box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.5);
+  }
+
   .calc-input {
     display: block;
     width: 100%;
@@ -196,6 +209,13 @@
     font-size: 15px;
     line-height: 1.35;
     word-break: break-word;
+  }
+
+  .expression:empty::before {
+    content: "算式会显示在这里";
+    color: #8291aa;
+    font-size: 13px;
+    line-height: 1.35;
   }
 
   .result {
@@ -480,6 +500,260 @@
     font-weight: 700;
   }
 
+  .settings-toggle {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    border: 1px solid var(--panel-edge);
+    border-radius: 13px;
+    background: #18243a;
+    color: #fde68a;
+    font-size: 22px;
+    line-height: 1;
+    z-index: 30;
+  }
+
+  .settings-toggle:active {
+    transform: translateY(1px);
+  }
+
+  .settings-indicator {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px #18243a;
+  }
+
+  .settings-summary {
+    position: absolute;
+    top: 16px;
+    right: 62px;
+    z-index: 29;
+    padding: 3px 8px;
+    border: 1px solid rgba(251, 191, 36, 0.34);
+    border-radius: 999px;
+    background: rgba(24, 36, 58, 0.94);
+    color: #fde68a;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+
+  .auto-confirm-feedback {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    margin: 3px 2px 0;
+  }
+
+  .auto-confirm-feedback[hidden] {
+    display: none;
+  }
+
+  .auto-confirm-progress {
+    position: relative;
+    height: 2px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: rgba(148, 163, 184, 0.28);
+  }
+
+  .auto-confirm-progress::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    transform-origin: left center;
+    transform: scaleX(1);
+  }
+
+  .auto-confirm-progress[data-active="true"]::before {
+    animation: auto-confirm-drain var(--auto-confirm-duration, 1s) linear forwards;
+  }
+
+  .auto-confirm-countdown {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: #fde68a;
+    font-size: 12px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.35;
+  }
+
+  .undo-hint {
+    margin: 4px 2px 0;
+    padding: 6px 8px;
+    border: 1px solid rgba(251, 191, 36, 0.34);
+    border-radius: 9px;
+    background: rgba(245, 158, 11, 0.13);
+    color: #fef3c7;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  @keyframes auto-confirm-drain {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .auto-confirm-progress[data-active="true"]::before {
+      animation: none;
+    }
+  }
+
+  .base-marker {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    margin-bottom: 3px;
+    padding: 0 8px;
+    border: 1px solid rgba(245, 158, 11, 0.42);
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.14);
+    color: #fde68a;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .settings-panel {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    width: min(calc(100vw - 16px), 320px);
+    max-width: min(calc(100vw - 16px), 320px);
+    max-height: calc(100dvh - 64px);
+    overflow-y: auto;
+    padding: 14px;
+    border: 1px solid var(--panel-edge);
+    border-radius: 16px;
+    background: #101a2c;
+    color: var(--ink);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+    z-index: 50;
+  }
+
+  .settings-panel::backdrop {
+    background: rgba(3, 7, 15, 0.62);
+  }
+
+  .settings-title {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  .settings-subtitle {
+    margin: 4px 0 14px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .settings-field {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+    margin: 0 0 14px;
+  }
+
+  .settings-label {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 650;
+  }
+
+  .settings-select,
+  .settings-input {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid rgba(148, 163, 184, 0.34);
+    border-radius: 11px;
+    background: var(--field);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.25;
+  }
+
+  .settings-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  .settings-checkbox {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    margin: 0;
+    border: 1px solid rgba(148, 163, 184, 0.42);
+    border-radius: 11px;
+    background: var(--field);
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .settings-checkbox:checked {
+    border-color: var(--accent);
+    background: rgba(245, 158, 11, 0.22);
+  }
+
+  .settings-checkbox:checked::after {
+    content: "✓";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #fde68a;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .settings-hint {
+    color: #8291aa;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .settings-done {
+    width: 100%;
+    min-height: 44px;
+    border-color: rgba(251, 191, 36, 0.35);
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: var(--accent-ink);
+    font-size: 16px;
+    font-weight: 800;
+  }
+
   @media (max-width: 350px) {
     .app {
       padding-left: 10px;
@@ -498,6 +772,12 @@
 </head>
 <body>
 <main class="app" data-state="select">
+  <span class="settings-summary" data-testid="settings-summary" hidden>已自定义</span>
+  <button class="settings-toggle" type="button" data-testid="settings-toggle" aria-label="打开统分设置" aria-haspopup="dialog" aria-expanded="false">
+    <span aria-hidden="true">⚙</span>
+    <span class="settings-indicator" data-testid="settings-indicator" hidden aria-hidden="true"></span>
+  </button>
+
   <header class="app-header">
     <h1>手机计算器</h1>
     <p class="subtitle">选运算符，用屏幕数字键盘输入；= 后沿用运算符</p>
@@ -522,10 +802,16 @@
       aria-label="数字显示"
       readonly
     >
-    <p class="hint" id="calc-hint">用屏幕数字键盘输入；回车确认数字，等号计算。</p>
+    <div class="auto-confirm-feedback" data-testid="auto-confirm-feedback" data-active="false" hidden>
+      <div class="auto-confirm-progress" data-testid="auto-confirm-progress" data-active="false" aria-hidden="true"></div>
+      <div class="auto-confirm-countdown" data-testid="auto-confirm-countdown"></div>
+    </div>
+    <p class="hint" id="calc-hint">用屏幕数字键盘输入；按“确认”收下数字，按 = 计算。</p>
+    <p class="undo-hint" data-testid="undo-hint" hidden>输错了？按“退格”可撤回上一笔。</p>
 
     <div class="display" aria-label="计算过程">
       <div class="display-label">算式</div>
+      <div class="base-marker" data-testid="base-marker" hidden></div>
       <div class="expression" data-testid="expression" aria-live="polite"></div>
       <div class="display-label">结果</div>
       <div class="result" data-testid="result" aria-live="polite"></div>
@@ -547,7 +833,7 @@
         <button class="key" type="button" data-key="4" aria-label="数字 4">4</button>
         <button class="key" type="button" data-key="5" aria-label="数字 5">5</button>
         <button class="key" type="button" data-key="6" aria-label="数字 6">6</button>
-        <button class="key" type="button" data-key="enter" aria-label="回车确认数字">回车</button>
+        <button class="key" type="button" data-key="enter" aria-label="确认当前输入（回车）">确认</button>
         <button class="key" type="button" data-key="1" aria-label="数字 1">1</button>
         <button class="key" type="button" data-key="2" aria-label="数字 2">2</button>
         <button class="key" type="button" data-key="3" aria-label="数字 3">3</button>
@@ -561,7 +847,8 @@
       <div class="edit-draft-head">
         <span>编辑草稿</span>
         <span class="edit-operator" data-testid="edit-operator" aria-hidden="true">+</span>
-        <span id="edit-hint">换运算符不会清空数字；回车追加数字。</span>
+        <span class="base-marker" data-testid="edit-base-marker" hidden></span>
+        <span id="edit-hint">换运算符不会清空数字；按“确认”追加数字。</span>
         <button class="edit-cancel" type="button" data-testid="edit-cancel" aria-label="关闭编辑">关闭</button>
       </div>
       <div class="operand-chips" data-testid="operand-chips"></div>
@@ -576,6 +863,38 @@
     <div class="history-list" data-testid="history-list"></div>
     <p class="history-empty" data-testid="history-empty">还没有计算记录。</p>
   </section>
+
+  <dialog class="settings-panel" data-testid="settings-panel" aria-label="统分设置">
+    <h2 class="settings-title">统分设置</h2>
+    <p class="settings-subtitle">输入停顿后自动确认；启用基数后每笔成绩自动带上同一个基数。</p>
+
+    <div class="settings-field">
+      <label class="settings-label" for="settings-auto-confirm">自动确认停顿</label>
+      <select class="settings-select" id="settings-auto-confirm" data-testid="settings-auto-confirm" aria-label="自动确认秒数"></select>
+    </div>
+
+    <div class="settings-field">
+      <label class="settings-toggle-row" for="settings-base-toggle">
+        <input class="settings-checkbox" id="settings-base-toggle" type="checkbox" data-testid="settings-base-toggle">
+        <span>启用基数</span>
+      </label>
+      <input
+        class="settings-input"
+        id="settings-base-value"
+        data-testid="settings-base-value"
+        type="text"
+        inputmode="decimal"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="基数数值"
+        value="0"
+        disabled
+      >
+      <span class="settings-hint">基数作为第一笔数字，可为 0、负数或小数，不计入除数。</span>
+    </div>
+
+    <button class="settings-done" type="button" data-testid="settings-done">完成</button>
+  </dialog>
 </main>
 
 <script>
@@ -599,6 +918,20 @@
     const editOperatorView = document.querySelector('[data-testid="edit-operator"]');
     const operandChips = document.querySelector('[data-testid="operand-chips"]');
     const editCancelButton = document.querySelector('[data-testid="edit-cancel"]');
+    const settingsToggle = document.querySelector('[data-testid="settings-toggle"]');
+    const settingsIndicator = document.querySelector('[data-testid="settings-indicator"]');
+    const settingsSummary = document.querySelector('[data-testid="settings-summary"]');
+    const settingsPanel = document.querySelector('[data-testid="settings-panel"]');
+    const autoConfirmSelect = document.querySelector('[data-testid="settings-auto-confirm"]');
+    const baseToggle = document.querySelector('[data-testid="settings-base-toggle"]');
+    const baseValueInput = document.querySelector('[data-testid="settings-base-value"]');
+    const settingsDone = document.querySelector('[data-testid="settings-done"]');
+    const autoConfirmFeedback = document.querySelector('[data-testid="auto-confirm-feedback"]');
+    const autoConfirmProgress = document.querySelector('[data-testid="auto-confirm-progress"]');
+    const autoConfirmCountdown = document.querySelector('[data-testid="auto-confirm-countdown"]');
+    const undoHint = document.querySelector('[data-testid="undo-hint"]');
+    const baseMarkerView = document.querySelector('[data-testid="base-marker"]');
+    const editBaseMarkerView = document.querySelector('[data-testid="edit-base-marker"]');
 
     const operatorGlyphs = {
       "+": "+",
@@ -615,18 +948,40 @@
     let editSnapshot = null;
     let pendingEdit = null;
 
+    const SETTINGS_KEY = "cal-phone.settings.v1";
+    const AUTO_CONFIRM_STEPS = Array.from({ length: 21 }, (_, index) => index / 2);
+    const settings = {
+      autoConfirm: 0,
+      baseEnabled: false,
+      baseText: "0"
+    };
+    let autoConfirmTimer = null;
+    let autoConfirmCountdownTimer = null;
+    let autoConfirmDeadline = 0;
+
     function enterState(nextState) {
       state = nextState;
       app.dataset.state = nextState;
+      resetButton.disabled = nextState === "select";
       syncKeypad();
+      updateBaseMarker();
+      updateUndoHint();
     }
 
     function syncOperatorAttribute() {
       if (operator) {
         app.dataset.operator = operator;
+        resetButton.textContent = `运算：${operatorGlyphs[operator]}`;
+        resetButton.setAttribute("aria-label", `当前运算 ${operatorGlyphs[operator]}，点击重选`);
       } else {
         delete app.dataset.operator;
+        resetButton.textContent = "运算类型";
+        resetButton.setAttribute("aria-label", "重选运算类型");
       }
+      opButtons.forEach((button) => {
+        const selected = Boolean(operator) && button.getAttribute("data-op") === operator;
+        button.setAttribute("aria-pressed", selected ? "true" : "false");
+      });
     }
 
     function syncKeypad() {
@@ -654,16 +1009,35 @@
         return;
       }
       input.value += character;
+      startAutoConfirm();
+      updateUndoHint();
     }
 
     function deleteLastCharacter() {
-      if (state === "select" && input.value === "") {
+      if (input.value !== "") {
+        input.value = input.value.slice(0, -1);
+        startAutoConfirm();
+        updateUndoHint();
         return;
       }
-      if (state === "select") {
-        enterState("input");
+
+      if (state === "edit" && editDraft) {
+        if (editDraft.operands.length > 0) {
+          const removed = editDraft.operands.pop();
+          renderEditDraft();
+          renderExpression();
+          updateUndoHint();
+          updateStateLabel(`已撤回 ${removed.display}`);
+        }
+        return;
       }
-      input.value = input.value.slice(0, -1);
+
+      if (state === "input" && operands.length > 0) {
+        const removed = operands.pop();
+        renderExpression();
+        updateUndoHint();
+        updateStateLabel(`已撤回 ${removed.display}`);
+      }
     }
 
     function clearResult() {
@@ -680,17 +1054,20 @@
       return { value: operand.value, display: operand.display };
     }
 
-    function expressionText(activeOperator, activeOperands) {
-      if (activeOperands.length === 0) {
+    function expressionText(activeOperator, activeOperands, activeBase = null) {
+      const values = [];
+      if (activeBase) {
+        values.push(activeBase.display);
+      }
+      activeOperands.forEach((operand) => values.push(operand.display));
+      if (values.length === 0) {
         return "";
       }
-
-      const values = activeOperands.map((operand) => operand.display);
       return activeOperator ? values.join(` ${operatorGlyphs[activeOperator]} `) : values.join(" ");
     }
 
-    function liveExpressionText(activeOperator, activeOperands) {
-      const base = expressionText(activeOperator, activeOperands);
+    function liveExpressionText(activeOperator, activeOperands, activeBase = null) {
+      const base = expressionText(activeOperator, activeOperands, activeBase);
       if (!activeOperator || !base || activeOperands.length !== 1) {
         return base;
       }
@@ -700,16 +1077,20 @@
 
     function renderExpression() {
       if (state === "edit" && editDraft) {
-        expression.textContent = liveExpressionText(editDraft.operator, editDraft.operands);
+        expression.textContent = liveExpressionText(editDraft.operator, editDraft.operands, editDraft.base);
+        updateBaseMarker();
         return;
       }
 
-      if (operands.length === 0) {
+      const activeBase = operator ? effectiveBase() : null;
+      if (operands.length === 0 && !activeBase) {
         clearExpression();
+        updateBaseMarker();
         return;
       }
 
-      expression.textContent = liveExpressionText(operator, operands);
+      expression.textContent = liveExpressionText(operator, operands, activeBase);
+      updateBaseMarker();
     }
 
     function captureEditSnapshot() {
@@ -774,6 +1155,7 @@
         return;
       }
 
+      stopAutoConfirm();
       const snapshot = editSnapshot;
       pendingEdit = null;
       editSnapshot = null;
@@ -804,6 +1186,211 @@
 
     function updateStateLabel(label) {
       stateLabel.textContent = label;
+    }
+
+    function populateAutoConfirmOptions() {
+      autoConfirmSelect.textContent = "";
+      AUTO_CONFIRM_STEPS.forEach((value) => {
+        const option = document.createElement("option");
+        option.value = String(value);
+        option.textContent = value === 0 ? "关闭" : `${value} 秒`;
+        autoConfirmSelect.append(option);
+      });
+    }
+
+    function loadSettings() {
+      try {
+        const raw = window.localStorage.getItem(SETTINGS_KEY);
+        if (!raw) {
+          return;
+        }
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object") {
+          return;
+        }
+        const autoConfirm = Number(parsed.autoConfirm);
+        if (AUTO_CONFIRM_STEPS.includes(autoConfirm)) {
+          settings.autoConfirm = autoConfirm;
+        }
+        settings.baseEnabled = parsed.baseEnabled === true;
+        const storedBase = String(parsed.baseValue ?? "");
+        if (storedBase.trim() !== "" && Number.isFinite(Number(storedBase))) {
+          settings.baseText = storedBase;
+        }
+      } catch (error) {
+        /* localStorage may be disabled; keep the in-memory defaults. */
+      }
+    }
+
+    function saveSettings() {
+      try {
+        window.localStorage.setItem(SETTINGS_KEY, JSON.stringify({
+          autoConfirm: settings.autoConfirm,
+          baseEnabled: settings.baseEnabled,
+          baseValue: settings.baseText
+        }));
+      } catch (error) {
+        /* localStorage may be disabled; the page keeps working in memory. */
+      }
+    }
+
+    function effectiveBase() {
+      if (!settings.baseEnabled) {
+        return null;
+      }
+      const raw = String(settings.baseText);
+      if (raw.trim() === "" || !Number.isFinite(Number(raw))) {
+        return null;
+      }
+      return { value: Number(raw), display: raw };
+    }
+
+    function updateBaseMarker() {
+      const base = effectiveBase();
+      const showBase = state !== "edit" && Boolean(operator) && Boolean(base);
+      baseMarkerView.hidden = !showBase;
+      if (showBase) {
+        baseMarkerView.textContent = `基数 ${base.display}`;
+      }
+
+      const showEditBase = state === "edit" && Boolean(editDraft) && Boolean(editDraft.base);
+      editBaseMarkerView.hidden = !showEditBase;
+      if (showEditBase) {
+        editBaseMarkerView.textContent = `基数 ${editDraft.base.display}`;
+      }
+    }
+
+    function syncSettingsIndicator() {
+      const customized = settings.autoConfirm > 0 || settings.baseEnabled;
+      settingsIndicator.hidden = !customized;
+      settingsSummary.hidden = !customized;
+      settingsToggle.setAttribute("aria-label", customized ? "打开统分设置（已自定义）" : "打开统分设置");
+      settingsToggle.title = customized ? "已自定义：自动确认或基数已启用" : "打开统分设置";
+    }
+
+    function updateUndoHint() {
+      const inDraft = state === "edit" && Boolean(editDraft) && editDraft.operands.length > 0;
+      const inInput = state === "input" && operands.length > 0;
+      undoHint.hidden = !(inDraft || inInput);
+      if (!inDraft && !inInput) {
+        return;
+      }
+
+      const activeOperands = inDraft ? editDraft.operands : operands;
+      const target = inDraft ? "草稿最后一笔" : "上一笔";
+      const lastValue = activeOperands[activeOperands.length - 1].display;
+      undoHint.textContent = input.value.trim() === ""
+        ? `撤回${target} ${lastValue}：按“退格”。`
+        : `撤回${target} ${lastValue}：先清空当前输入，再按“退格”。`;
+    }
+
+    function syncSettingsControls() {
+      autoConfirmSelect.value = String(settings.autoConfirm);
+      baseToggle.checked = settings.baseEnabled;
+      baseValueInput.disabled = !settings.baseEnabled;
+      baseValueInput.value = settings.baseText;
+      syncSettingsIndicator();
+      updateBaseMarker();
+    }
+
+    function autoConfirmAllowed() {
+      if (!(settings.autoConfirm > 0)) {
+        return false;
+      }
+      if (settingsPanel.open) {
+        return false;
+      }
+      if (input.value === "" || input.value.endsWith(".")) {
+        return false;
+      }
+      return Number.isFinite(Number(input.value));
+    }
+
+    function stopAutoConfirm() {
+      if (autoConfirmTimer !== null) {
+        window.clearTimeout(autoConfirmTimer);
+        autoConfirmTimer = null;
+      }
+      if (autoConfirmCountdownTimer !== null) {
+        window.clearInterval(autoConfirmCountdownTimer);
+        autoConfirmCountdownTimer = null;
+      }
+      autoConfirmDeadline = 0;
+      autoConfirmProgress.setAttribute("data-active", "false");
+      autoConfirmFeedback.setAttribute("data-active", "false");
+      autoConfirmFeedback.hidden = true;
+      autoConfirmCountdown.textContent = "";
+    }
+
+    function syncAutoConfirmCountdown() {
+      if (!autoConfirmDeadline) {
+        return;
+      }
+      const remaining = Math.max(0, autoConfirmDeadline - Date.now());
+      const seconds = (Math.ceil(remaining / 100) / 10).toFixed(1);
+      autoConfirmCountdown.textContent = `正在计时：剩余 ${seconds} 秒，将确认 ${input.value.trim()}`;
+    }
+
+    function startAutoConfirm() {
+      stopAutoConfirm();
+      if (!autoConfirmAllowed()) {
+        return;
+      }
+      const seconds = settings.autoConfirm;
+      autoConfirmProgress.style.setProperty("--auto-confirm-duration", `${seconds}s`);
+      autoConfirmDeadline = Date.now() + Math.round(seconds * 1000);
+      autoConfirmFeedback.hidden = false;
+      autoConfirmFeedback.setAttribute("data-active", "true");
+      autoConfirmProgress.setAttribute("data-active", "false");
+      void autoConfirmProgress.offsetWidth;
+      autoConfirmProgress.setAttribute("data-active", "true");
+      syncAutoConfirmCountdown();
+      autoConfirmCountdownTimer = window.setInterval(syncAutoConfirmCountdown, 100);
+      autoConfirmTimer = window.setTimeout(() => {
+        autoConfirmTimer = null;
+        if (autoConfirmAllowed()) {
+          commitInput();
+        }
+        stopAutoConfirm();
+      }, Math.round(seconds * 1000));
+    }
+
+    function placeSettingsPanel() {
+      const rect = settingsToggle.getBoundingClientRect();
+      const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+      settingsPanel.style.top = `${Math.round(rect.bottom + 6)}px`;
+      settingsPanel.style.right = `${Math.max(8, Math.round(viewportWidth - rect.right))}px`;
+      settingsPanel.style.left = "auto";
+      settingsPanel.style.bottom = "auto";
+    }
+
+    function openSettings() {
+      stopAutoConfirm();
+      settingsToggle.setAttribute("aria-expanded", "true");
+      syncSettingsControls();
+      if (typeof settingsPanel.showModal === "function") {
+        if (!settingsPanel.open) {
+          settingsPanel.showModal();
+        }
+      } else {
+        settingsPanel.setAttribute("open", "");
+      }
+      placeSettingsPanel();
+      if (!settingsPanel.contains(document.activeElement)) {
+        autoConfirmSelect.focus();
+      }
+    }
+
+    function closeSettings() {
+      if (typeof settingsPanel.close === "function" && settingsPanel.open) {
+        settingsPanel.close();
+        return;
+      }
+      settingsPanel.removeAttribute("open");
+      settingsToggle.setAttribute("aria-expanded", "false");
+      settingsToggle.focus();
+      syncSettingsControls();
+      startAutoConfirm();
     }
 
     function renderEditDraft() {
@@ -883,6 +1470,7 @@
     }
 
     function beginEdit(entry) {
+      stopAutoConfirm();
       if (state !== "edit" || !editSnapshot) {
         editSnapshot = captureEditSnapshot();
       }
@@ -891,7 +1479,8 @@
       syncOperatorAttribute();
       editDraft = {
         operator: entry.operator,
-        operands: entry.operands.map(cloneOperand)
+        operands: entry.operands.map(cloneOperand),
+        base: entry.base ? { value: entry.base.value, display: entry.base.display } : null
       };
       input.value = "";
       resetButton.disabled = false;
@@ -909,6 +1498,9 @@
       item.setAttribute("data-testid", "history-item");
       item.setAttribute("data-operator", entry.operator);
       item.setAttribute("data-operands", JSON.stringify(entry.operands.map((operand) => operand.display)));
+      if (entry.base) {
+        item.setAttribute("data-base", entry.base.display);
+      }
 
       const line = document.createElement("div");
       line.className = "history-line";
@@ -944,6 +1536,7 @@
     }
 
     function resetToSelect() {
+      stopAutoConfirm();
       pendingEdit = null;
       editSnapshot = null;
       operator = null;
@@ -968,6 +1561,7 @@
         renderExpression();
         updateStateLabel(`正在编辑 ${operatorGlyphs[nextOperator]} 记录`);
         input.focus();
+        startAutoConfirm();
         return;
       }
 
@@ -983,10 +1577,13 @@
       resetButton.disabled = false;
       enterState("input");
       renderExpression();
+      const base = effectiveBase();
+      const baseHint = base ? `，基数 ${base.display}` : "";
       updateStateLabel(preserveOperands
-        ? `已更换为 ${operatorGlyphs[nextOperator]}，已输入的数字会保留`
-        : `已选择 ${operatorGlyphs[nextOperator]}，请输入数字`);
+        ? `已更换为 ${operatorGlyphs[nextOperator]}${baseHint}，已输入的数字会保留`
+        : `已选择 ${operatorGlyphs[nextOperator]}${baseHint}，请输入数字`);
       input.focus();
+      startAutoConfirm();
     }
 
     function commitInput() {
@@ -1024,6 +1621,11 @@
       }
       input.value = "";
       renderExpression();
+      stopAutoConfirm();
+      updateStateLabel(state === "edit"
+        ? `已加入 ${rawValue}，可继续编辑或按 = 重算`
+        : `已确认 ${rawValue}，可继续输入或按 = 计算`);
+      updateUndoHint();
       return true;
     }
 
@@ -1032,6 +1634,7 @@
     }
 
     function showDivisionByZero(activeOperator) {
+      stopAutoConfirm();
       pendingEdit = null;
       editSnapshot = null;
       operator = activeOperator;
@@ -1065,11 +1668,13 @@
         return;
       }
 
+      stopAutoConfirm();
       settlePendingEdit();
 
       const wasEditing = state === "edit" && editDraft !== null;
       let activeOperator;
       let activeOperands;
+      let activeBase;
 
       if (wasEditing) {
         const editedValues = readOperandInputValues();
@@ -1093,18 +1698,20 @@
           value: Number(rawValue),
           display: rawValue
         }));
+        activeBase = editDraft.base ? { value: editDraft.base.value, display: editDraft.base.display } : null;
       } else {
         commitInput();
         activeOperator = operator;
         activeOperands = operands;
+        activeBase = effectiveBase();
       }
 
       if (!activeOperator || activeOperands.length === 0) {
         return;
       }
 
-      let accumulator = activeOperands[0].value;
-      for (let index = 1; index < activeOperands.length; index += 1) {
+      let accumulator = activeBase ? activeBase.value : activeOperands[0].value;
+      for (let index = activeBase ? 0 : 1; index < activeOperands.length; index += 1) {
         const nextValue = activeOperands[index].value;
         if (activeOperator === "/" && nextValue === 0) {
           showDivisionByZero(activeOperator);
@@ -1133,7 +1740,8 @@
       const entry = {
         operator: activeOperator,
         operands: activeOperands.map(cloneOperand),
-        expression: expressionText(activeOperator, activeOperands),
+        base: activeBase,
+        expression: expressionText(activeOperator, activeOperands, activeBase),
         result: accumulator
       };
       operator = activeOperator;
@@ -1152,7 +1760,8 @@
       editDraftView.hidden = true;
       operandChips.textContent = "";
       enterState("result");
-      updateStateLabel(`计算完成；继续输入数字按回车或 = 即可沿用 ${operatorGlyphs[activeOperator]}`);
+      const baseHint = activeBase ? `，基数 ${activeBase.display}` : "";
+      updateStateLabel(`计算完成${baseHint}；继续输入数字按回车或 = 即可沿用 ${operatorGlyphs[activeOperator]}`);
       input.focus();
     }
 
@@ -1180,6 +1789,7 @@
       } else if (key === "backspace") {
         deleteLastCharacter();
       } else if (key === "enter") {
+        stopAutoConfirm();
         commitInput();
       } else if (key === "equals") {
         calculate();
@@ -1188,6 +1798,9 @@
 
     document.addEventListener("keydown", (event) => {
       if (event.ctrlKey || event.metaKey || event.altKey) {
+        return;
+      }
+      if (settingsPanel.open || (event.target instanceof Element && event.target.closest('[data-testid="settings-panel"]'))) {
         return;
       }
       if (event.target instanceof Element && event.target.closest('[data-testid="operand-input"]')) {
@@ -1200,6 +1813,7 @@
       } else if (key === "Backspace") {
         deleteLastCharacter();
       } else if (key === "Enter") {
+        stopAutoConfirm();
         commitInput();
       } else if (key === "=") {
         calculate();
@@ -1209,10 +1823,77 @@
       event.preventDefault();
     });
 
+    settingsToggle.addEventListener("click", openSettings);
+    settingsDone.addEventListener("click", closeSettings);
+    settingsPanel.addEventListener("close", () => {
+      settingsToggle.setAttribute("aria-expanded", "false");
+      if (baseValueInput.value.trim() === "" || !Number.isFinite(Number(baseValueInput.value))) {
+        baseValueInput.value = settings.baseText;
+      }
+      syncSettingsControls();
+      settingsToggle.focus();
+      startAutoConfirm();
+    });
+    settingsPanel.addEventListener("click", (event) => {
+      if (event.target !== settingsPanel) {
+        return;
+      }
+      const rect = settingsPanel.getBoundingClientRect();
+      if (
+        event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom
+      ) {
+        closeSettings();
+      }
+    });
+    window.addEventListener("resize", () => {
+      if (settingsPanel.open) {
+        placeSettingsPanel();
+      }
+    });
+
+    autoConfirmSelect.addEventListener("change", () => {
+      const value = Number(autoConfirmSelect.value);
+      if (AUTO_CONFIRM_STEPS.includes(value)) {
+        settings.autoConfirm = value;
+        saveSettings();
+        syncSettingsIndicator();
+      }
+    });
+    baseToggle.addEventListener("change", () => {
+      settings.baseEnabled = baseToggle.checked;
+      if (settings.baseEnabled && (settings.baseText.trim() === "" || !Number.isFinite(Number(settings.baseText)))) {
+        settings.baseText = "0";
+      }
+      saveSettings();
+      syncSettingsControls();
+      renderExpression();
+    });
+    baseValueInput.addEventListener("input", () => {
+      const raw = baseValueInput.value;
+      if (raw.trim() !== "" && Number.isFinite(Number(raw))) {
+        settings.baseText = raw;
+        saveSettings();
+        syncSettingsIndicator();
+        renderExpression();
+      }
+    });
+    baseValueInput.addEventListener("blur", () => {
+      if (baseValueInput.value.trim() === "" || !Number.isFinite(Number(baseValueInput.value))) {
+        baseValueInput.value = settings.baseText;
+      }
+    });
+
     resetButton.addEventListener("click", resetToSelect);
     editCancelButton.addEventListener("click", cancelEdit);
     input.addEventListener("focus", settlePendingEdit);
+    populateAutoConfirmOptions();
+    loadSettings();
+    syncSettingsControls();
     syncKeypad();
+    updateUndoHint();
   })();
 </script>
 </body>

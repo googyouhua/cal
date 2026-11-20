@@ -1,0 +1,35 @@
+{
+  "round": 3,
+  "artifact_sha256": "d082cd6f1088dd99d76cc9ba3ec3a478ba95f7219c1cb9de7fa63c34d3901d05",
+  "verifier_sha256": "b2032df9da58018c44a12d14ec0acc8b7253808b49e0dd0ad0efdace24a62a25",
+  "metrics_sha256": "eb0b155887a3518ba17f19f19f53b5556ea742803dec2ec92fab59c547376b48",
+  "shots": [
+    {
+      "file": "S1.png",
+      "sha256": "243b4fa66d623b07fe08ce4b318190c5ebaa9d2b9b5489cfcbcac038eecb4059",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "S2.png",
+      "sha256": "bc25a4348239e62fb1cc20c2038d637808cb47e8d6d37e5ce67dcbd1da321b6f",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "S3.png",
+      "sha256": "711d343b4b3ade2804e74fe66cd914668e2f6518f44b53fe38b48dce3609d3c2",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "S4.png",
+      "sha256": "9ee4ce97887fbd22bb683bf10d992f47374d7363cf22a2d9d1d24d6a26f30b13",
+      "width": 320,
+      "height": 568
+    }
+  ],
+  "adhoc": [],
+  "tree_sha256": "5228d68a0bba8a69a1df337c12d9b54ac5867abba63cb8a94f657eeebca50148",
+  "runner_sha256": "6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8"
+}

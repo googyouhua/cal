@@ -1,0 +1,19 @@
+ROUND: 1
+ARTIFACT_SHA256: 8ad74b699fff10e04095b9be125ccb0a99f292e361d52286ec036ea1410871c4
+TREE_SHA256: 440b38599a11de8bd3d478a64a839e27875c08d092b5ca166747dec2731a0b17
+VERIFIER_SHA256: ac26b9f10dca3f5495c2501f58a8f6850012acf839a1799bf6149caba66168d0
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: 8ad74b699fff10e04095b9be125ccb0a99f292e361d52286ec036ea1410871c4
+VERIFIER_SHA256: ac26b9f10dca3f5495c2501f58a8f6850012acf839a1799bf6149caba66168d0
+H1 PASS — 21 checks: gear visible 44×44 at top-right; modal dialog/focus/aria expanded verified; Esc, done, backdrop all close and return focus; indicator toggles on/off.
+H2 PASS — 23 checks: 21 options exactly 0…10; defaults 0/off/0; persistence survives reload; +9.5=19.5; reset preserves settings; reload clears history; storage exceptions degrade cleanly.
+H3 PASS — 46 checks: t=0, t=0.5, timer reset to operands 95, trailing-dot deferral, panel pause, manual Enter, equals 18.7, reset, operator-change retiming, 2px progress, reduced-motion confirmation.
+H4 PASS — 37 checks: results 27.7, 37.7, 25, 0, -1.5; base snapshots 10/20; old edit remains base 10 with result 17; division by zero retained error state; markers visible.
+H5 PASS — 30 checks: operand-by-operand withdrawal, character-only backspace, base 10 retained then +1/1=12, result/error states unchanged; edit chips 2→1; operand-input backspace leaves chip count 1.
+H6 PASS — 4 checks: 18/18 scenarios pass; zero failures; cold-start contains `cold-start.keys-enabled` and omits `cold-start.keys-disabled`.
+H7 PASS — 80 checks: both viewports × six states; overflow 0; minimum controls 44×44; minimum input/select font 16px; panel 304×383.7 at 320 and 320×383.7 at 390, aligned and in viewport.
+H8 PASS — 9 checks: 55,587 bytes; closing `</html>`; external refs 0; page/console errors 0; suite clean failures 0; S1–S4 exact, unique, non-solid images; metrics sha256 `2d2427d96e0b15a95a87b4407570d0f61d1448cfc6dc4df3c9cbcd0b9f3efd9a`.
+H9 PASS — 5 checks: two fresh contexts each produced one deep-equal record with operator `+`, operands `["9.5","9.2","9.0"]`, base `10`, result `37.7`.
+HARD: PASS
