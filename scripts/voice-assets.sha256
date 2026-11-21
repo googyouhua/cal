@@ -1,0 +1,7 @@
+e7ca68efeb8fa4f1bf7768827f468a31a25f1878209d24a3e08fe7bfcbba5cb5  voice/sherpa-onnx-wasm-web.js
+c655dbdc9ed486004a040936e50aca6d0ada4bdbd3e188e7155f8fd8544cd21a  voice/sherpa-onnx-wasm-web.wasm
+b9cb4782010b22d64be31298a3e407170d2b8f5def471ea6011c42a921577e8f  voice/sherpa-onnx-tts.js
+47e82b11454edeeb65adc4e44a24fd54c6715cd4d875cc2a20f75545ecc32d4d  voice/sherpa-tts/matcha-zh-baker.onnx
+a41d404cce7924493540238da5b30a4bc14b6ddaf1a37f3c79fa4f59548c19f0  voice/sherpa-tts/hifigan_v2.onnx
+38b886d46aefa50da6322a64d72fd595d5f4fae1051adb160d647541b1e0a4a2  voice/sherpa-tts/lexicon.txt
+56209b2bf609d5ac1d66ede6dae7bf5254bd3f8aa24c4a6823713d5b884d87ba  voice/sherpa-tts/tokens.txt
