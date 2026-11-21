@@ -1134,6 +1134,14 @@
       <span class="settings-hint">基数作为第一笔数字，可为 0、负数或小数，不计入除数。</span>
     </div>
 
+    <div class="settings-field">
+      <label class="settings-toggle-row" for="settings-haptics">
+        <input class="settings-checkbox" id="settings-haptics" type="checkbox" data-testid="settings-haptics" checked>
+        <span>按键震动</span>
+      </label>
+      <span class="settings-hint">每次按下屏幕计算键时轻微震动一次；关闭后完全静默。</span>
+    </div>
+
     <div class="settings-field voice-settings" data-testid="settings-voice-group">
       <span class="voice-group-label">语音播报</span>
       <div class="voice-status" data-testid="voice-status" hidden aria-live="polite">
@@ -1193,6 +1201,7 @@
     const autoEqualsHint = document.querySelector('[data-testid="auto-equals-hint"]');
     const baseToggle = document.querySelector('[data-testid="settings-base-toggle"]');
     const baseValueInput = document.querySelector('[data-testid="settings-base-value"]');
+    const hapticsToggle = document.querySelector('[data-testid="settings-haptics"]');
     const voiceGroup = document.querySelector('[data-testid="settings-voice-group"]');
     const voiceKeysToggle = document.querySelector('[data-testid="settings-voice-keys"]');
     const voiceResultToggle = document.querySelector('[data-testid="settings-voice-result"]');
@@ -1236,6 +1245,7 @@
       autoEquals: 0,
       baseEnabled: false,
       baseText: "0",
+      haptics: true,
       voiceKeys: false,
       voiceResult: false
     };
@@ -2170,6 +2180,7 @@
         if (storedBase.trim() !== "" && Number.isFinite(Number(storedBase))) {
           settings.baseText = storedBase;
         }
+        settings.haptics = parsed.haptics !== false;
         settings.voiceKeys = parsed.voiceKeys === true;
         settings.voiceResult = parsed.voiceResult === true;
       } catch (error) {
@@ -2184,11 +2195,26 @@
           autoEquals: settings.autoEquals,
           baseEnabled: settings.baseEnabled,
           baseValue: settings.baseText,
+          haptics: settings.haptics,
           voiceKeys: settings.voiceKeys,
           voiceResult: settings.voiceResult
         }));
       } catch (error) {
         /* localStorage may be disabled; the page keeps working in memory. */
+      }
+    }
+
+    function vibrateKeyFeedback() {
+      if (settings.haptics !== true) {
+        return;
+      }
+      try {
+        if (typeof navigator === "undefined" || typeof navigator.vibrate !== "function") {
+          return;
+        }
+        navigator.vibrate(10);
+      } catch (error) {
+        /* Vibration unavailable; calculation continues unaffected. */
       }
     }
 
@@ -2300,6 +2326,7 @@
       baseToggle.checked = settings.baseEnabled;
       baseValueInput.disabled = !settings.baseEnabled;
       baseValueInput.value = settings.baseText;
+      hapticsToggle.checked = settings.haptics !== false;
       voiceKeysToggle.checked = settings.voiceKeys;
       voiceResultToggle.checked = settings.voiceResult;
       updateVoiceSupport();
@@ -2831,12 +2858,13 @@
 
     picker.addEventListener("click", (event) => {
       const button = event.target.closest("[data-op]");
-      if (!button) {
+      if (!button || button.disabled) {
         return;
       }
 
       const nextOperator = button.getAttribute("data-op");
       if (Object.prototype.hasOwnProperty.call(operatorGlyphs, nextOperator)) {
+        vibrateKeyFeedback();
         chooseOperator(nextOperator);
       }
     });
@@ -2848,6 +2876,16 @@
       }
 
       const key = button.getAttribute("data-key");
+      if (
+        key !== "backspace"
+        && key !== "enter"
+        && key !== "equals"
+        && key !== "."
+        && !/^[0-9]$/.test(key)
+      ) {
+        return;
+      }
+      vibrateKeyFeedback();
       if (/^[0-9]$/.test(key) || key === ".") {
         appendCharacter(key);
       } else if (key === "backspace") {
@@ -2961,6 +2999,11 @@
       if (baseValueInput.value.trim() === "" || !Number.isFinite(Number(baseValueInput.value))) {
         baseValueInput.value = settings.baseText;
       }
+    });
+    hapticsToggle.addEventListener("change", () => {
+      settings.haptics = hapticsToggle.checked;
+      saveSettings();
+      syncSettingsIndicator();
     });
     voiceKeysToggle.addEventListener("change", handleVoiceToggle);
     voiceResultToggle.addEventListener("change", handleVoiceToggle);
