@@ -2701,12 +2701,6 @@
         ? `已加入 ${rawValue}，可继续编辑或按 = 重算`
         : `已确认 ${rawValue}，可继续输入或按 = 计算`);
       updateUndoHint();
-      if (announceCommit) {
-        const commitReading = numberToChineseReading(rawValue);
-        if (commitReading) {
-          speakKey(commitReading);
-        }
-      }
       if (allowAutoEquals && settings.autoEquals > 0 && operator && state === "input" && operands.length >= settings.autoEquals) {
         calculate();
       }
