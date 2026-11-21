@@ -1,0 +1,23 @@
+[Unit]
+Description=Cal Phone static site
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/cal-phone
+ExecStart=/usr/bin/node /opt/cal-phone/server.cjs
+Environment=ROOT=/var/www/cal-phone
+Environment=PORT=8081
+Environment=HOST=0.0.0.0
+Environment=HTTPS_PORT=8444
+Environment=HTTPS_CERT=/opt/hotword-asr-lab/tls/cert.pem
+Environment=HTTPS_KEY=/opt/hotword-asr-lab/tls/key.pem
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
