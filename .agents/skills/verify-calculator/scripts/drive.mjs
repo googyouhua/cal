@@ -77,6 +77,36 @@ async function pressReset(page) {
   await page.locator(SEL.reset).click();
 }
 
+async function setSettings(page, { autoConfirm, autoEquals, baseEnabled, baseValue } = {}) {
+  await page.locator('[data-testid="settings-toggle"]').click();
+  if (autoConfirm !== undefined) {
+    await page.locator('[data-testid="settings-auto-confirm"]').selectOption(String(autoConfirm));
+  }
+  if (autoEquals !== undefined) {
+    await page.locator('[data-testid="settings-auto-equals"]').fill(String(autoEquals));
+  }
+  if (baseEnabled !== undefined) {
+    await page.locator('[data-testid="settings-base-toggle"]').setChecked(baseEnabled);
+  }
+  if (baseValue !== undefined) {
+    await page.locator('[data-testid="settings-base-value"]').fill(String(baseValue));
+  }
+  await page.locator('[data-testid="settings-done"]').click();
+}
+
+async function waitForExpression(page, expected, timeout = 6000) {
+  await page.waitForFunction(
+    (expectedText) =>
+      (document.querySelector('[data-testid="expression"]')?.textContent || "").trim() === expectedText,
+    expected,
+    { timeout },
+  );
+}
+
+async function progressActive(page) {
+  return (await page.locator('[data-testid="auto-confirm-progress"]').getAttribute("data-active")) === "true";
+}
+
 async function commitNumber(page, digits) {
   await tapKeys(page, digits);
   await pressEnter(page);
@@ -93,7 +123,9 @@ async function readState(page) {
     resultValue: await result.getAttribute("data-value"),
     resultIsError: (await result.getAttribute("data-error")) === "true",
     input: await page.locator(SEL.input).inputValue(),
-    label: (await page.locator(SEL.stateLabel).innerText()).trim(),
+    // The label may be visibility-hidden while the countdown/undo overlay shows;
+    // textContent still carries the state machine's message.
+    label: ((await page.locator(SEL.stateLabel).textContent()) || "").trim(),
     historyCount: await page.locator(SEL.historyItem).count(),
   };
 }
@@ -107,6 +139,7 @@ async function historySnapshot(page) {
       expression: (await item.locator(SEL.historyExpression).innerText()).trim(),
       result: (await item.locator(SEL.historyResult).innerText()).trim(),
       operator: await item.getAttribute("data-operator"),
+      base: await item.getAttribute("data-base"),
     });
   }
   return items;
@@ -176,9 +209,13 @@ function parseArgs(argv) {
 
 const FEATURE_DEFAULT = {
   "addition-and-equals": "basic-addition",
+  "number-entry": "number-entry",
+  "backspace-undo": "backspace-undo",
   "chained-calculations": "sticky-chaining",
   "edit-history": "edit-history",
   "division-by-zero": "division-by-zero",
+  "score-tally-settings": "settings-panel",
+  "auto-equals": "auto-equals",
   "mobile-layout": "mobile-layout",
 };
 
@@ -187,7 +224,7 @@ async function basicAddition({ openPage, run }) {
 
   let state = await readState(page);
   run.equal("initial.state", state.state, "select");
-  run.equal("initial.keypad_disabled", await page.locator(keySel("1")).isDisabled(), true);
+  run.equal("initial.keypad_enabled", await page.locator(keySel("1")).isEnabled(), true);
   run.equal("initial.operator_choices", await page.locator("[data-op]").count(), 4);
   run.equal("initial.expression", state.expression, "");
   run.equal("initial.result", state.result, "");
@@ -214,7 +251,7 @@ async function basicAddition({ openPage, run }) {
 
   await commitNumber(page, "30");
   state = await readState(page);
-  run.equal("second_operand.expression", state.expression, "12 + 30");
+  run.equal("second_operand.expression", state.expression, "12 + 30 +");
 
   await pressEquals(page);
   state = await readState(page);
@@ -268,45 +305,568 @@ async function operatorCoverage({ openPage, run }) {
   }
 }
 
-async function inputEditing({ openPage, run }) {
+async function numberEntry({ openPage, run }) {
   const page = await openPage();
 
+  // No operator yet: digits are accepted and start a draft.
+  await tapKeys(page, "12");
+  let state = await readState(page);
+  run.equal("entry.optional_operator_state", state.state, "input");
+  run.equal("entry.optional_operator_input", state.input, "12");
+  run.equal("entry.optional_operator_expression", state.expression, "");
+  run.equal("entry.optional_operator_label", state.label, "请输入数字，或先选择运算类型");
+  await run.capture(page, "typed-before-choosing-operator");
+
+  await pressEnter(page);
+  state = await readState(page);
+  run.equal("entry.commit_without_operator_expression", state.expression, "12");
+  run.equal("entry.commit_without_operator_label", state.label, "已确认 12，可继续输入或按 = 计算");
+  await chooseOperator(page, "+");
+  run.equal("entry.operator_after_commit_expression", (await readState(page)).expression, "12 +");
+  await commitNumber(page, "3");
+  await pressEquals(page);
+  state = await readState(page);
+  run.equal("entry.operator_after_commit_result", state.result, "15");
+  run.equal("entry.operator_after_commit_history", state.historyCount, 1);
+  await run.capture(page, "operator-chosen-after-entry");
+
+  await pressReset(page);
   await chooseOperator(page, "+");
   await tapKeys(page, "7..5");
-  let state = await readState(page);
-  run.equal("editing.duplicate_dot_ignored", state.input, "7.5");
-  run.equal("editing.uncommitted_expression", state.expression, "");
+  state = await readState(page);
+  run.equal("entry.duplicate_dot_ignored", state.input, "7.5");
+  run.equal("entry.uncommitted_expression", state.expression, "");
   await run.capture(page, "duplicate-dot-ignored");
 
   await pressBackspace(page);
-  run.equal("editing.backspace_once", (await readState(page)).input, "7.");
+  run.equal("entry.backspace_once", (await readState(page)).input, "7.");
   await pressBackspace(page);
-  run.equal("editing.backspace_twice", (await readState(page)).input, "7");
+  run.equal("entry.backspace_twice", (await readState(page)).input, "7");
   await run.capture(page, "backspace-trims-entry");
 
   await pressEnter(page);
   state = await readState(page);
-  run.equal("editing.commit_after_backspace", state.expression, "7 +");
-  run.equal("editing.input_cleared", state.input, "");
+  run.equal("entry.commit_after_backspace", state.expression, "7 +");
+  run.equal("entry.input_cleared", state.input, "");
 
   // An empty 回车 must not add an operand or touch the expression/history.
   await pressEnter(page);
   state = await readState(page);
-  run.equal("editing.empty_enter_expression", state.expression, "7 +");
-  run.equal("editing.empty_enter_history", state.historyCount, 0);
+  run.equal("entry.empty_enter_expression", state.expression, "7 +");
+  run.equal("entry.empty_enter_history", state.historyCount, 1);
   await run.capture(page, "empty-enter-adds-nothing");
-
-  // Backspace on an empty display is a no-op.
-  await pressBackspace(page);
-  run.equal("editing.backspace_on_empty", (await readState(page)).input, "");
-  await pressBackspace(page);
-  run.equal("editing.backspace_on_empty_twice", (await readState(page)).state, "input");
 
   await pressEquals(page);
   state = await readState(page);
-  run.equal("editing.single_operand_result", state.result, "7");
-  run.equal("editing.history_count", state.historyCount, 1);
+  run.equal("entry.single_operand_result", state.result, "7");
+  run.equal("entry.history_count", state.historyCount, 2);
   await run.capture(page, "single-operand-result");
+
+  // The page also accepts a physical keyboard: digits, Enter, =, Backspace.
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await page.keyboard.type("45");
+  await page.keyboard.press("Enter");
+  await page.keyboard.type("5");
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("=");
+  state = await readState(page);
+  run.equal("keyboard.sum_result", state.result, "50");
+  run.equal("keyboard.sum_expression", state.expression, "45 + 5");
+  run.equal("keyboard.sum_history", state.historyCount, 3);
+  await run.capture(page, "physical-keyboard-entry");
+
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await page.keyboard.type("9");
+  await page.keyboard.press("Backspace");
+  run.equal("keyboard.backspace_input", (await readState(page)).input, "");
+}
+
+async function backspaceUndo({ openPage, run }) {
+  const page = await openPage();
+
+  await chooseOperator(page, "+");
+  await commitNumber(page, "9.5");
+  await commitNumber(page, "9.2");
+  let state = await readState(page);
+  run.equal("undo.start_expression", state.expression, "9.5 + 9.2 +");
+
+  await pressBackspace(page);
+  state = await readState(page);
+  run.equal("undo.first_expression", state.expression, "9.5 +");
+  run.equal("undo.first_label", state.label, "已撤回 9.2");
+  await run.capture(page, "undo-last-operand");
+
+  await pressBackspace(page);
+  state = await readState(page);
+  run.equal("undo.second_expression", state.expression, "");
+  run.equal("undo.second_label", state.label, "已撤回 9.5");
+
+  await pressBackspace(page);
+  run.equal("undo.exhausted_expression", (await readState(page)).expression, "");
+  await run.capture(page, "undo-exhausted");
+
+  await commitNumber(page, "7");
+  await pressEquals(page);
+  state = await readState(page);
+  run.equal("undo.result_state", state.state, "result");
+  run.equal("undo.result_value", state.result, "7");
+  await pressBackspace(page);
+  state = await readState(page);
+  run.equal("undo.result_not_removed", state.result, "7");
+  run.equal("undo.result_state_kept", state.state, "result");
+  await run.capture(page, "result-is-not-undoable");
+
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await commitNumber(page, "2");
+  await commitNumber(page, "3");
+  await pressEquals(page);
+  await page.locator(SEL.historyEdit).first().click();
+  await pressBackspace(page);
+  state = await readState(page);
+  run.equal("undo.edit_chip_count", await page.locator(SEL.operandChip).count(), 1);
+  run.equal("undo.edit_expression", state.expression, "2 +");
+  run.equal("undo.edit_label", state.label, "已撤回 3");
+  await run.capture(page, "undo-in-edit-draft");
+}
+
+async function settingsPanel({ openPage, run }) {
+  const page = await openPage();
+  const toggle = page.locator('[data-testid="settings-toggle"]');
+  const panel = page.locator('[data-testid="settings-panel"]');
+  const panelOpen = () => panel.evaluate((element) => element.open);
+  const indicator = page.locator('[data-testid="settings-indicator"]');
+
+  run.equal("settings.toggle_visible", await toggle.isVisible(), true);
+  const box = await toggle.boundingBox();
+  run.check("settings.toggle_min_44", box.width >= 44 && box.height >= 44, JSON.stringify(box));
+  run.equal("settings.panel_closed_initially", await panelOpen(), false);
+  run.equal("settings.indicator_hidden_initially", await indicator.isHidden(), true);
+  await run.capture(page, "settings-toggle-closed");
+
+  await toggle.click();
+  run.equal("settings.panel_open", await panelOpen(), true);
+  run.equal("settings.aria_expanded", await toggle.getAttribute("aria-expanded"), "true");
+  run.equal("settings.auto_confirm_options", await page.locator('[data-testid="settings-auto-confirm"] option').count(), 23);
+  run.equal(
+    "settings.auto_confirm_default",
+    await page.locator('[data-testid="settings-auto-confirm"]').inputValue(),
+    "0",
+  );
+  run.equal("settings.auto_equals_default", await page.locator('[data-testid="settings-auto-equals"]').inputValue(), "0");
+  const autoEqualsName = await page.locator('[data-testid="settings-auto-equals"]').getAttribute("aria-label");
+  run.check(
+    "settings.auto_equals_label",
+    /自动/.test(autoEqualsName || "") && /等号/.test(autoEqualsName || ""),
+    autoEqualsName,
+  );
+  const autoEqualsHint = (await page.locator('[data-testid="auto-equals-hint"]').innerText()).trim();
+  run.check("settings.auto_equals_hint", /等号|=/.test(autoEqualsHint), autoEqualsHint);
+  run.equal("settings.base_default_unchecked", await page.locator('[data-testid="settings-base-toggle"]').isChecked(), false);
+  run.equal("settings.base_input_disabled", await page.locator('[data-testid="settings-base-value"]').isDisabled(), true);
+  await page.waitForFunction(
+    () => document.activeElement?.getAttribute("data-testid") === "settings-auto-confirm",
+  );
+  run.equal("settings.focus_in_panel", true, true);
+  await run.capture(page, "settings-panel-open");
+
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => !document.querySelector('[data-testid="settings-panel"]').open);
+  run.equal("settings.escape_closes", await panelOpen(), false);
+  await page.waitForFunction(
+    () => document.activeElement?.getAttribute("data-testid") === "settings-toggle",
+  );
+  run.equal("settings.focus_returns_to_toggle", true, true);
+
+  await toggle.click();
+  await page.locator('[data-testid="settings-auto-confirm"]').selectOption("1.5");
+  await page.locator('[data-testid="settings-base-toggle"]').check();
+  run.equal("settings.base_input_enabled", await page.locator('[data-testid="settings-base-value"]').isEnabled(), true);
+  await page.locator('[data-testid="settings-base-value"]').fill("10");
+  run.equal("settings.indicator_visible_when_changed", await indicator.isVisible(), true);
+  await page.locator('[data-testid="settings-done"]').click();
+  await page.waitForFunction(() => !document.querySelector('[data-testid="settings-panel"]').open);
+  run.equal("settings.done_closes", await panelOpen(), false);
+  await run.capture(page, "settings-configured");
+
+  await page.reload({ waitUntil: "load" });
+  run.equal("settings.persist_indicator", await indicator.isVisible(), true);
+  await toggle.click();
+  run.equal(
+    "settings.persist_auto_confirm",
+    await page.locator('[data-testid="settings-auto-confirm"]').inputValue(),
+    "1.5",
+  );
+  run.equal("settings.persist_base_enabled", await page.locator('[data-testid="settings-base-toggle"]').isChecked(), true);
+  run.equal("settings.persist_base_value", await page.locator('[data-testid="settings-base-value"]').inputValue(), "10");
+  await run.capture(page, "settings-persist-after-reload");
+
+  await page.keyboard.press("Escape");
+  await chooseOperator(page, "+");
+  await commitNumber(page, "1");
+  await pressEquals(page);
+  await pressReset(page);
+  run.equal("settings.reset_state", (await readState(page)).state, "select");
+  run.equal("settings.reset_keeps_settings", await indicator.isVisible(), true);
+}
+
+async function autoConfirm({ openPage, run }) {
+  const page = await openPage();
+
+  await setSettings(page, { autoConfirm: 2 });
+  await chooseOperator(page, "+");
+  await tapKeys(page, "95");
+  await waitForExpression(page, "95 +");
+  let state = await readState(page);
+  run.equal("auto_confirm.input_cleared", state.input, "");
+  run.check("auto_confirm.label", state.label.includes("已确认 95"), state.label);
+  const undoHint = page.locator('[data-testid="undo-hint"]');
+  run.equal("auto_confirm.undo_hint_visible", await undoHint.isVisible(), true);
+  run.check("auto_confirm.undo_hint_text", (await undoHint.innerText()).includes("95"), await undoHint.innerText());
+  run.equal("auto_confirm.progress_inactive_after_commit", await progressActive(page), false);
+  await run.capture(page, "auto-confirmed-number");
+
+  // Every keystroke restarts the timer.
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await tapKeys(page, "9");
+  await page.waitForTimeout(900);
+  run.equal("auto_confirm.timer_active", await progressActive(page), true);
+  run.equal("auto_confirm.not_committed_yet", (await readState(page)).input, "9");
+  await tapKeys(page, "5");
+  await page.waitForTimeout(700);
+  state = await readState(page);
+  run.equal("auto_confirm.restarted_expression", state.expression, "");
+  run.equal("auto_confirm.restarted_input", state.input, "95");
+  await waitForExpression(page, "95 +");
+  await run.capture(page, "timer-restarts-on-keystroke");
+
+  // A trailing decimal point must not be auto-confirmed.
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await tapKeys(page, "9.");
+  await page.waitForTimeout(2500);
+  state = await readState(page);
+  run.equal("auto_confirm.trailing_dot_input", state.input, "9.");
+  run.equal("auto_confirm.trailing_dot_expression", state.expression, "");
+  await tapKeys(page, "5");
+  await waitForExpression(page, "9.5 +");
+  await run.capture(page, "trailing-dot-not-confirmed");
+
+  // t = 0 disables auto-confirm.
+  await setSettings(page, { autoConfirm: 0 });
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await tapKeys(page, "9");
+  await page.waitForTimeout(1500);
+  state = await readState(page);
+  run.equal("auto_confirm.disabled_input", state.input, "9");
+  run.equal("auto_confirm.disabled_expression", state.expression, "");
+  await run.capture(page, "auto-confirm-off");
+
+  // The settings dialog pauses the timer; closing restarts the full wait.
+  await setSettings(page, { autoConfirm: 2 });
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await tapKeys(page, "9");
+  await page.locator('[data-testid="settings-toggle"]').click();
+  await page.waitForTimeout(2500);
+  state = await readState(page);
+  run.equal("auto_confirm.paused_input", state.input, "9");
+  run.equal("auto_confirm.paused_expression", state.expression, "");
+  await page.locator('[data-testid="settings-done"]').click();
+  await waitForExpression(page, "9 +");
+  await run.capture(page, "settings-panel-pauses-timer");
+}
+
+async function baseScore({ openPage, run }) {
+  const page = await openPage();
+  const baseMarker = page.locator('[data-testid="base-marker"]');
+
+  await setSettings(page, { baseEnabled: true, baseValue: "10" });
+  await chooseOperator(page, "+");
+  let state = await readState(page);
+  run.equal("base.expression_before_operands", state.expression, "10");
+  run.equal("base.marker_visible", await baseMarker.isVisible(), true);
+  run.equal("base.marker_text", (await baseMarker.innerText()).trim(), "基数 10");
+  run.equal("base.operator_label", state.label, "已选择 +，基数 10，请输入数字");
+  await run.capture(page, "base-marker-and-expression");
+
+  await commitNumber(page, "9.5");
+  await commitNumber(page, "9.2");
+  await commitNumber(page, "9");
+  await pressEquals(page);
+  state = await readState(page);
+  run.equal("base.sum_result", state.result, "37.7");
+  run.equal("base.sum_expression", state.expression, "10 + 9.5 + 9.2 + 9");
+  run.check("base.result_label", state.label.includes("基数 10"), state.label);
+  let history = await historySnapshot(page);
+  run.equal("base.history_data_base", history[0]?.base, "10");
+  run.equal("base.history_expression", history[0]?.expression, "10 + 9.5 + 9.2 + 9");
+  await run.capture(page, "base-in-sum-and-history");
+
+  await setSettings(page, { baseEnabled: false });
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  run.equal("base.off_expression_empty", (await readState(page)).expression, "");
+  await commitNumber(page, "9.5");
+  await commitNumber(page, "9.2");
+  await commitNumber(page, "9");
+  await pressEquals(page);
+  state = await readState(page);
+  run.equal("base.off_sum_result", state.result, "27.7");
+  run.equal("base.off_sum_expression", state.expression, "9.5 + 9.2 + 9");
+  history = await historySnapshot(page);
+  run.equal("base.off_history_data_base", history[0]?.base, null);
+  await run.capture(page, "base-disabled");
+
+  await setSettings(page, { baseEnabled: true, baseValue: "100" });
+  await pressReset(page);
+  await chooseOperator(page, "/");
+  await commitNumber(page, "4");
+  await pressEquals(page);
+  state = await readState(page);
+  run.equal("base.division_result", state.result, "25");
+  run.equal("base.division_expression", state.expression, "100 / 4");
+  await run.capture(page, "base-in-division");
+
+  await setSettings(page, { baseValue: "0" });
+  await pressReset(page);
+  await chooseOperator(page, "*");
+  await commitNumber(page, "5");
+  await pressEquals(page);
+  state = await readState(page);
+  run.equal("base.zero_result", state.result, "0");
+  run.equal("base.zero_expression", state.expression, "0 * 5");
+  history = await historySnapshot(page);
+  run.equal("base.zero_history_data_base", history[0]?.base, "0");
+  await run.capture(page, "base-zero");
+
+  // History keeps the base snapshot it was computed with.
+  await setSettings(page, { baseValue: "10" });
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await commitNumber(page, "9.5");
+  await commitNumber(page, "9.2");
+  await commitNumber(page, "9");
+  await pressEquals(page);
+  await setSettings(page, { baseValue: "100" });
+  await page.locator(SEL.historyEdit).first().click();
+  state = await readState(page);
+  run.equal(
+    "base.edit_old_expression",
+    state.expression,
+    "10 + 9.5 + 9.2 + 9 +",
+  );
+  run.equal(
+    "base.edit_marker_text",
+    (await page.locator('[data-testid="edit-base-marker"]').innerText()).trim(),
+    "基数 10",
+  );
+  await pressEquals(page);
+  state = await readState(page);
+  run.equal("base.edit_old_result", state.result, "37.7");
+  history = await historySnapshot(page);
+  run.equal("base.edit_old_history_base", history[0]?.base, "10");
+  await run.capture(page, "history-keeps-base-snapshot");
+
+  // A new calculation uses the current base.
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await commitNumber(page, "1");
+  await pressEquals(page);
+  state = await readState(page);
+  run.equal("base.current_result", state.result, "101");
+  run.equal("base.current_expression", state.expression, "100 + 1");
+
+  // Changing the base mid-entry redraws the unfinished expression.
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await tapKeys(page, "5");
+  await setSettings(page, { baseValue: "200" });
+  state = await readState(page);
+  run.equal("base.live_expression", state.expression, "200");
+  run.equal("base.live_input_kept", state.input, "5");
+  await pressEnter(page);
+  await pressEquals(page);
+  state = await readState(page);
+  run.equal("base.live_result", state.result, "205");
+  run.equal("base.live_final_expression", state.expression, "200 + 5");
+  await run.capture(page, "base-changed-mid-entry");
+}
+
+async function autoEquals({ openPage, run }) {
+  const page = await openPage();
+
+  // Set N = 3: the third committed number folds the expression without "=".
+  await setSettings(page, { autoEquals: 3 });
+  await chooseOperator(page, "+");
+  await commitNumber(page, "95");
+  let state = await readState(page);
+  run.equal("auto_equals.before_n.state", state.state, "input");
+  run.equal("auto_equals.before_n.expression", state.expression, "95 +");
+  run.equal("auto_equals.before_n.result", state.result, "");
+  await commitNumber(page, "92");
+  state = await readState(page);
+  run.equal("auto_equals.second.state", state.state, "input");
+  run.equal("auto_equals.second.expression", state.expression, "95 + 92 +");
+  run.equal("auto_equals.second.result", state.result, "");
+  await commitNumber(page, "90");
+  state = await readState(page);
+  run.equal("auto_equals.third.state", state.state, "result");
+  run.equal("auto_equals.third.expression", state.expression, "95 + 92 + 90");
+  run.equal("auto_equals.third.result", state.result, "277");
+  run.equal("auto_equals.third.result_value", state.resultValue, "277");
+  run.equal("auto_equals.third.input", state.input, "");
+  run.equal("auto_equals.third.history", state.historyCount, 1);
+  let history = await historySnapshot(page);
+  run.equal("auto_equals.third.history_expression", history[0]?.expression, "95 + 92 + 90");
+  run.equal("auto_equals.third.history_result", history[0]?.result, "277");
+  await run.capture(page, "auto-equals-after-third-number");
+
+  // N = 1 folds a single committed number into itself.
+  await setSettings(page, { autoEquals: 1 });
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await commitNumber(page, "8");
+  state = await readState(page);
+  run.equal("auto_equals.n1.state", state.state, "result");
+  run.equal("auto_equals.n1.result", state.result, "8");
+  run.equal("auto_equals.n1.history", state.historyCount, 2);
+  await run.capture(page, "auto-equals-single-number");
+
+  // The base is the starting operand and is not counted toward N.
+  await setSettings(page, { autoEquals: 3, baseEnabled: true, baseValue: "10" });
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await commitNumber(page, "95");
+  await commitNumber(page, "92");
+  state = await readState(page);
+  run.equal("auto_equals.base.before_n.state", state.state, "input");
+  run.equal("auto_equals.base.before_n.expression", state.expression, "10 + 95 + 92 +");
+  run.equal("auto_equals.base.before_n.result", state.result, "");
+  await commitNumber(page, "90");
+  state = await readState(page);
+  run.equal("auto_equals.base.result", state.result, "287");
+  run.equal("auto_equals.base.expression", state.expression, "10 + 95 + 92 + 90");
+  history = await historySnapshot(page);
+  run.equal("auto_equals.base.history_base", history[0]?.base, "10");
+  await run.capture(page, "auto-equals-with-base");
+  await setSettings(page, { baseEnabled: false });
+
+  // Without an operator nothing folds; choosing one does not trigger either.
+  await setSettings(page, { autoEquals: 2 });
+  await pressReset(page);
+  await commitNumber(page, "1");
+  await commitNumber(page, "2");
+  state = await readState(page);
+  run.equal("auto_equals.no_operator.state", state.state, "input");
+  run.equal("auto_equals.no_operator.result", state.result, "");
+  await chooseOperator(page, "+");
+  state = await readState(page);
+  run.equal("auto_equals.no_operator.after_choice_state", state.state, "input");
+  run.equal("auto_equals.no_operator.after_choice_result", state.result, "");
+  await commitNumber(page, "3");
+  state = await readState(page);
+  run.equal("auto_equals.no_operator.third.result", state.result, "6");
+  run.equal("auto_equals.no_operator.third.expression", state.expression, "1 + 2 + 3");
+  await run.capture(page, "auto-equals-needs-operator");
+
+  // The edit draft never auto-folds.
+  await setSettings(page, { autoEquals: 2 });
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await commitNumber(page, "5");
+  await commitNumber(page, "5");
+  state = await readState(page);
+  run.equal("auto_equals.edit_setup.result", state.result, "10");
+  const beforeEdit = state.historyCount;
+  await setSettings(page, { autoEquals: 1 });
+  await page.locator(SEL.historyEdit).first().click();
+  run.equal("auto_equals.edit.state", (await readState(page)).state, "edit");
+  await tapKeys(page, "3");
+  await pressEnter(page);
+  state = await readState(page);
+  run.equal("auto_equals.edit.still_edit", state.state, "edit");
+  run.equal("auto_equals.edit.history_unchanged", state.historyCount, beforeEdit);
+  await page.locator('[data-testid="edit-cancel"]').click();
+  run.equal("auto_equals.edit.cancel_state", (await readState(page)).state, "result");
+  await run.capture(page, "auto-equals-does-not-fire-in-edit");
+
+  // Auto-confirm commits count too: N = 2 with a 2 s pause.
+  await setSettings(page, { autoEquals: 2, autoConfirm: 2 });
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await tapKeys(page, "95");
+  await waitForExpression(page, "95 +");
+  state = await readState(page);
+  run.equal("auto_equals.auto_confirm.first.state", state.state, "input");
+  run.equal("auto_equals.auto_confirm.first.result", state.result, "");
+  await tapKeys(page, "92");
+  await waitForExpression(page, "95 + 92");
+  state = await readState(page);
+  run.equal("auto_equals.auto_confirm.second.state", state.state, "result");
+  run.equal("auto_equals.auto_confirm.second.result", state.result, "187");
+  await run.capture(page, "auto-equals-with-auto-confirm");
+  await setSettings(page, { autoConfirm: 0 });
+
+  // Division by zero at the threshold keeps the manual "=" semantics.
+  await setSettings(page, { autoEquals: 2 });
+  await pressReset(page);
+  await chooseOperator(page, "/");
+  await commitNumber(page, "5");
+  run.equal("auto_equals.divzero.before_zero.state", (await readState(page)).state, "input");
+  await commitNumber(page, "0");
+  state = await readState(page);
+  run.equal("auto_equals.divzero.state", state.state, "error");
+  run.equal("auto_equals.divzero.result", state.result, "不能除以零");
+  run.equal("auto_equals.divzero.result_error", state.resultIsError, true);
+  await run.capture(page, "auto-equals-division-by-zero");
+
+  // A threshold change alone does not fold an already-satisfied count.
+  await setSettings(page, { autoEquals: 0 });
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await commitNumber(page, "1");
+  await commitNumber(page, "2");
+  await setSettings(page, { autoEquals: 2 });
+  state = await readState(page);
+  run.equal("auto_equals.threshold_change.state", state.state, "input");
+  run.equal("auto_equals.threshold_change.result", state.result, "");
+  await commitNumber(page, "3");
+  run.equal("auto_equals.threshold_change.next_result", (await readState(page)).result, "6");
+
+  // N = 0 is off: the user still presses "=" manually.
+  await setSettings(page, { autoEquals: 0 });
+  await pressReset(page);
+  await chooseOperator(page, "+");
+  await commitNumber(page, "95");
+  await commitNumber(page, "92");
+  await commitNumber(page, "90");
+  state = await readState(page);
+  run.equal("auto_equals.off.state", state.state, "input");
+  run.equal("auto_equals.off.result", state.result, "");
+  await pressEquals(page);
+  run.equal("auto_equals.off.manual_result", (await readState(page)).result, "277");
+  await run.capture(page, "auto-equals-off");
+
+  // The count survives a reload.
+  await setSettings(page, { autoEquals: 3 });
+  await page.reload({ waitUntil: "load" });
+  run.equal(
+    "auto_equals.persist_indicator",
+    await page.locator('[data-testid="settings-indicator"]').isVisible(),
+    true,
+  );
+  await page.locator('[data-testid="settings-toggle"]').click();
+  run.equal(
+    "auto_equals.persist_value",
+    await page.locator('[data-testid="settings-auto-equals"]').inputValue(),
+    "3",
+  );
+  await page.keyboard.press("Escape");
 }
 
 async function stickyChaining({ openPage, run }) {
@@ -379,7 +939,7 @@ async function editHistory({ openPage, run }) {
   run.equal("edit.draft_visible", await page.locator(SEL.editDraft).isVisible(), true);
   run.equal("edit.operand_chips", await page.locator(SEL.operandChip).count(), 2);
   run.equal("edit.operator_glyph", (await page.locator(SEL.editOperator).innerText()).trim(), "+");
-  run.equal("edit.expression", state.expression, "2 + 3");
+  run.equal("edit.expression", state.expression, "2 + 3 +");
   const originalChips = await page
     .locator(SEL.operandInput)
     .evaluateAll((inputs) => inputs.map((input) => input.value));
@@ -388,7 +948,7 @@ async function editHistory({ openPage, run }) {
 
   await page.locator(SEL.operandInput).first().fill("10");
   state = await readState(page);
-  run.equal("edit.operand_change_expression", state.expression, "10 + 3");
+  run.equal("edit.operand_change_expression", state.expression, "10 + 3 +");
   await run.capture(page, "operand-changed");
 
   await pressEquals(page);
@@ -406,7 +966,7 @@ async function editHistory({ openPage, run }) {
   await chooseOperator(page, "*");
   state = await readState(page);
   run.equal("edit.switched_operator_glyph", (await page.locator(SEL.editOperator).innerText()).trim(), "*");
-  run.equal("edit.switched_expression", state.expression, "10 * 3");
+  run.equal("edit.switched_expression", state.expression, "10 * 3 *");
   await run.capture(page, "operator-changed-while-editing");
 
   await pressEquals(page);
@@ -425,6 +985,32 @@ async function editHistory({ openPage, run }) {
   run.equal("edit.single_operand_result", state.result, "10");
   run.equal("edit.single_operand_history_count", state.historyCount, 4);
   await run.capture(page, "operand-removed-and-recomputed");
+
+  // Focusing an operand clears it for immediate replacement; leaving restores it.
+  await page.locator(SEL.historyEdit).first().click();
+  const operand = page.locator(SEL.operandInput).first();
+  await operand.click();
+  run.equal("edit.pending_cleared_on_focus", await operand.inputValue(), "");
+  run.equal(
+    "edit.pending_marker",
+    await page.locator('[data-pending="true"]').count(),
+    1,
+  );
+  await page.locator("#edit-hint").click();
+  run.equal("edit.pending_restored_on_blur", await operand.inputValue(), "10");
+  run.equal("edit.pending_marker_cleared", await page.locator('[data-pending="true"]').count(), 0);
+  await run.capture(page, "edit-pending-operand");
+
+  // Cancel restores the pre-edit view and leaves the history untouched.
+  await operand.fill("99");
+  await page.locator('[data-testid="edit-cancel"]').click();
+  state = await readState(page);
+  run.equal("edit.cancel_state", state.state, "result");
+  run.equal("edit.cancel_expression", state.expression, "10");
+  run.equal("edit.cancel_result", state.result, "10");
+  run.equal("edit.cancel_history_count", state.historyCount, 4);
+  run.equal("edit.cancel_chip_count", await page.locator(SEL.operandChip).count(), 0);
+  await run.capture(page, "edit-cancelled-restores");
 }
 
 async function divisionByZero({ openPage, run }) {
@@ -476,7 +1062,7 @@ async function divisionByZero({ openPage, run }) {
   run.equal("reset_recovery.state", state.state, "select");
   run.equal("reset_recovery.expression", state.expression, "");
   run.equal("reset_recovery.result", state.result, "");
-  run.equal("reset_recovery.keypad_disabled", await page.locator(keySel("1")).isDisabled(), true);
+  run.equal("reset_recovery.keypad_enabled", await page.locator(keySel("1")).isEnabled(), true);
   await run.capture(page, "recovered-by-operator-reset");
 }
 
@@ -571,6 +1157,68 @@ async function mobileLayout({ openPage, run }) {
     await assertNoOverflow("edit-draft");
     await run.capture(page, `edit-draft-${tag}`);
 
+    await page.locator('[data-testid="edit-cancel"]').click();
+
+    // Settings dialog must fit and stay touchable at this width.
+    await page.locator('[data-testid="settings-toggle"]').click();
+    await assertNoOverflow("settings-open");
+    const panelBox = await page.locator('[data-testid="settings-panel"]').boundingBox();
+    run.check(
+      `layout_${tag}.settings_panel_fits`,
+      panelBox.x >= 0 && panelBox.x + panelBox.width <= viewport.width + 0.5,
+      JSON.stringify(panelBox),
+    );
+    const panelControls = await page
+      .locator(
+        '[data-testid="settings-panel"] input:visible, [data-testid="settings-panel"] select:visible, [data-testid="settings-panel"] button:visible',
+      )
+      .evaluateAll((elements) =>
+        elements.map((element) => {
+          const rect = element.getBoundingClientRect();
+          return {
+            id: element.getAttribute("data-testid"),
+            width: Math.round(rect.width * 100) / 100,
+            height: Math.round(rect.height * 100) / 100,
+          };
+        }),
+      );
+    run.check(
+      `layout_${tag}.settings_targets_min_44`,
+      panelControls.every((control) => control.width >= 44 && control.height >= 44),
+      `controls=${JSON.stringify(panelControls)}`,
+    );
+    const panelFonts = await page
+      .locator('[data-testid="settings-panel"] select, [data-testid="settings-panel"] input[type="text"]')
+      .evaluateAll((elements) => elements.map((element) => parseFloat(getComputedStyle(element).fontSize)));
+    run.check(
+      `layout_${tag}.settings_font_min_16`,
+      panelFonts.every((font) => font >= 16),
+      `fonts=${panelFonts.join(",")}`,
+    );
+    await run.capture(page, `settings-panel-${tag}`);
+
+    // Base marker and auto-confirm progress must not widen the page either.
+    await page.locator('[data-testid="settings-auto-confirm"]').selectOption("2");
+    await page.locator('[data-testid="settings-base-toggle"]').check();
+    await page.locator('[data-testid="settings-base-value"]').fill("10");
+    await page.locator('[data-testid="settings-done"]').click();
+    await pressReset(page);
+    await chooseOperator(page, "+");
+    run.equal(
+      `layout_${tag}.base_marker_visible`,
+      await page.locator('[data-testid="base-marker"]').isVisible(),
+      true,
+    );
+    await assertNoOverflow("base-marker");
+    await tapKeys(page, "9");
+    await page.waitForTimeout(200);
+    run.equal(`layout_${tag}.progress_active`, await progressActive(page), true);
+    const progressBox = await page.locator('[data-testid="auto-confirm-progress"]').boundingBox();
+    run.check(`layout_${tag}.progress_is_thin`, progressBox.height <= 4, JSON.stringify(progressBox));
+    await assertNoOverflow("progress");
+    await run.capture(page, `base-and-progress-${tag}`);
+    await pressReset(page);
+
     await page.context().close();
   }
 }
@@ -578,7 +1226,12 @@ async function mobileLayout({ openPage, run }) {
 const SCENARIOS = {
   "basic-addition": { feature: "addition-and-equals", run: basicAddition },
   "operator-coverage": { feature: "addition-and-equals", run: operatorCoverage },
-  "input-editing": { feature: "addition-and-equals", run: inputEditing },
+  "number-entry": { feature: "number-entry", run: numberEntry },
+  "backspace-undo": { feature: "backspace-undo", run: backspaceUndo },
+  "settings-panel": { feature: "score-tally-settings", run: settingsPanel },
+  "auto-confirm": { feature: "score-tally-settings", run: autoConfirm },
+  "base-score": { feature: "score-tally-settings", run: baseScore },
+  "auto-equals": { feature: "auto-equals", run: autoEquals },
   "sticky-chaining": { feature: "chained-calculations", run: stickyChaining },
   "edit-history": { feature: "edit-history", run: editHistory },
   "division-by-zero": { feature: "division-by-zero", run: divisionByZero },

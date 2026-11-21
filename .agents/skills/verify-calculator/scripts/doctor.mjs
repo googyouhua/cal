@@ -29,10 +29,22 @@ const REQUIRED_TESTIDS = [
   "op-picker",
   "key-equals",
   "edit-draft",
+  "edit-cancel",
   "operand-chips",
   "history",
   "history-list",
   "history-empty",
+  "settings-toggle",
+  "settings-panel",
+  "settings-auto-confirm",
+  "settings-auto-equals",
+  "auto-equals-hint",
+  "settings-base-toggle",
+  "settings-base-value",
+  "settings-done",
+  "settings-indicator",
+  "auto-confirm-progress",
+  "base-marker",
 ];
 
 function parseArgs(argv) {
@@ -167,19 +179,31 @@ async function main() {
     const state = await page.locator(".app").getAttribute("data-state");
     const opButtons = await page.locator("[data-op]").count();
     const keyCount = await page.locator("[data-key]").count();
-    const firstKeyDisabled = await page.locator('[data-key="1"]').isDisabled();
-    const keypadEnabledAfterSelect = await page
-      .locator('[data-key="1"]')
-      .isEnabled()
-      .catch(() => false);
+    const disabledKeys = await page.locator("[data-key]:disabled").count();
+    const settingsToggle = page.locator('[data-testid="settings-toggle"]');
+    await settingsToggle.click();
+    const panel = page.locator('[data-testid="settings-panel"]');
+    const panelOpen = await panel.evaluate((element) => element.open);
+    const autoConfirmOptions = await page.locator('[data-testid="settings-auto-confirm"] option').count();
+    await page.locator('[data-testid="settings-done"]').click();
+    await page.waitForFunction(() => !document.querySelector('[data-testid="settings-panel"]').open);
+    const panelClosed = !(await panel.evaluate((element) => element.open));
 
     const bootOk =
-      state === "select" && opButtons === 4 && keyCount === 14 && firstKeyDisabled && errors.length === 0;
+      state === "select" &&
+      opButtons === 4 &&
+      keyCount === 14 &&
+      disabledKeys === 0 &&
+      panelOpen &&
+      panelClosed &&
+      autoConfirmOptions === 23 &&
+      errors.length === 0;
     record(
       "browser_boot",
       bootOk,
-      `state=${state} op_buttons=${opButtons} keys=${keyCount} keys_disabled_in_select=${firstKeyDisabled} ` +
-        `keypad_enabled_without_operator=${keypadEnabledAfterSelect} console_errors=${errors.length}`,
+      `state=${state} op_buttons=${opButtons} keys=${keyCount} disabled_keys=${disabledKeys} ` +
+        `settings_panel_opens=${panelOpen} settings_panel_closes=${panelClosed} ` +
+        `auto_confirm_options=${autoConfirmOptions} console_errors=${errors.length}`,
     );
     if (errors.length > 0) {
       for (const error of errors.slice(0, 5)) console.log(`  console: ${error}`);
