@@ -1,0 +1,15 @@
+ROUND: 1
+ARTIFACT_SHA256: 113cc7e749e6adcaf34ffcd9fd5005408d75a090ac01215f5c8eacc227363d45
+TREE_SHA256: 4c455709e61864133f5272e006847431d6e2d86641e85baa869fbc7a4698a450
+VERIFIER_SHA256: 84200c8953aba56d52321f54ea4a0d7d92496eab5346b47a8dfb3d9342b57906
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 1
+ARTIFACT_SHA256: 113cc7e749e6adcaf34ffcd9fd5005408d75a090ac01215f5c8eacc227363d45
+H1 PASS — digits 0-9 each vib=[10] input==digit; dot vib=[10] input="1."; backspace vib=[10] input 123->"12"; enter vib=[10] input="" expr="9"; equals vib=[10] result[data-value]="3"; ops +,-,*,/ each vib=[10] app[data-operator]==op; 5x1>=60ms len=5 vals=[10,10,10,10,10]; all 5-30ms
+H2 PASS — settings-haptics INPUT|checkbox default checked=true; done+1 vib=[10]; uncheck->false done+1 vib=[] input "1"->"11" append ok; reload checked=false +1 vib=[] input="1"; recheck reload checked=true +1 vib=[10]; auto-confirm="1" baseToggle=true baseValue="10" persist; ls cal-phone.settings.v1 JSON parse ok; pe=0 ce=0
+H3 PASS — A vibrate=undefined: i1="1" i2="12" enter expr="12" panel open=true pe=0 ce=0; B throw vibration-blocked: i1="1" i2="12" expr="12" panel open=true pe=0 ce=0; B+3 input="3" not stuck
+H4 PASS — auto-confirm 0.2: 9 vib=[10] len=1 after 600ms expr="9"; auto-equals 2: + 9 enter 5 enter vib len=4 vals=[10,10,10,10] result[data-value]="14" hist=1 no growth after 400ms; idle 200ms len=0 settings open/close len=0 history view len=0
+H5 PASS — runSuite ids={self-contained,cold-start,compute,arithmetic,history-order,reset,continuity,error-recovery,sticky-operator,edit-recompute,edit-multi,edit-invalid,edit-divzero,edit-cancel-restore,edit-pending-replace,edit-pending-recent-value,layout,determinism} all pass chunked; cold-start.keys-enabled detail=0; fixed-coord 1-5 inputs 1,12,123,1234,12345 on and haptics-off identical
+H6 PASS — </html> true bytes=92809>=1024 externalRefs=0 (<script src,<link href,<img src,@import,url(http); H1-H5 pages total pe=0 ce=0; no truncation
+HARD: PASS

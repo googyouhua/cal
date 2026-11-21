@@ -46,5 +46,7 @@ kekkai status /ws/cal_phone-worktrees/keypad/Telos/phone-calculator-keypad-11151
 <!-- archives:start -->
 | 时间 | 分支 | gate | STOP | artifact | TREE | 归档目录 |
 |---|---|---|---|---|---|---|
+| 2026-11-21T12:42:05.553Z | haptic-feedback | phone-calculator-haptic-key-feedback-muse-112111 | STOP: rounds=1 reason=converged | `113cc7e749e6` | `4c455709e618` | `haptic-feedback/phone-calculator-haptic-key-feedback-muse-112111` |
+| 2026-11-21T12:42:05.469Z | haptic-feedback | phone-calculator-haptic-key-feedback-112111 | STOP: rounds=0 reason=blocked by=host | `113cc7e749e6` | `—` | `haptic-feedback/phone-calculator-haptic-key-feedback-112111` |
 | 2026-11-16T12:55:01.393Z | keypad | phone-calculator-keypad-111513 | STOP: rounds=2 reason=converged | `630392827703` | `d29a0399df77` | `keypad/phone-calculator-keypad-111513` |
 <!-- archives:end -->

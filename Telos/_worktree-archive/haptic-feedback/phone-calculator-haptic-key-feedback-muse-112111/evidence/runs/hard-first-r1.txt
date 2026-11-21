@@ -1,0 +1,16 @@
+ROUND: 1
+ARTIFACT_SHA256: 113cc7e749e6adcaf34ffcd9fd5005408d75a090ac01215f5c8eacc227363d45
+TREE_SHA256: 4c455709e61864133f5272e006847431d6e2d86641e85baa869fbc7a4698a450
+VERIFIER_SHA256: 84200c8953aba56d52321f54ea4a0d7d92496eab5346b47a8dfb3d9342b57906
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 1
+ARTIFACT_SHA256: 113cc7e749e6adcaf34ffcd9fd5005408d75a090ac01215f5c8eacc227363d45
+VERIFIER_SHA256: 84200c8953aba56d52321f54ea4a0d7d92496eab5346b47a8dfb3d9342b57906
+H1 PASS — 0–9 each value=digit calls=[10]; dot value="1." [10]; backspace "123"→"12" [10]; enter expr="9" input="" [10]; equals result="3" [10]; ops +,-,*,/ data-operator match 1 call each [10]; burst 5x count=5 [10,10,10,10,10]
+H2 PASS — panel open, settings-haptics INPUT/checkbox/checked=true count=1; on: click1 [10]; uncheck→checked=false, click1 calls=[] value="1"; reload→checked=false calls=[]; recheck+reload→checked=true click1 [10]; persist auto-confirm="1"/base-toggle=true/base-value="10", localStorage cal-phone.settings.v1 JSON-parse ok
+H3 PASS — vibrate=undefined: inputs "1"/"12", after-enter "" expr="12", panel open, 0 pageerrors/0 consoleErrors; vibrate-throws: same + then "3" continues, 0/0 errors
+H4 PASS — auto-confirm=0.2: click9+600ms calls=[10] expr="9"; auto-confirm=0/auto-equals=2: 9,enter,5,enter calls=[10,10,10,10] result="14" history=1 stable; idle200ms [] + panel/history []
+H5 PASS — suite 18/18 pass (self-contained,cold-start,compute,arithmetic,history-order,reset,continuity,error-recovery,sticky-operator,edit-recompute,edit-multi,edit-invalid,edit-divzero,edit-cancel-restore,edit-pending-replace,edit-pending-recent-value,layout,determinism), cold-start.keys-enabled present; coords 1→5 = ["1","12","123","1234","12345"] haptics-on and haptics-off
+H6 PASS — bytes=92809 close=true external=0, H1–H5 pageerrors=0 consoleErrors=0
+HARD: PASS

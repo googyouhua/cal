@@ -1,0 +1,16 @@
+ROUND: 1
+ARTIFACT_SHA256: 113cc7e749e6adcaf34ffcd9fd5005408d75a090ac01215f5c8eacc227363d45
+TREE_SHA256: 4c455709e61864133f5272e006847431d6e2d86641e85baa869fbc7a4698a450
+VERIFIER_SHA256: 84200c8953aba56d52321f54ea4a0d7d92496eab5346b47a8dfb3d9342b57906
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 1
+ARTIFACT_SHA256: 113cc7e749e6adcaf34ffcd9fd5005408d75a090ac01215f5c8eacc227363d45
+VERIFIER_SHA256: 84200c8953aba56d52321f54ea4a0d7d92496eab5346b47a8dfb3d9342b57906
+H1 PASS — key0:value="0" calls=[10] | key1:value="1" calls=[10] | key2:value="2" calls=[10] | key3:value="3" calls=[10] | key4:value="4" calls=[10] | key5:value="5" calls=[10] | key6:value="6" calls=[10] | key7:value="7" calls=[10] | key8:value="8" calls=[10] | key9:value="9" calls=[10] | dot:value="1." calls=[10] | backspace:value="12" calls=[10] | enter:input="" expr="9" calls=[10] | equals:result="3" calls=[10] | op+:data-operator="+" calls=[10] | op-:data-operator="-" calls=[10] | op*:data-operator="*" calls=[10] | op/:data-operator="/" calls=[10] | burst5:count=5 calls=[10,10,10,10,10]
+H2 PASS — panel-open=true haptics={"tag":"INPUT","type":"checkbox","checked":true} count=1 | haptics-on:click1 calls=[10] | after-uncheck checked=false | haptics-off:click1 value="1" calls=[] | reload-off checked=false calls=[] | after-recheck checked=true | reload-on checked=true calls=[10] | persist auto-confirm="1" base-toggle=true base-value="10" ls-parse=true ls={"autoConfirm":1,"autoEquals":0,"baseEnabled":true,"baseValue":"10","haptics":true,"voiceKeys":false,"voiceResult":false}
+H3 PASS — h3a:inputs="1"/"12" after="" expr="12" panel=true newPageErrors=0 newConsoleErrors=0 | h3b:inputs="1"/"12" after="" expr="12" panel=true newPageErrors=0 newConsoleErrors=0 then3="3"
+H4 PASS — auto-confirm:click9+600ms calls=[10] expr="9" | auto-equals:calls=[10,10,10,10] result="14" history=1 later=[10,10,10,10] | idle200ms=[] after-panel+history=[]
+H5 PASS — suite ids=["arithmetic","cold-start","compute","continuity","determinism","edit-cancel-restore","edit-divzero","edit-invalid","edit-multi","edit-pending-recent-value","edit-pending-replace","edit-recompute","error-recovery","history-order","layout","reset","self-contained","sticky-operator"] allPass=true keys-enabled=true self-contained:pass,cold-start:pass,compute:pass,arithmetic:pass,history-order:pass,reset:pass,continuity:pass,error-recovery:pass,sticky-operator:pass,edit-recompute:pass,edit-multi:pass,edit-invalid:pass,edit-divzero:pass,edit-cancel-restore:pass,edit-pending-replace:pass,edit-pending-recent-value:pass,layout:pass,determinism:pass | coords-haptics-on=["1","12","123","1234","12345"] | coords-haptics-off=["1","12","123","1234","12345"]
+H6 PASS — bytes=92809 close=true external=0(<script src=0,<link href=0,<img src=0,@import=0,url(http=0) pageerrors=0 consoleErrors=0
+HARD: PASS

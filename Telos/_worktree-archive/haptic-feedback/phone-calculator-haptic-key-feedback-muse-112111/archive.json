@@ -1,0 +1,35 @@
+{
+  "archived_at": "2026-11-21T12:42:05.553Z",
+  "source_worktree": "/ws/cal_phone-worktrees/haptics",
+  "source_branch": "haptic-feedback",
+  "source_head": "d6a48e6fb4efce879356ad35e71f126ff06e2a13",
+  "gate_slug": "phone-calculator-haptic-key-feedback-muse-112111",
+  "gate_status": "converged",
+  "gate_repo": "/ws/cal_phone-worktrees/haptics",
+  "gate_artifact": "/ws/cal_phone-worktrees/haptics/index.html",
+  "stop": "STOP: rounds=1 reason=converged",
+  "declared": {
+    "round": 1,
+    "artifact_sha256": "113cc7e749e6adcaf34ffcd9fd5005408d75a090ac01215f5c8eacc227363d45",
+    "tree_sha256": "4c455709e61864133f5272e006847431d6e2d86641e85baa869fbc7a4698a450",
+    "verifier_sha256": "84200c8953aba56d52321f54ea4a0d7d92496eab5346b47a8dfb3d9342b57906",
+    "run_file": "evidence/runs/hard-r1.txt"
+  },
+  "artifact": {
+    "path": "/ws/cal_phone-worktrees/haptics/index.html",
+    "sha256": "113cc7e749e6adcaf34ffcd9fd5005408d75a090ac01215f5c8eacc227363d45",
+    "declared_sha256": "113cc7e749e6adcaf34ffcd9fd5005408d75a090ac01215f5c8eacc227363d45",
+    "matches_declared": true,
+    "stale": false,
+    "copy": "verified-artifact/index.html",
+    "main_path": "/ws/cal_phone/index.html",
+    "main_sha256": "10e98f81de845651b49d463b3a0839a98b87399a961fc68231107b59c2198693",
+    "matches_main": false
+  },
+  "tree": {
+    "source_sha256_at_archive": "4c455709e61864133f5272e006847431d6e2d86641e85baa869fbc7a4698a450",
+    "main_sha256_at_archive": "178272833c30edd67967527d771c971cff76662c5f825cc3fe2b48ea419801bf",
+    "note": "TREE_SHA256 is content-based and includes every non-gate file; adding tooling/docs later changes it. The declared value comes from the gate run and is the authoritative one for that run."
+  },
+  "note": "Archived evidence belongs to the source worktree/checkout. It is not an active gate and does not attest later edits in the main worktree."
+}

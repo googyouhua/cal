@@ -1,0 +1,29 @@
+{
+  "archived_at": "2026-11-21T12:42:05.469Z",
+  "source_worktree": "/ws/cal_phone-worktrees/haptics",
+  "source_branch": "haptic-feedback",
+  "source_head": "d6a48e6fb4efce879356ad35e71f126ff06e2a13",
+  "gate_slug": "phone-calculator-haptic-key-feedback-112111",
+  "gate_status": "in-loop",
+  "gate_repo": "/ws/cal_phone-worktrees/haptics",
+  "gate_artifact": "/ws/cal_phone-worktrees/haptics/index.html",
+  "stop": "STOP: rounds=0 reason=blocked by=host",
+  "declared": null,
+  "artifact": {
+    "path": "/ws/cal_phone-worktrees/haptics/index.html",
+    "sha256": "113cc7e749e6adcaf34ffcd9fd5005408d75a090ac01215f5c8eacc227363d45",
+    "declared_sha256": null,
+    "matches_declared": false,
+    "stale": false,
+    "copy": null,
+    "main_path": "/ws/cal_phone/index.html",
+    "main_sha256": "10e98f81de845651b49d463b3a0839a98b87399a961fc68231107b59c2198693",
+    "matches_main": false
+  },
+  "tree": {
+    "source_sha256_at_archive": "4c455709e61864133f5272e006847431d6e2d86641e85baa869fbc7a4698a450",
+    "main_sha256_at_archive": "c5d600e5927e4daf02d6c3158747cf993247c415fc6d922487cbcdf2918148a5",
+    "note": "TREE_SHA256 is content-based and includes every non-gate file; adding tooling/docs later changes it. The declared value comes from the gate run and is the authoritative one for that run."
+  },
+  "note": "Archived evidence belongs to the source worktree/checkout. It is not an active gate and does not attest later edits in the main worktree."
+}

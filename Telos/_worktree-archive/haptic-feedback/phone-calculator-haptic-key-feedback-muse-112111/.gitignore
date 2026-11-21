@@ -1,0 +1,7 @@
+# Kekkai/Naraku runtime artifacts (textual verdicts, manifests and the era/attempt registries stay reviewable)
+evidence/**/*.png
+evidence/runs/*.jsonl
+evidence/runs/*.log
+evidence/attempts/
+evidence/scratch/
+naraku/
