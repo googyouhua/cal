@@ -1,0 +1,29 @@
+{
+  "round": 2,
+  "artifact_sha256": "079994ef89e70af852b9e48d0c30052c14ae6d54b9ded158df34749c35f7c25a",
+  "verifier_sha256": "ecc43a8b02144aa1544a7d1fe557f4c79fe3f276dcf0f911556298d17db63696",
+  "metrics_sha256": "1a633fd9b7aaf0aeab418b16d8461a9c68f7bb786d43c1fff849631342f9ef14",
+  "shots": [
+    {
+      "file": "S1.png",
+      "sha256": "34b7866238bd2a6264d3f992af06771be7be8be8aa54e8639fd9e4a27230117f",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "S2.png",
+      "sha256": "6829c4624b385fddf17b49a9fb9719febfcba9d187c42fe846d8865aa572d4b6",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "S3.png",
+      "sha256": "a31ab2a267bf1a6ecc4ac3c0ebb1069993198a10f212ba5eabb2c03f9b5b6b20",
+      "width": 320,
+      "height": 568
+    }
+  ],
+  "adhoc": [],
+  "tree_sha256": "f21ad098a9809f40776e694cf5945e74426fd758444bde1bdd5e54602519b9a6",
+  "runner_sha256": "6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8"
+}

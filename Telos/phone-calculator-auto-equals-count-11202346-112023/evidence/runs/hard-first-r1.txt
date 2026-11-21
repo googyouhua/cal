@@ -1,0 +1,17 @@
+ROUND: 1
+ARTIFACT_SHA256: 3088b89cfe82a81939ca34b7b6d2d6aa1623481e7adb0a4855879b6200a5bf08
+TREE_SHA256: ef337e8aac7838c55c03bfc2bc533c9d536674cb70820319e7df08c89b11b944
+VERIFIER_SHA256: 57ae7c356e94444e62d5ee2f9094ba978d30974edd7d65d25191c071e882aaec
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: 3088b89cfe82a81939ca34b7b6d2d6aa1623481e7adb0a4855879b6200a5bf08
+VERIFIER_SHA256: 57ae7c356e94444e62d5ee2f9094ba978d30974edd7d65d25191c071e882aaec
+H1 PASS — autoEquals 0→3 persisted/reloaded; indicator+summary visible; 0 hides indicator; abc/2.5/1000/-1 rejected; 999 stored.
+H2 PASS — N=3: 95+92+90=277, history operands ["95","92","90"]; N=1→8; N=5→15; N=0→277 via =; 100+9.5+9.=118.5.
+H3 PASS — auto-confirm 187 stable 1200ms; keyboard 187; base10 287; empty submit ignored; backspace→8; no-op + then 6; edit stays edit/cancel→10; div0 error; mid-threshold→6.
+H4 PASS — auto/manual 277 histories identical (operator +, operands ["95","92","90"], base null); 500ms stable; next 258, 2 records; N=1+base10→15.
+H5 PASS — suite 18/18, 206 checks; 23 options 0..10; auto-confirm→14; base manual→19.5; =draft→8; 320x568 overflow 0, panel 6..310, input 44px/16px, done 491.48..535.48; reset keeps 3.
+H6 PASS — 59034 bytes, contains </html>, 0 external refs, 24 measured pages 0 page/console errors, parse app-root true.
+H7 PASS — two contexts JSON.stringify identical; result 287; history 1; settings autoEquals 3/baseEnabled true.
+HARD: PASS

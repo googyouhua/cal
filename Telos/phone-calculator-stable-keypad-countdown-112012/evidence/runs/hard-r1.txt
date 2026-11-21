@@ -1,0 +1,17 @@
+ROUND: 1
+ARTIFACT_SHA256: f147010796dc0d1f9d0000ce6a02fdb0cdd2800898fabb58a6c9841d1455557f
+TREE_SHA256: ca3df0db93d8ecb525ab8e0c4342fe99eaa499ff4fd38fbb9de3946e99df53d2
+VERIFIER_SHA256: 09b1cfe16b49e6f14f1639281b9c9507ebc9c3bf22e0a3e5d3dd44799ac8db00
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: f147010796dc0d1f9d0000ce6a02fdb0cdd2800898fabb58a6c9841d1455557f
+VERIFIER_SHA256: 09b1cfe16b49e6f14f1639281b9c9507ebc9c3bf22e0a3e5d3dd44799ac8db00
+H1 PASS — trials=17 comparisons=101 countdownSamples=29 maxRectDelta=0px coverage=17/17
+H2 PASS — groups=10/10 minFeedbackHeight=29.188 progressHeight=2-2 commitCounts=[1,0,1,1,1,1,1,1]
+H3 PASS — 390x844: obs=["1","12","123","1234","12345","6","67","678","6789"] maxKeypadDelta=0 final="12345 + 6789"; 320x568: obs=["1","12","123","1234","12345","6","67","678","6789"] maxKeypadDelta=0 final="12345 + 6789"
+H4 PASS — states=8/8 maxOverflow=0px minControl=44x44 minInputSelectFont=16px maxIntersection=0px2 maxKeypadMove=0px
+H5 PASS — suite=18/18 checks=206 direct=7/7
+H6 PASS — bytes=56538 closeTag=true externalRefs=0 trackedPages=51 pageerrors=0 consoleErrors=0 suiteCleanChecks=26
+H7 PASS — contexts=2 maxRectDelta=0px immediateEqual=true settledEqual=true settledInput="" settledExpression="12345 +"
+HARD: PASS

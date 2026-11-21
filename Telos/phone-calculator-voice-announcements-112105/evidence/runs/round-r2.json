@@ -1,0 +1,17 @@
+{
+  "round": 2,
+  "model_profile": "astra-flash-3.8-v1",
+  "tree_sha256": "f21ad098a9809f40776e694cf5945e74426fd758444bde1bdd5e54602519b9a6",
+  "tree_sha256_w": "ce9840c09869716aea362ad6f89192253eda400ff5764ed37b2cf0019c0e600e",
+  "verifier_sha256": "ecc43a8b02144aa1544a7d1fe557f4c79fe3f276dcf0f911556298d17db63696",
+  "runner_sha256": "6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8",
+  "artifact_sha256": "079994ef89e70af852b9e48d0c30052c14ae6d54b9ded158df34749c35f7c25a",
+  "fail_set": [],
+  "pass": true,
+  "era": 1,
+  "changed_paths": [
+    "scripts/install-voice-assets.sh"
+  ],
+  "attempt_dir": "evidence/attempts/replay-r2-20261121-065307-771",
+  "ts": "2026-11-21T06:53:49.967Z"
+}

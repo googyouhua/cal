@@ -1,0 +1,17 @@
+ROUND: 1
+ARTIFACT_SHA256: f147010796dc0d1f9d0000ce6a02fdb0cdd2800898fabb58a6c9841d1455557f
+TREE_SHA256: ca3df0db93d8ecb525ab8e0c4342fe99eaa499ff4fd38fbb9de3946e99df53d2
+VERIFIER_SHA256: 09b1cfe16b49e6f14f1639281b9c9507ebc9c3bf22e0a3e5d3dd44799ac8db00
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: f147010796dc0d1f9d0000ce6a02fdb0cdd2800898fabb58a6c9841d1455557f
+VERIFIER_SHA256: 09b1cfe16b49e6f14f1639281b9c9507ebc9c3bf22e0a3e5d3dd44799ac8db00
+H1 PASS — 17/17 组覆盖，101 次几何比较，29 个倒计时样本，最大偏差 0px。
+H2 PASS — 10/10 组通过；反馈最低高 29.188px，进度条高 2px；自动确认次数均为 0 或 1。
+H3 PASS — 390×844 与 320×568 两轮序列均精确匹配，键盘最���位移 0px，最终表达式含 `12345` 与 `6789`。
+H4 PASS — 8/8 状态通过；无横向溢出，控件最小 44×44px，输入/选择字号 16px，遮挡面积 0px²，键盘位移 0px。
+H5 PASS — 共享套件 18/18、206 项检查全部通过；7/7 直接回归步骤通过。
+H6 PASS — 56538 字节，`</html>` 存在，外部引用 0；51 个实测页面零 pageerror、零 console error。
+H7 PASS — 两个全新 context 深度一致；键盘/按键最大偏差 0px，输入、表达式、历史与设置完全一致。
+HARD: PASS

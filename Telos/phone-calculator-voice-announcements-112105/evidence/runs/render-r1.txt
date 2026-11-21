@@ -1,0 +1,96 @@
+ROUND: 1
+ARTIFACT_SHA256: 079994ef89e70af852b9e48d0c30052c14ae6d54b9ded158df34749c35f7c25a
+TREE_SHA256: 71bce22ea829dd34d4e570bcf454848384bd593ae51a16d28373464316d47c8f
+VERIFIER_SHA256: ecc43a8b02144aa1544a7d1fe557f4c79fe3f276dcf0f911556298d17db63696
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: 079994ef89e70af852b9e48d0c30052c14ae6d54b9ded158df34749c35f7c25a
+VERIFIER_SHA256: ecc43a8b02144aa1544a7d1fe557f4c79fe3f276dcf0f911556298d17db63696
+S1.file=S1.png
+S1.sha256=34b7866238bd2a6264d3f992af06771be7be8be8aa54e8639fd9e4a27230117f
+S1.width=390
+S1.height=844
+S1.bytes=92530
+S1.pngSignature=true
+S1.nonUniform=true
+S1.distinctSampledColors=735
+S1.innerWidth=390
+S1.innerHeight=844
+S1.docScrollWidth=390
+S1.docClientWidth=390
+S1.panelOpen=true
+S1.panelScrollWidth=318
+S1.panelClientWidth=318
+S1.voiceGroupVisible=true
+S1.statusVisible=false
+S1.progressVisible=false
+S1.hintVisible=true
+S1.retryVisible=false
+S1.summaryVisible=false
+S1.summaryGearOverlap=false
+S1.keysChecked=false
+S1.resultChecked=false
+S1.keysRowRect={"left":75,"top":530.484375,"right":365,"bottom":574.484375,"width":290,"height":44}
+S1.resultRowRect={"left":75,"top":582.484375,"right":365,"bottom":626.484375,"width":290,"height":44}
+S1.retryRect={"left":0,"top":0,"right":0,"bottom":0,"width":0,"height":0}
+S1.statusText=语音播报默认关闭
+S1.summaryText=已自定义
+S2.file=S2.png
+S2.sha256=6829c4624b385fddf17b49a9fb9719febfcba9d187c42fe846d8865aa572d4b6
+S2.width=390
+S2.height=844
+S2.bytes=93526
+S2.pngSignature=true
+S2.nonUniform=true
+S2.distinctSampledColors=755
+S2.innerWidth=390
+S2.innerHeight=844
+S2.docScrollWidth=390
+S2.docClientWidth=390
+S2.panelOpen=true
+S2.panelScrollWidth=318
+S2.panelClientWidth=318
+S2.voiceGroupVisible=true
+S2.statusVisible=true
+S2.progressVisible=true
+S2.hintVisible=true
+S2.retryVisible=false
+S2.summaryVisible=true
+S2.summaryGearOverlap=false
+S2.keysChecked=true
+S2.resultChecked=true
+S2.keysRowRect={"left":75,"top":530.484375,"right":365,"bottom":574.484375,"width":290,"height":44}
+S2.resultRowRect={"left":75,"top":582.484375,"right":365,"bottom":626.484375,"width":290,"height":44}
+S2.retryRect={"left":0,"top":0,"right":0,"bottom":0,"width":0,"height":0}
+S2.statusText=语音已就绪
+S2.summaryText=已自定义
+S3.file=S3.png
+S3.sha256=a31ab2a267bf1a6ecc4ac3c0ebb1069993198a10f212ba5eabb2c03f9b5b6b20
+S3.width=320
+S3.height=568
+S3.bytes=61172
+S3.pngSignature=true
+S3.nonUniform=true
+S3.distinctSampledColors=624
+S3.innerWidth=320
+S3.innerHeight=568
+S3.docScrollWidth=320
+S3.docClientWidth=320
+S3.panelOpen=true
+S3.panelScrollWidth=302
+S3.panelClientWidth=302
+S3.voiceGroupVisible=true
+S3.statusVisible=true
+S3.progressVisible=true
+S3.hintVisible=true
+S3.retryVisible=true
+S3.summaryVisible=true
+S3.summaryGearOverlap=false
+S3.keysChecked=true
+S3.resultChecked=false
+S3.keysRowRect={"left":21,"top":240.484375,"right":295,"bottom":284.484375,"width":274,"height":44}
+S3.resultRowRect={"left":21,"top":292.484375,"right":295,"bottom":336.484375,"width":274,"height":44}
+S3.retryRect={"left":21,"top":444.875,"right":295,"bottom":488.875,"width":274,"height":44}
+S3.statusText=语音加载失败：fake init failure
+S3.summaryText=语音不可用

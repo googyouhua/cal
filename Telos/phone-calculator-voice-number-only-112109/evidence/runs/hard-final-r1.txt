@@ -1,0 +1,14 @@
+ROUND: 1
+ARTIFACT_SHA256: 10e98f81de845651b49d463b3a0839a98b87399a961fc68231107b59c2198693
+TREE_SHA256: d8548b6cdc309c39a04e75639dddd6843bbc7587c4bc0dfab056a52fa998e7b8
+VERIFIER_SHA256: c420209b7c61d4c00311c291854b078f7f24c0e80260c13d8999c44d839240b1
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 1
+ARTIFACT_SHA256: 10e98f81de845651b49d463b3a0839a98b87399a961fc68231107b59c2198693
+H1 PASS — 仅开result经HTTP+假引擎ready实测: 9.5+9.2= result="18.7" last="十八点七" kind="result" log=["十八点七"]无"结果" tail一致; 2-5= result="-3" last="负三" tail一致; 1/0= result="不能除以零" last="不能除以零" tail一致; autoEquals=2后3+4+enter result="7" last="七" tail一致; 新页7+8= result="15" last="十五" kinds=["result"]无"确认" tail一致; 新页95+0= result="95" last="九十五" tail一致
+H2 PASS — 仅开keys实测: 9,5,enter texts=["九","五","九十五"] last="九十五"无"确认"; 0,.,5,enter texts=["零","点","五","零点五"]无"确认"; 预置autoConfirm0.2点6等650ms texts=["六","六"]无"确认"; 物理键盘7+Enter texts=["七","七"]无"确认"; 空输入点确认 count 0->0 texts=[]无"确认"不增加
+H3 PASS — 仅开keys序列9,5,.,.,backspace,enter,enter,backspace,backspace,+,-,*,/,= texts=["九","五","点","退格","九十五","退格","加","减","乘","除"] count="10" last="除" kind="key" [data-testid="enter"]="确认"
+H4 PASS — ①仅结果1+2= rv="3" last="三" kinds=["result"]无key; ②仅按键1+2= rv="3" texts=["一","加","二"] kinds=["key","key","key"]无result; ③双开快点1,+,1,=,9等4s played=[一,加,一,九]全key无result且含按键; ④双关1+2= rv="3" count="0"
+H5 PASS — voice/run.mjs --json checks=75 passed=75 failed=0全pass含regression.suite-exit=0/scenarios=18/checks=206/every-pass=true; suite.mjs --json scenarios=18 checks=206全pass; run.mjs不含"结果 九十五"且含"九十五"; 新页9.5+9.2=复测result="18.7"
+HARD: PASS
