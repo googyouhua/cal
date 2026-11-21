@@ -82,16 +82,20 @@
   }
 
   .state-row {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
     min-width: 0;
+    min-height: 44px;
     margin-bottom: 6px;
   }
 
   .state-label {
     min-width: 0;
+    max-height: 2.7em;
+    overflow: hidden;
     color: var(--muted);
     font-size: 13px;
     font-weight: 650;
@@ -214,7 +218,7 @@
   .expression:empty::before {
     content: "算式会显示在这里";
     color: #8291aa;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.35;
   }
 
@@ -551,11 +555,62 @@
     white-space: nowrap;
   }
 
+  .settings-summary[data-voice-availability]::before {
+    display: inline-block;
+    margin-right: 5px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .settings-summary[data-voice-availability="ready"]::before {
+    content: "✓";
+    color: #34d399;
+  }
+
+  .settings-summary[data-voice-availability="loading"]::before {
+    content: "…";
+    color: #fbbf24;
+  }
+
+  .settings-summary[data-voice-availability="error"]::before {
+    content: "!";
+    color: #f87171;
+  }
+
+  .status-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 106px;
+    height: 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .state-row:has(.auto-confirm-feedback:not([hidden])) .state-label,
+  .state-row:has(.undo-hint:not([hidden])) .state-label {
+    visibility: hidden;
+  }
+
+  .state-row:has(.auto-confirm-feedback:not([hidden])) .undo-hint {
+    display: none;
+  }
+
   .auto-confirm-feedback {
     display: grid;
-    gap: 4px;
+    gap: 3px;
+    width: 100%;
     min-width: 0;
-    margin: 3px 2px 0;
+    max-height: 44px;
+    padding: 3px 6px;
+    overflow: hidden;
+    border: 1px solid rgba(251, 191, 36, 0.28);
+    border-radius: 9px;
+    background: rgba(9, 15, 27, 0.96);
   }
 
   .auto-confirm-feedback[hidden] {
@@ -596,15 +651,18 @@
   }
 
   .undo-hint {
-    margin: 4px 2px 0;
-    padding: 6px 8px;
+    width: 100%;
+    max-height: 44px;
+    margin: 0;
+    padding: 3px 6px;
+    overflow: hidden;
     border: 1px solid rgba(251, 191, 36, 0.34);
     border-radius: 9px;
-    background: rgba(245, 158, 11, 0.13);
+    background: rgba(28, 22, 8, 0.97);
     color: #fef3c7;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
-    line-height: 1.35;
+    line-height: 1.3;
   }
 
   @keyframes auto-confirm-drain {
@@ -636,6 +694,8 @@
   .settings-panel {
     position: fixed;
     inset: auto;
+    display: flex;
+    flex-direction: column;
     margin: 0;
     width: min(calc(100vw - 16px), 320px);
     max-width: min(calc(100vw - 16px), 320px);
@@ -648,6 +708,34 @@
     color: var(--ink);
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
     z-index: 50;
+  }
+
+  .settings-panel > * {
+    flex: 0 0 auto;
+  }
+
+  .settings-panel:not([open]) {
+    display: none;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .settings-title {
+    order: 0;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .settings-subtitle {
+    order: 1;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .voice-settings {
+    order: 2;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .settings-field:not(.voice-settings) {
+    order: 3;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .settings-done {
+    order: 4;
   }
 
   .settings-panel::backdrop {
@@ -754,6 +842,141 @@
     font-weight: 800;
   }
 
+  .voice-settings {
+    padding-top: 12px;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+  }
+
+  .voice-group-label {
+    color: #fde68a;
+    font-size: 14px;
+    font-weight: 750;
+  }
+
+  .voice-lead-hint {
+    padding: 7px 9px;
+    border: 1px solid rgba(251, 191, 36, 0.26);
+    border-radius: 10px;
+    background: rgba(251, 191, 36, 0.08);
+    color: #fde68a;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+
+  .voice-status {
+    min-width: 0;
+    padding: 8px 10px;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 10px;
+    background: rgba(9, 15, 27, 0.72);
+    color: #dbeafe;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .voice-status[data-state="loading"],
+  .voice-status[data-state="preparing"] {
+    border-color: rgba(251, 191, 36, 0.5);
+    background: rgba(251, 191, 36, 0.1);
+  }
+
+  .voice-status[data-state="ready"] {
+    border-color: rgba(52, 211, 153, 0.5);
+    background: rgba(16, 185, 129, 0.1);
+  }
+
+  .voice-status[data-state="error"] {
+    border-color: rgba(248, 113, 113, 0.55);
+    background: rgba(239, 68, 68, 0.1);
+    color: #fecaca;
+  }
+
+  .voice-status[hidden] {
+    display: none;
+  }
+
+  .voice-error-details {
+    margin-top: 6px;
+    color: #93a3b8;
+    font-size: 11px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+
+  .voice-error-details summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    cursor: pointer;
+  }
+
+  .voice-progress {
+    position: relative;
+    height: 14px;
+    min-height: 14px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.24);
+  }
+
+  .voice-progress[hidden] {
+    display: none;
+  }
+
+  .voice-progress > span {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    transition: width 120ms linear;
+  }
+
+  .voice-progress-label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #f8fafc;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 2px rgba(3, 7, 15, 0.9);
+  }
+
+  .nowrap {
+    white-space: nowrap;
+  }
+
+  .voice-progress[data-state="ready"] > span {
+    background: linear-gradient(90deg, #34d399, #10b981);
+  }
+
+  .voice-progress[data-state="error"] > span {
+    background: linear-gradient(90deg, #f87171, #ef4444);
+  }
+
+  .voice-retry {
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid rgba(251, 191, 36, 0.42);
+    border-radius: 11px;
+    background: #1c293f;
+    color: #fde68a;
+    font-size: 15px;
+    font-weight: 750;
+    cursor: pointer;
+  }
+
+  .voice-retry[hidden] {
+    display: none;
+  }
+
   @media (max-width: 350px) {
     .app {
       padding-left: 10px;
@@ -786,6 +1009,13 @@
   <section class="panel" aria-label="计算器">
     <div class="state-row">
       <span class="state-label" id="state-label" aria-live="polite">请选择运算类型</span>
+      <div class="status-overlay">
+        <div class="auto-confirm-feedback" data-testid="auto-confirm-feedback" data-active="false" hidden>
+          <div class="auto-confirm-progress" data-testid="auto-confirm-progress" data-active="false" aria-hidden="true"></div>
+          <div class="auto-confirm-countdown" data-testid="auto-confirm-countdown"></div>
+        </div>
+        <p class="undo-hint" data-testid="undo-hint" hidden>输错了？按“退格”可撤回上一笔。</p>
+      </div>
       <button class="reset-button" type="button" data-testid="key-op" disabled>运算类型</button>
     </div>
 
@@ -802,12 +1032,7 @@
       aria-label="数字显示"
       readonly
     >
-    <div class="auto-confirm-feedback" data-testid="auto-confirm-feedback" data-active="false" hidden>
-      <div class="auto-confirm-progress" data-testid="auto-confirm-progress" data-active="false" aria-hidden="true"></div>
-      <div class="auto-confirm-countdown" data-testid="auto-confirm-countdown"></div>
-    </div>
     <p class="hint" id="calc-hint">用屏幕数字键盘输入；按“确认”收下数字，按 = 计算。</p>
-    <p class="undo-hint" data-testid="undo-hint" hidden>输错了？按“退格”可撤回上一笔。</p>
 
     <div class="display" aria-label="计算过程">
       <div class="display-label">算式</div>
@@ -833,7 +1058,7 @@
         <button class="key" type="button" data-key="4" aria-label="数字 4">4</button>
         <button class="key" type="button" data-key="5" aria-label="数字 5">5</button>
         <button class="key" type="button" data-key="6" aria-label="数字 6">6</button>
-        <button class="key" type="button" data-key="enter" aria-label="确认当前输入（回车）">确认</button>
+        <button class="key" type="button" data-key="enter" data-testid="enter" aria-label="确认当前输入（回车）">确认</button>
         <button class="key" type="button" data-key="1" aria-label="数字 1">1</button>
         <button class="key" type="button" data-key="2" aria-label="数字 2">2</button>
         <button class="key" type="button" data-key="3" aria-label="数字 3">3</button>
@@ -874,6 +1099,22 @@
     </div>
 
     <div class="settings-field">
+      <label class="settings-label" for="settings-auto-equals">自动按等号</label>
+      <input
+        class="settings-input"
+        id="settings-auto-equals"
+        data-testid="settings-auto-equals"
+        type="text"
+        inputmode="numeric"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="自动按等号笔数"
+        value="0"
+      >
+      <span class="settings-hint" data-testid="auto-equals-hint">输入满 N 笔后自动按 =；0 或留空为关闭。</span>
+    </div>
+
+    <div class="settings-field">
       <label class="settings-toggle-row" for="settings-base-toggle">
         <input class="settings-checkbox" id="settings-base-toggle" type="checkbox" data-testid="settings-base-toggle">
         <span>启用基数</span>
@@ -891,6 +1132,31 @@
         disabled
       >
       <span class="settings-hint">基数作为第一笔数字，可为 0、负数或小数，不计入除数。</span>
+    </div>
+
+    <div class="settings-field voice-settings" data-testid="settings-voice-group">
+      <span class="voice-group-label">语音播报</span>
+      <div class="voice-status" data-testid="voice-status" hidden aria-live="polite">
+        <span data-testid="voice-status-text"></span>
+        <details class="voice-error-details" data-testid="voice-error-details" hidden>
+          <summary>技术详情</summary>
+          <span data-testid="voice-error-detail"></span>
+        </details>
+      </div>
+      <div class="voice-progress" data-testid="voice-progress" data-state="idle" hidden aria-hidden="true">
+        <span></span>
+        <em class="voice-progress-label" data-testid="voice-progress-label"></em>
+      </div>
+      <button class="voice-retry" type="button" data-testid="voice-retry" hidden>重试加载语音</button>
+      <p class="settings-hint voice-lead-hint" data-testid="voice-hint">首次开启约需下载 <span class="nowrap">96MB</span> 离线语音资源。<span class="nowrap">手机静音</span>或媒体音量为 0 时不会出声；<span class="nowrap">模型仅限非商用</span>。</p>
+      <label class="settings-toggle-row" for="settings-voice-keys">
+        <input class="settings-checkbox" id="settings-voice-keys" type="checkbox" data-testid="settings-voice-keys">
+        <span>按键播报</span>
+      </label>
+      <label class="settings-toggle-row" for="settings-voice-result">
+        <input class="settings-checkbox" id="settings-voice-result" type="checkbox" data-testid="settings-voice-result">
+        <span>结果播报</span>
+      </label>
     </div>
 
     <button class="settings-done" type="button" data-testid="settings-done">完成</button>
@@ -923,8 +1189,22 @@
     const settingsSummary = document.querySelector('[data-testid="settings-summary"]');
     const settingsPanel = document.querySelector('[data-testid="settings-panel"]');
     const autoConfirmSelect = document.querySelector('[data-testid="settings-auto-confirm"]');
+    const autoEqualsInput = document.querySelector('[data-testid="settings-auto-equals"]');
+    const autoEqualsHint = document.querySelector('[data-testid="auto-equals-hint"]');
     const baseToggle = document.querySelector('[data-testid="settings-base-toggle"]');
     const baseValueInput = document.querySelector('[data-testid="settings-base-value"]');
+    const voiceGroup = document.querySelector('[data-testid="settings-voice-group"]');
+    const voiceKeysToggle = document.querySelector('[data-testid="settings-voice-keys"]');
+    const voiceResultToggle = document.querySelector('[data-testid="settings-voice-result"]');
+    const voiceHint = document.querySelector('[data-testid="voice-hint"]');
+    const voiceStatus = document.querySelector('[data-testid="voice-status"]');
+    const voiceStatusText = document.querySelector('[data-testid="voice-status-text"]');
+    const voiceErrorDetails = document.querySelector('[data-testid="voice-error-details"]');
+    const voiceErrorDetail = document.querySelector('[data-testid="voice-error-detail"]');
+    const voiceProgress = document.querySelector('[data-testid="voice-progress"]');
+    const voiceProgressFill = voiceProgress.querySelector("span");
+    const voiceProgressLabel = document.querySelector('[data-testid="voice-progress-label"]');
+    const voiceRetry = document.querySelector('[data-testid="voice-retry"]');
     const settingsDone = document.querySelector('[data-testid="settings-done"]');
     const autoConfirmFeedback = document.querySelector('[data-testid="auto-confirm-feedback"]');
     const autoConfirmProgress = document.querySelector('[data-testid="auto-confirm-progress"]');
@@ -947,17 +1227,78 @@
     let editDraft = null;
     let editSnapshot = null;
     let pendingEdit = null;
+    let inputStartedFromResult = false;
 
     const SETTINGS_KEY = "cal-phone.settings.v1";
-    const AUTO_CONFIRM_STEPS = Array.from({ length: 21 }, (_, index) => index / 2);
+    const AUTO_CONFIRM_STEPS = [0, 0.2, 0.4, ...Array.from({ length: 20 }, (_, index) => (index + 1) / 2)];
     const settings = {
       autoConfirm: 0,
+      autoEquals: 0,
       baseEnabled: false,
-      baseText: "0"
+      baseText: "0",
+      voiceKeys: false,
+      voiceResult: false
     };
     let autoConfirmTimer = null;
     let autoConfirmCountdownTimer = null;
     let autoConfirmDeadline = 0;
+
+    const VOICE_HINT_HTTP = '首次开启约需下载 <span class="nowrap">96MB</span> 离线语音资源。<span class="nowrap">手机静音</span>或媒体音量为 0 时不会出声；<span class="nowrap">模型仅限非商用</span>。';
+    const VOICE_HINT_FILE = "语音播报需要 http(s) 网页地址；请改用网页地址打开（本地 file:// 下已禁用）。";
+    const voiceSupported = typeof window !== "undefined"
+      && window.location.protocol !== "file:"
+      && typeof WebAssembly !== "undefined"
+      && Boolean(window.AudioContext || window.webkitAudioContext);
+
+    const KEY_SPEECH = {
+      "0": "零",
+      "1": "一",
+      "2": "二",
+      "3": "三",
+      "4": "四",
+      "5": "五",
+      "6": "六",
+      "7": "七",
+      "8": "八",
+      "9": "九",
+      ".": "点",
+      "backspace": "退格",
+      "enter": "确认",
+      "+": "加",
+      "-": "减",
+      "*": "乘",
+      "/": "除"
+    };
+    const VOICE_PREWARM_WORDS = [
+      "零", "一", "二", "三", "四", "五", "六", "七", "八", "九",
+      "点", "退格", "确认", "加", "减", "乘", "除", "不能除以零"
+    ];
+    const VOICE_MODEL_FILES = [
+      { url: "voice/sherpa-tts/matcha-zh-baker.onnx", name: "model.onnx", size: 75624188 },
+      { url: "voice/sherpa-tts/hifigan_v2.onnx", name: "vocoder.onnx", size: 3749714 },
+      { url: "voice/sherpa-tts/lexicon.txt", name: "lexicon.txt", size: 1363705 },
+      { url: "voice/sherpa-tts/tokens.txt", name: "tokens.txt", size: 19591 }
+    ];
+
+    const voice = {
+      state: "idle",
+      progress: 0,
+      message: "",
+      error: "",
+      enginePromise: null,
+      tts: null,
+      audioContext: null,
+      source: null,
+      cache: new Map(),
+      queue: [],
+      running: false,
+      log: [],
+      played: [],
+      count: 0,
+      lastText: "",
+      lastKind: "",
+      lastMs: 0
+    };
 
     function enterState(nextState) {
       state = nextState;
@@ -993,8 +1334,606 @@
       });
     }
 
+    /**
+     * 数字 → 中文读法（浏览器语音播报用）。
+     * 来源：/ws/voice/src/numbers.js，原样移植；Matcha 模型把阿拉伯数字当 OOV，
+     * 结果必须先转成中文再合成。
+     */
+    const NUMBER_DIGITS = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+    const NUMBER_SMALL_UNITS = ["", "十", "百", "千"];
+    const NUMBER_GROUP_UNITS = ["", "万", "亿", "万亿", "亿亿"];
+
+    function readNumberGroup(digits) {
+      const text = digits.replace(/^0+/, "");
+      if (!text) {
+        return "";
+      }
+      let out = "";
+      let pendingZero = false;
+      for (let index = 0; index < text.length; index += 1) {
+        const digit = Number(text[index]);
+        const unit = NUMBER_SMALL_UNITS[text.length - 1 - index];
+        if (digit === 0) {
+          if (out) {
+            pendingZero = true;
+          }
+          continue;
+        }
+        if (pendingZero && out) {
+          out += "零";
+        }
+        pendingZero = false;
+        out += NUMBER_DIGITS[digit] + unit;
+      }
+      return out;
+    }
+
+    function readNumberInteger(digits) {
+      if (digits === "0") {
+        return "零";
+      }
+      if (digits.length > 20) {
+        return [...digits].map((digit) => NUMBER_DIGITS[Number(digit)]).join("");
+      }
+      const groups = [];
+      for (let end = digits.length; end > 0; end -= 4) {
+        groups.unshift(digits.slice(Math.max(0, end - 4), end));
+      }
+      let out = "";
+      let needZero = false;
+      const topUnit = groups.length - 1;
+      for (let index = 0; index < groups.length; index += 1) {
+        const group = groups[index];
+        if (Number(group) === 0) {
+          if (out) {
+            needZero = true;
+          }
+          continue;
+        }
+        if (out && (needZero || group[0] === "0")) {
+          out += "零";
+        }
+        out += readNumberGroup(group) + NUMBER_GROUP_UNITS[topUnit - index];
+        needZero = false;
+      }
+      if (out.startsWith("一十")) {
+        out = out.slice(1);
+      }
+      return out;
+    }
+
+    function numberToChineseReading(input) {
+      const raw = String(input ?? "").normalize("NFKC").trim();
+      if (!raw) {
+        return "";
+      }
+      const normalized = raw.replace(/[,\s]/g, "").replace(/^\+/, "");
+      const match = normalized.match(/^(-?)(\d*)(?:\.(\d*))?$/);
+      if (!match) {
+        return "";
+      }
+      const negative = match[1] === "-";
+      let integer = match[2] ?? "";
+      let decimal = match[3] ?? "";
+      if (!integer && !decimal) {
+        return "";
+      }
+      integer = integer.replace(/^0+(?=\d)/, "") || "0";
+      decimal = decimal.replace(/0+$/, "");
+      const isZero = integer === "0" && !decimal;
+      const reading = readNumberInteger(integer)
+        + (decimal ? `点${[...decimal].map((digit) => NUMBER_DIGITS[Number(digit)]).join("")}` : "");
+      return negative && !isZero ? `负${reading}` : reading;
+    }
+
+    function syncSpeechDataset() {
+      app.dataset.speechLog = JSON.stringify(voice.log);
+      app.dataset.speechPlayed = JSON.stringify(voice.played);
+      app.dataset.speechCount = String(voice.count);
+      app.dataset.speechLast = voice.lastText;
+      app.dataset.speechKind = voice.lastKind;
+      app.dataset.speechLastMs = String(voice.lastMs);
+    }
+
+    function voiceStatusMessage() {
+      if (voice.state === "loading" || voice.state === "preparing") {
+        return voice.message || "正在加载语音引擎…";
+      }
+      if (voice.state === "ready") {
+        return "语音已就绪";
+      }
+      if (voice.state === "error") {
+        return `语音加载失败：${friendlyVoiceError(voice.error)}`;
+      }
+      return "语音播报默认关闭";
+    }
+
+    function friendlyVoiceError(raw) {
+      const text = String(raw || "");
+      if (/下载|fetch|network|Failed to fetch|HTTP|404|403|500/i.test(text)) {
+        return "语音模型下载失败，请检查网络或语音资源安装后重试。";
+      }
+      if (/初始化|init|createOfflineTts|handle|不兼容/i.test(text)) {
+        return "语音引擎初始化失败，请检查语音资源后重试。";
+      }
+      if (/脚本|script|WASM|wasm|SherpaOnnx/i.test(text)) {
+        return "语音运行时加载失败，请检查语音资源后重试。";
+      }
+      if (/Audio|播放|音频/i.test(text)) {
+        return "当前浏览器无法播放语音，请检查媒体音量后重试。";
+      }
+      return "语音加载失败，请检查网络与语音资源后重试。";
+    }
+
+    function syncVoiceUi() {
+      const progress = Math.max(0, Math.min(100, Math.round(Number(voice.progress) || 0)));
+      app.dataset.voiceState = voice.state;
+      app.dataset.voiceProgress = String(progress);
+      const barProgress = voice.state === "ready" || voice.state === "error" ? 100 : progress;
+      voiceProgressFill.style.width = `${barProgress}%`;
+      voiceProgress.dataset.state = voice.state;
+      voiceProgressLabel.textContent = voice.state === "ready"
+        ? "已完成"
+        : voice.state === "error"
+          ? "已中断"
+          : voice.state === "loading" || voice.state === "preparing"
+            ? `${progress}%`
+            : "";
+      voiceProgress.setAttribute(
+        "aria-label",
+        voice.state === "ready"
+          ? "语音已就绪"
+          : voice.state === "error"
+            ? "语音加载已中断"
+            : `语音准备进度 ${progress}%`
+      );
+      voiceProgress.setAttribute("aria-valuenow", String(progress));
+      voiceStatus.dataset.state = voice.state;
+      voiceStatusText.textContent = voiceStatusMessage();
+      voiceErrorDetail.textContent = voice.error || "";
+      voiceErrorDetails.hidden = !(voice.state === "error" && voice.error);
+      const showStatus = voice.state !== "idle" || settings.voiceKeys || settings.voiceResult;
+      voiceStatus.hidden = !showStatus;
+      voiceProgress.hidden = voice.state === "idle";
+      voiceRetry.hidden = voice.state !== "error";
+      voiceKeysToggle.checked = settings.voiceKeys;
+      voiceResultToggle.checked = settings.voiceResult;
+      if (!voiceSupported) {
+        voiceKeysToggle.disabled = true;
+        voiceResultToggle.disabled = true;
+      }
+      syncSpeechDataset();
+      syncSettingsIndicator();
+    }
+
+    function setVoiceState(nextState, nextProgress, message, errorMessage) {
+      voice.state = nextState;
+      if (nextProgress !== undefined) {
+        voice.progress = nextProgress;
+      }
+      if (message !== undefined) {
+        voice.message = message;
+      }
+      if (nextState === "error") {
+        voice.error = errorMessage || message || "未知错误";
+      } else {
+        voice.error = "";
+      }
+      syncVoiceUi();
+    }
+
+    function appendSpeechLog(kind, text) {
+      voice.count += 1;
+      voice.lastText = text;
+      voice.lastKind = kind;
+      voice.log.push({ kind, text });
+      if (voice.log.length > 80) {
+        voice.log.splice(0, voice.log.length - 80);
+      }
+      syncSpeechDataset();
+    }
+
+    function cancelActiveSpeech(kind) {
+      const active = voice.activeTask;
+      if (active && active.kind === kind && !active.started) {
+        active.cancelled = true;
+      }
+    }
+
+    function dropQueuedSpeech(kind) {
+      voice.queue.forEach((task) => {
+        if (task.kind === kind) {
+          task.cancelled = true;
+        }
+      });
+      voice.queue = voice.queue.filter((task) => !task.cancelled);
+      cancelActiveSpeech(kind);
+    }
+
+    function dropPendingResults() {
+      voice.queue.forEach((task) => {
+        if (task.kind === "result") {
+          task.cancelled = true;
+        }
+      });
+      voice.queue = voice.queue.filter((task) => !task.cancelled);
+      cancelActiveSpeech("result");
+    }
+
+    function enqueueSpeech(kind, text) {
+      if (!voiceSupported) {
+        return;
+      }
+      appendSpeechLog(kind, text);
+      if (kind === "key") {
+        dropPendingResults();
+      }
+      voice.queue.push({ kind, text, cancelled: false, started: false });
+      void processSpeechQueue();
+    }
+
+    function speakKey(text) {
+      if (!voiceSupported || !settings.voiceKeys || !text) {
+        return;
+      }
+      enqueueSpeech("key", text);
+    }
+
+    function speakResult(text) {
+      if (!voiceSupported || !settings.voiceResult || !text) {
+        return;
+      }
+      enqueueSpeech("result", text);
+    }
+
+    function loadVoiceScriptOnce(id, src) {
+      if (document.getElementById(id)) {
+        return Promise.resolve();
+      }
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.id = id;
+        script.src = src;
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error(`语音脚本加载失败：${src}`));
+        document.head.append(script);
+      });
+    }
+
+    async function fetchVoiceBytes(url, expectedSize, onProgress) {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`模型下载失败（${response.status}）：${url}`);
+      }
+      const declared = Number(response.headers.get("Content-Length")) || expectedSize || 0;
+      if (!response.body || typeof response.body.getReader !== "function") {
+        const data = new Uint8Array(await response.arrayBuffer());
+        onProgress(data.byteLength, Math.max(declared, data.byteLength));
+        return data;
+      }
+      const reader = response.body.getReader();
+      const chunks = [];
+      let loaded = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+        chunks.push(value);
+        loaded += value.byteLength;
+        onProgress(loaded, declared || loaded);
+      }
+      const data = new Uint8Array(loaded);
+      let offset = 0;
+      chunks.forEach((chunk) => {
+        data.set(chunk, offset);
+        offset += chunk.byteLength;
+      });
+      onProgress(data.byteLength, Math.max(declared, data.byteLength));
+      return data;
+    }
+
+    function mountVoiceFiles(module) {
+      const fs = module.FS || {};
+      const directory = "/voice-model";
+      if (typeof fs.mkdirTree === "function") {
+        fs.mkdirTree(directory);
+      } else if (typeof module.FS_createPath === "function") {
+        try {
+          module.FS_createPath("/", directory.slice(1), true, true);
+        } catch (error) {
+          /* 目录已存在时忽略。 */
+        }
+      }
+      if (typeof module.FS_createDataFile !== "function" && typeof fs.writeFile !== "function") {
+        throw new Error("sherpa-onnx 运行时缺少文件系统接口");
+      }
+    }
+
+    function writeVoiceFile(module, name, data) {
+      if (typeof module.FS_createDataFile === "function") {
+        module.FS_createDataFile("/voice-model", name, data, true, true);
+      } else {
+        module.FS.writeFile(`/voice-model/${name}`, data);
+      }
+    }
+
+    function synthesizeSpeech(text) {
+      const cached = voice.cache.get(text);
+      if (cached) {
+        return cached;
+      }
+      if (!voice.tts) {
+        throw new Error("语音引擎尚未就绪");
+      }
+      const result = voice.tts.generate({ text, sid: 0, speed: 1 });
+      const sourceSamples = result && result.samples;
+      if (!sourceSamples || !sourceSamples.length) {
+        throw new Error("语音合成结果为空");
+      }
+      const samples = sourceSamples instanceof Float32Array
+        ? sourceSamples
+        : Float32Array.from(sourceSamples);
+      let peak = 0;
+      for (let index = 0; index < samples.length; index += 1) {
+        peak = Math.max(peak, Math.abs(samples[index]));
+      }
+      if (peak === 0) {
+        throw new Error("语音合成结果是静音");
+      }
+      if (peak < 0.95) {
+        const gain = 0.9 / peak;
+        for (let index = 0; index < samples.length; index += 1) {
+          samples[index] *= gain;
+        }
+      }
+      const sampleRate = Number(result.sampleRate || voice.tts.sampleRate) || 22050;
+      const audio = {
+        samples,
+        sampleRate,
+        durationMs: Math.round((samples.length / sampleRate) * 1000)
+      };
+      voice.cache.set(text, audio);
+      if (voice.cache.size > 20) {
+        voice.cache.delete(voice.cache.keys().next().value);
+      }
+      return audio;
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => window.setTimeout(resolve, Math.max(0, ms)));
+    }
+
+    async function playVoiceSamples(audio) {
+      const Context = window.AudioContext || window.webkitAudioContext;
+      if (!Context) {
+        await sleep(audio.durationMs);
+        return;
+      }
+      try {
+        voice.audioContext ??= new Context();
+        const context = voice.audioContext;
+        if (context.state === "suspended") {
+          await context.resume();
+        }
+        const buffer = context.createBuffer(1, audio.samples.length, audio.sampleRate);
+        buffer.getChannelData(0).set(audio.samples);
+        const source = context.createBufferSource();
+        source.buffer = buffer;
+        source.connect(context.destination);
+        voice.source = source;
+        await new Promise((resolve) => {
+          let settled = false;
+          const finish = () => {
+            if (settled) {
+              return;
+            }
+            settled = true;
+            window.clearTimeout(fallback);
+            resolve();
+          };
+          const fallback = window.setTimeout(finish, audio.durationMs + 150);
+          source.onended = finish;
+          source.start();
+        });
+        if (voice.source === source) {
+          voice.source = null;
+        }
+      } catch (error) {
+        await sleep(audio.durationMs);
+      }
+    }
+
+    async function processSpeechQueue() {
+      if (voice.running) {
+        return;
+      }
+      voice.running = true;
+      try {
+        while (voice.queue.length > 0) {
+          const task = voice.queue.shift();
+          if (task.cancelled || !voiceSupported) {
+            continue;
+          }
+          if (!voice.tts) {
+            if (voice.state === "error") {
+              continue;
+            }
+            const engine = await ensureVoiceEngine();
+            if (!engine) {
+              continue;
+            }
+          }
+          if (task.cancelled) {
+            continue;
+          }
+          voice.activeTask = task;
+          let audio;
+          try {
+            audio = synthesizeSpeech(task.text);
+          } catch (error) {
+            voice.activeTask = null;
+            continue;
+          }
+          if (task.cancelled) {
+            voice.activeTask = null;
+            continue;
+          }
+          task.started = true;
+          const started = Date.now();
+          voice.played.push({ kind: task.kind, text: task.text });
+          syncSpeechDataset();
+          await playVoiceSamples(audio);
+          voice.lastMs = Date.now() - started;
+          voice.activeTask = null;
+          syncSpeechDataset();
+        }
+      } finally {
+        voice.running = false;
+        if (voice.queue.length > 0) {
+          void processSpeechQueue();
+        }
+      }
+    }
+
+    async function prepareVoiceWords() {
+      const total = VOICE_PREWARM_WORDS.length;
+      for (let index = 0; index < total; index += 1) {
+        setVoiceState(
+          "preparing",
+          82 + Math.round((index / total) * 17),
+          `正在准备按键语音 ${index}/${total}`
+        );
+        try {
+          synthesizeSpeech(VOICE_PREWARM_WORDS[index]);
+        } catch (error) {
+          /* 单句失败只记日志，回退到按需合成。 */
+        }
+        await sleep(0);
+      }
+      setVoiceState("preparing", 99, `正在准备按键语音 ${total}/${total}`);
+    }
+
+    function ensureVoiceEngine(force = false) {
+      if (!voiceSupported) {
+        return Promise.resolve(null);
+      }
+      if (voice.tts && !force) {
+        return Promise.resolve(voice.tts);
+      }
+      if (voice.enginePromise && !force) {
+        return voice.enginePromise;
+      }
+      if (force) {
+        voice.tts = null;
+        voice.enginePromise = null;
+        voice.cache.clear();
+      }
+      setVoiceState("loading", 0, "正在加载语音引擎…");
+      voice.enginePromise = (async () => {
+        if (typeof window.SherpaOnnx !== "function" || typeof window.createOfflineTts !== "function") {
+          await loadVoiceScriptOnce("cal-phone-sherpa-wasm", "voice/sherpa-onnx-wasm-web.js");
+          await loadVoiceScriptOnce("cal-phone-sherpa-tts", "voice/sherpa-onnx-tts.js");
+        }
+        const factory = window.SherpaOnnx;
+        const createOfflineTts = window.createOfflineTts;
+        if (typeof factory !== "function") {
+          throw new Error("SherpaOnnx 工厂未就绪");
+        }
+        if (typeof createOfflineTts !== "function") {
+          throw new Error("sherpa-onnx TTS 封装未就绪");
+        }
+        const wasmUrl = new URL("voice/sherpa-onnx-wasm-web.wasm", document.baseURI).href;
+        const module = await factory({
+          locateFile: (path) => path.endsWith(".wasm") ? wasmUrl : path
+        });
+        mountVoiceFiles(module);
+
+        for (let index = 0; index < VOICE_MODEL_FILES.length; index += 1) {
+          const file = VOICE_MODEL_FILES[index];
+          const data = await fetchVoiceBytes(file.url, file.size, (loaded, total) => {
+            const fraction = total > 0 ? loaded / total : 0;
+            const percent = Math.min(80, Math.max(1, Math.round(((index + fraction) / VOICE_MODEL_FILES.length) * 80)));
+            setVoiceState("loading", percent, `正在下载语音模型 ${percent}%（约 96MB，仅首次）`);
+          });
+          writeVoiceFile(module, file.name, data);
+        }
+
+        setVoiceState("preparing", 82, "正在初始化语音引擎…");
+        const tts = createOfflineTts(module, {
+          offlineTtsModelConfig: {
+            offlineTtsMatchaModelConfig: {
+              acousticModel: "/voice-model/model.onnx",
+              vocoder: "/voice-model/vocoder.onnx",
+              lexicon: "/voice-model/lexicon.txt",
+              tokens: "/voice-model/tokens.txt",
+              dataDir: "",
+              noiseScale: 0.667,
+              lengthScale: 1.0
+            },
+            numThreads: 1,
+            debug: 0,
+            provider: "cpu"
+          },
+          ruleFsts: "",
+          ruleFars: "",
+          maxNumSentences: 1
+        });
+        if (!tts || !tts.handle) {
+          throw new Error("sherpa-onnx TTS 初始化失败（模型可能不兼容）");
+        }
+        voice.tts = tts;
+        await prepareVoiceWords();
+        setVoiceState("ready", 100, "语音已就绪");
+        return tts;
+      })().catch((error) => {
+        voice.tts = null;
+        voice.enginePromise = null;
+        const message = error && error.message ? error.message : String(error);
+        setVoiceState("error", 0, `语音加载失败：${message}`, message);
+        return null;
+      });
+      return voice.enginePromise;
+    }
+
+    function updateVoiceSupport() {
+      if (!voiceSupported) {
+        voiceHint.textContent = VOICE_HINT_FILE;
+        voiceKeysToggle.disabled = true;
+        voiceResultToggle.disabled = true;
+      } else {
+        voiceHint.innerHTML = VOICE_HINT_HTTP;
+      }
+    }
+
+    function handleVoiceToggle() {
+      settings.voiceKeys = voiceKeysToggle.checked;
+      settings.voiceResult = voiceResultToggle.checked;
+      saveSettings();
+      syncSettingsIndicator();
+      syncVoiceUi();
+      if (!voiceSupported) {
+        return;
+      }
+      if (settings.voiceKeys || settings.voiceResult) {
+        void ensureVoiceEngine();
+      } else {
+        dropQueuedSpeech("key");
+        dropQueuedSpeech("result");
+      }
+    }
+
+    function retryVoiceEngine() {
+      if (!voiceSupported) {
+        return;
+      }
+      void ensureVoiceEngine(true);
+    }
+
     function appendCharacter(character) {
       if (state === "result" || state === "error") {
+        inputStartedFromResult = true;
         operands = [];
         clearExpression();
         clearResult();
@@ -1006,11 +1945,15 @@
           : "请输入数字，或先选择运算类型");
       }
       if (character === "." && input.value.includes(".")) {
-        return;
+        return false;
       }
       input.value += character;
       startAutoConfirm();
       updateUndoHint();
+      if (KEY_SPEECH[character]) {
+        speakKey(KEY_SPEECH[character]);
+      }
+      return true;
     }
 
     function deleteLastCharacter() {
@@ -1018,7 +1961,8 @@
         input.value = input.value.slice(0, -1);
         startAutoConfirm();
         updateUndoHint();
-        return;
+        speakKey("退格");
+        return true;
       }
 
       if (state === "edit" && editDraft) {
@@ -1028,8 +1972,10 @@
           renderExpression();
           updateUndoHint();
           updateStateLabel(`已撤回 ${removed.display}`);
+          speakKey("退格");
+          return true;
         }
-        return;
+        return false;
       }
 
       if (state === "input" && operands.length > 0) {
@@ -1037,7 +1983,10 @@
         renderExpression();
         updateUndoHint();
         updateStateLabel(`已撤回 ${removed.display}`);
+        speakKey("退格");
+        return true;
       }
+      return false;
     }
 
     function clearResult() {
@@ -1068,7 +2017,7 @@
 
     function liveExpressionText(activeOperator, activeOperands, activeBase = null) {
       const base = expressionText(activeOperator, activeOperands, activeBase);
-      if (!activeOperator || !base || activeOperands.length !== 1) {
+      if (!activeOperator || !base || activeOperands.length === 0) {
         return base;
       }
 
@@ -1212,11 +2161,17 @@
         if (AUTO_CONFIRM_STEPS.includes(autoConfirm)) {
           settings.autoConfirm = autoConfirm;
         }
+        const autoEquals = Number(parsed.autoEquals);
+        if (Number.isInteger(autoEquals) && autoEquals >= 0 && autoEquals <= 999) {
+          settings.autoEquals = autoEquals;
+        }
         settings.baseEnabled = parsed.baseEnabled === true;
         const storedBase = String(parsed.baseValue ?? "");
         if (storedBase.trim() !== "" && Number.isFinite(Number(storedBase))) {
           settings.baseText = storedBase;
         }
+        settings.voiceKeys = parsed.voiceKeys === true;
+        settings.voiceResult = parsed.voiceResult === true;
       } catch (error) {
         /* localStorage may be disabled; keep the in-memory defaults. */
       }
@@ -1226,8 +2181,11 @@
       try {
         window.localStorage.setItem(SETTINGS_KEY, JSON.stringify({
           autoConfirm: settings.autoConfirm,
+          autoEquals: settings.autoEquals,
           baseEnabled: settings.baseEnabled,
-          baseValue: settings.baseText
+          baseValue: settings.baseText,
+          voiceKeys: settings.voiceKeys,
+          voiceResult: settings.voiceResult
         }));
       } catch (error) {
         /* localStorage may be disabled; the page keeps working in memory. */
@@ -1261,11 +2219,63 @@
     }
 
     function syncSettingsIndicator() {
-      const customized = settings.autoConfirm > 0 || settings.baseEnabled;
+      const customized = settings.autoConfirm > 0
+        || settings.autoEquals > 0
+        || settings.baseEnabled
+        || settings.voiceKeys
+        || settings.voiceResult;
+      const preparing = voice.state === "loading" || voice.state === "preparing";
+      const failed = voice.state === "error";
+      let summaryText = "已自定义";
+      let showSummary = customized;
+      if (preparing) {
+        summaryText = `语音准备中 ${Math.max(0, Math.min(100, Math.round(voice.progress)))}%`;
+        showSummary = true;
+      } else if (failed) {
+        summaryText = "语音不可用";
+        showSummary = true;
+      }
+      const voiceEnabled = settings.voiceKeys || settings.voiceResult;
+      const availability = !voiceEnabled
+        ? ""
+        : voice.state === "ready"
+          ? "ready"
+          : voice.state === "error"
+            ? "error"
+            : preparing
+              ? "loading"
+              : "";
+      if (availability) {
+        settingsSummary.dataset.voiceAvailability = availability;
+      } else {
+        delete settingsSummary.dataset.voiceAvailability;
+      }
+      const availabilityLabel = availability === "ready"
+        ? "语音已就绪"
+        : availability === "error"
+          ? "语音不可用"
+          : availability === "loading"
+            ? "语音准备中"
+            : "";
+      settingsSummary.textContent = summaryText;
+      settingsSummary.title = availabilityLabel ? `已自定义；${availabilityLabel}` : "已自定义";
+      settingsSummary.setAttribute("aria-label", settingsSummary.title);
       settingsIndicator.hidden = !customized;
-      settingsSummary.hidden = !customized;
+      settingsSummary.hidden = !showSummary;
       settingsToggle.setAttribute("aria-label", customized ? "打开统分设置（已自定义）" : "打开统分设置");
-      settingsToggle.title = customized ? "已自定义：自动确认或基数已启用" : "打开统分设置";
+      settingsToggle.title = customized ? "已自定义：自动确认、自动按等号、基数或语音播报已启用" : "打开统分设置";
+    }
+
+    function parseAutoEquals(raw) {
+      const text = String(raw).trim();
+      if (text === "") {
+        return 0;
+      }
+      if (!/^\d+$/.test(text)) {
+        return null;
+      }
+      const value = Number(text);
+      return Number.isInteger(value) && value >= 0 && value <= 999 ? value : null;
     }
 
     function updateUndoHint() {
@@ -1286,9 +2296,14 @@
 
     function syncSettingsControls() {
       autoConfirmSelect.value = String(settings.autoConfirm);
+      autoEqualsInput.value = String(settings.autoEquals);
       baseToggle.checked = settings.baseEnabled;
       baseValueInput.disabled = !settings.baseEnabled;
       baseValueInput.value = settings.baseText;
+      voiceKeysToggle.checked = settings.voiceKeys;
+      voiceResultToggle.checked = settings.voiceResult;
+      updateVoiceSupport();
+      syncVoiceUi();
       syncSettingsIndicator();
       updateBaseMarker();
     }
@@ -1358,7 +2373,10 @@
     function placeSettingsPanel() {
       const rect = settingsToggle.getBoundingClientRect();
       const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
-      settingsPanel.style.top = `${Math.round(rect.bottom + 6)}px`;
+      const viewportHeight = document.documentElement.clientHeight || window.innerHeight;
+      const compact = viewportHeight <= 640;
+      settingsPanel.style.top = `${compact ? 8 : Math.round(rect.bottom + 6)}px`;
+      settingsPanel.style.maxHeight = compact ? `${Math.max(320, viewportHeight - 16)}px` : "";
       settingsPanel.style.right = `${Math.max(8, Math.round(viewportWidth - rect.right))}px`;
       settingsPanel.style.left = "auto";
       settingsPanel.style.bottom = "auto";
@@ -1377,8 +2395,14 @@
       }
       placeSettingsPanel();
       if (!settingsPanel.contains(document.activeElement)) {
-        autoConfirmSelect.focus();
+        const preferVoice = voice.state !== "idle" || settings.voiceKeys || settings.voiceResult;
+        if (preferVoice && !voiceKeysToggle.disabled) {
+          voiceKeysToggle.focus();
+        } else {
+          autoConfirmSelect.focus();
+        }
       }
+      settingsPanel.scrollTop = 0;
     }
 
     function closeSettings() {
@@ -1540,6 +2564,7 @@
       pendingEdit = null;
       editSnapshot = null;
       operator = null;
+      inputStartedFromResult = false;
       syncOperatorAttribute();
       operands = [];
       editDraft = null;
@@ -1555,6 +2580,9 @@
 
     function chooseOperator(nextOperator) {
       settlePendingEdit();
+      if (KEY_SPEECH[nextOperator]) {
+        speakKey(KEY_SPEECH[nextOperator]);
+      }
       if (state === "edit" && editDraft) {
         editDraft.operator = nextOperator;
         renderEditDraft();
@@ -1563,6 +2591,16 @@
         input.focus();
         startAutoConfirm();
         return;
+      }
+
+      const pendingRaw = input.value.trim();
+      if (
+        pendingRaw !== ""
+        && Number.isFinite(Number(pendingRaw))
+        && (operator === null || inputStartedFromResult)
+      ) {
+        commitInput({ allowAutoEquals: false, announceCommit: false });
+        inputStartedFromResult = false;
       }
 
       const preserveOperands = state === "input";
@@ -1586,7 +2624,7 @@
       startAutoConfirm();
     }
 
-    function commitInput() {
+    function commitInput({ allowAutoEquals = true, announceCommit = true } = {}) {
       if (state !== "select" && state !== "input" && state !== "result" && state !== "error" && state !== "edit") {
         return false;
       }
@@ -1609,6 +2647,15 @@
       if (state === "edit" && editDraft) {
         editDraft.operands.push({ value: numericValue, display: rawValue });
         renderEditDraft();
+        if (editSnapshot && editSnapshot.resultValue !== null) {
+          result.textContent = editSnapshot.resultText;
+          result.setAttribute("data-value", editSnapshot.resultValue);
+          if (editSnapshot.resultError === null) {
+            result.removeAttribute("data-error");
+          } else {
+            result.setAttribute("data-error", editSnapshot.resultError);
+          }
+        }
       } else {
         if (state === "result" || state === "error") {
           operands = [];
@@ -1622,10 +2669,20 @@
       input.value = "";
       renderExpression();
       stopAutoConfirm();
+      inputStartedFromResult = false;
       updateStateLabel(state === "edit"
         ? `已加入 ${rawValue}，可继续编辑或按 = 重算`
         : `已确认 ${rawValue}，可继续输入或按 = 计算`);
       updateUndoHint();
+      if (announceCommit) {
+        const commitReading = numberToChineseReading(rawValue);
+        if (commitReading) {
+          speakKey(commitReading);
+        }
+      }
+      if (allowAutoEquals && settings.autoEquals > 0 && operator && state === "input" && operands.length >= settings.autoEquals) {
+        calculate();
+      }
       return true;
     }
 
@@ -1649,9 +2706,11 @@
       result.setAttribute("data-error", "true");
       input.value = "";
       resetButton.disabled = false;
+      inputStartedFromResult = false;
       enterState("error");
       updateStateLabel("不能除以零；直接输入数字可开始新的计算，或更换运算符");
       input.focus();
+      speakResult("不能除以零");
     }
 
     function readOperandInputValues() {
@@ -1686,7 +2745,7 @@
           value: Number(rawValue),
           display: rawValue
         }));
-        commitInput();
+        commitInput({ allowAutoEquals: false, announceCommit: false });
 
         const currentValues = readOperandInputValues();
         if (currentValues.length === 0 || currentValues.some(invalidOperandValue)) {
@@ -1700,7 +2759,7 @@
         }));
         activeBase = editDraft.base ? { value: editDraft.base.value, display: editDraft.base.display } : null;
       } else {
-        commitInput();
+        commitInput({ allowAutoEquals: false, announceCommit: false });
         activeOperator = operator;
         activeOperands = operands;
         activeBase = effectiveBase();
@@ -1757,12 +2816,17 @@
       editDraft = null;
       editSnapshot = null;
       pendingEdit = null;
+      inputStartedFromResult = false;
       editDraftView.hidden = true;
       operandChips.textContent = "";
       enterState("result");
       const baseHint = activeBase ? `，基数 ${activeBase.display}` : "";
       updateStateLabel(`计算完成${baseHint}；继续输入数字按回车或 = 即可沿用 ${operatorGlyphs[activeOperator]}`);
       input.focus();
+      const reading = numberToChineseReading(displayValue);
+      if (reading) {
+        speakResult(reading);
+      }
     }
 
     picker.addEventListener("click", (event) => {
@@ -1862,6 +2926,19 @@
         syncSettingsIndicator();
       }
     });
+    autoEqualsInput.addEventListener("input", () => {
+      const value = parseAutoEquals(autoEqualsInput.value);
+      if (value !== null) {
+        settings.autoEquals = value;
+        saveSettings();
+        syncSettingsIndicator();
+      }
+    });
+    autoEqualsInput.addEventListener("blur", () => {
+      if (parseAutoEquals(autoEqualsInput.value) === null) {
+        autoEqualsInput.value = String(settings.autoEquals);
+      }
+    });
     baseToggle.addEventListener("change", () => {
       settings.baseEnabled = baseToggle.checked;
       if (settings.baseEnabled && (settings.baseText.trim() === "" || !Number.isFinite(Number(settings.baseText)))) {
@@ -1885,6 +2962,9 @@
         baseValueInput.value = settings.baseText;
       }
     });
+    voiceKeysToggle.addEventListener("change", handleVoiceToggle);
+    voiceResultToggle.addEventListener("change", handleVoiceToggle);
+    voiceRetry.addEventListener("click", retryVoiceEngine);
 
     resetButton.addEventListener("click", resetToSelect);
     editCancelButton.addEventListener("click", cancelEdit);
@@ -1894,6 +2974,9 @@
     syncSettingsControls();
     syncKeypad();
     updateUndoHint();
+    if (voiceSupported && (settings.voiceKeys || settings.voiceResult)) {
+      void ensureVoiceEngine();
+    }
   })();
 </script>
 </body>
