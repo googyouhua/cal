@@ -1,0 +1,12 @@
+ROUND: 1
+ARTIFACT_SHA256: a593d8b82bdb81eb394085da473d7e016f6497908795b66b3eea0d6cdf950368
+TREE_SHA256: b17eb07909165278f93bab05f75f91699730df3e11e2a3d45dabc935761773a6
+VERIFIER_SHA256: c1edc3735fa4e363f617956b20e2b451cb271b3e0554cb52cb56a8fb075caf01
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+H1 PASS — H1-1 log=["五"] played=["五"] count="1"; H1-2 ["九","五"] count="2"; H1-3 autoConfirm ["六"] count="1"; H1-4 keyboard ["七"]; H1-5 both-on keys=["九","五"] no-result
+H2 PASS — 0-9 ["零","一","二","三","四","五","六","七","八","九"]; 5..7 ["五","点","七"]; 5⌫⌫ ["五","退格"]; 5,5 ["五","五"]; ops ["加","减","乘","除"]; = adds nothing count="3"; 5确认⌫⌫ ["五","退格"]; all kind="key"
+H3 PASS — 1+2= last="三"/result; 9.5+9.2= result="18.7" last="十八点七"; 2-5= "-3"/"负三"; 1/0= "不能除以零"; both-on keys=["一","加","二"] last="三"/result; no "结果" substring
+H4 PASS — both-off count="0"; result-only kinds=["result"]; 1,2,3 played=["一","二","三"] span=109ms; both-on 1+1=9 keys=["一","加","一","九"] no-result
+H5 PASS — voice suite exit=0 passed=75 failed=0; core suite exit=0 scenarios=18 checks=206 failed=0; keys-only 1+2= result="3"; enter="确认"; autoConfirm expr contains "6"
+HARD: PASS
