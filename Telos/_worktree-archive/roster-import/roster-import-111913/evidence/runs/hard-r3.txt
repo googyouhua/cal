@@ -1,0 +1,20 @@
+ROUND: 3
+ARTIFACT_SHA256: d482b35002911561747c303b511e2f14ab250edcba86fd5150716a1eef69c62d
+TREE_SHA256: 1e6115483ab4128f0f3c95cdbfe542d5aa126b2184ad37c359c706deff38f52a
+VERIFIER_SHA256: d6a7e493cd9ae177e0c3a8c84ba91e5f363f2c9cd711350275c24275fc68037b
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 3
+ARTIFACT_SHA256: d482b35002911561747c303b511e2f14ab250edcba86fd5150716a1eef69c62d
+VERIFIER_SHA256: d6a7e493cd9ae177e0c3a8c84ba91e5f363f2c9cd711350275c24275fc68037b
+H1 PASS — A:3/张三|李四|王五, B:2/赵六|钱七, C:2/孙八|周九, missing-id:1/吴十, missing-name:1/20230108, extra-synonym:1/张三, quoted:2/张,三|李"四, sample:名单样例.csv/efbbbf/4lines/download-event; rejects=5(data-error=true,count=null,rows=0,storage=null); reselect=3
+H2 PASS — confirm=3/all-false/summary-已录0/next=1/select/no-operator/empty-expression/result=null/input-empty/edit-hidden/history=0; cancel+Esc preserve result24/operator/expression/input/2-history, no-roster
+H3 PASS — 5/0->error(filled0,next1); empty=->filled0,next1; fills=30@1->next:2, 7@2->next:3, 11@3->next:none; full=3rows/30,7,11/no-next/summary+label-名单已录满; extra1+1=2 leaves rows/scores unchanged
+H4 PASS — 3-fill edit seq2 10->8, expression contains 7, first/third unchanged, reload=8, cancel keeps 8/focus row2; 5-person filled=2/next=3; filled=50/draft-in-viewport/cancel-focus-row50
+H5 PASS — roster data-seq/visible=1,2,3; no-roster history data-seq absent, results 7,50 newest-first; edit older 30->5 => 3 items, originals unchanged
+H6 PASS — A=高一3班-成绩-20261120.csv/download-event/BOM/CRLF/header+3rows/no-side-effects; missing-seq=序号-first/成绩-last; missing-score=成绩-last; synonyms=姓名+名字 retained; quoted=RFC4180 comma/quote/newline; reimport=3 people all filled=false
+H7 PASS — stored v1 rows=3 seq1 12+30+8=50, seq2 3+4=7, seq3 empty (sequential-fill-consistent reading of literal row0=null; H3 requires seq1 first); reload 50/7/empty next3 select/input+expression+result empty; clear removes key/roster/history and survives reload; Storage throw -> score50 + warning + 0 pageerrors; {bad}/version99 ignored/preserved + 0 pageerrors
+H8 PASS — 390x844:states=5,overflow=0,minControl=44,minInputFont=16,minRosterFont=13,edit-row3=编辑第 3 位 李四 的成绩,dialog=DIALOG:modal,focusBack=roster-import; 320x568:states=5,overflow=0,minControl=44,minInputFont=16,minRosterFont=13,edit-row3=编辑第 3 位 李四 的成绩,dialog=DIALOG:modal,focusBack=roster-import
+H9 PASS — five frozen sha256 match; baseline 17 pass, cold-start failed set={cold-start.keys-disabled}; roster ids=roster-import,roster-fill,roster-edit,roster-export,roster-storage; roster-only all pass
+H10 PASS — bytes=74256,closed=true,externalRefs=0,pages=43,pageErrors=0,consoleErrors=0,two-context rows/entries/CSV deep-equal,rows=58/10/—
+HARD: PASS

@@ -1,0 +1,35 @@
+{
+  "archived_at": "2026-11-22T01:51:32.040Z",
+  "source_worktree": "/ws/cal_phone-worktrees/roster-import",
+  "source_branch": "roster-import",
+  "source_head": "295517cfa4da47f9db366ab01e80cb6feb18abd0",
+  "gate_slug": "roster-import-111913",
+  "gate_status": "in-loop",
+  "gate_repo": "/ws/cal_phone-worktrees/roster-import",
+  "gate_artifact": "/ws/cal_phone-worktrees/roster-import/index.html",
+  "stop": null,
+  "declared": {
+    "round": 3,
+    "artifact_sha256": "d482b35002911561747c303b511e2f14ab250edcba86fd5150716a1eef69c62d",
+    "tree_sha256": "1e6115483ab4128f0f3c95cdbfe542d5aa126b2184ad37c359c706deff38f52a",
+    "verifier_sha256": "d6a7e493cd9ae177e0c3a8c84ba91e5f363f2c9cd711350275c24275fc68037b",
+    "run_file": "evidence/runs/hard-r3.txt"
+  },
+  "artifact": {
+    "path": "/ws/cal_phone-worktrees/roster-import/index.html",
+    "sha256": "d482b35002911561747c303b511e2f14ab250edcba86fd5150716a1eef69c62d",
+    "declared_sha256": "d482b35002911561747c303b511e2f14ab250edcba86fd5150716a1eef69c62d",
+    "matches_declared": true,
+    "stale": false,
+    "copy": "verified-artifact/index.html",
+    "main_path": "/ws/cal_phone/index.html",
+    "main_sha256": "a275e40bf0e85ec0e86bc8bda88bee15a5bde4048677594d113e1c4a31371a14",
+    "matches_main": false
+  },
+  "tree": {
+    "source_sha256_at_archive": "1e6115483ab4128f0f3c95cdbfe542d5aa126b2184ad37c359c706deff38f52a",
+    "main_sha256_at_archive": "85ef6f8c9334e6f63c99e10de58d737c1aeba376827dbdd6221828a49e3378c5",
+    "note": "TREE_SHA256 is content-based and includes every non-gate file; adding tooling/docs later changes it. The declared value comes from the gate run and is the authoritative one for that run."
+  },
+  "note": "Archived evidence belongs to the source worktree/checkout. It is not an active gate and does not attest later edits in the main worktree."
+}

@@ -1,0 +1,20 @@
+ROUND: 2
+ARTIFACT_SHA256: b55549110675ff08d09595e63ec89b6571c5b8b81695fe75bf0a93120b7aab7d
+TREE_SHA256: 530561e146d8199a6c58f717a9f73ea19db71d11e2cb4df45e0c5f036ed8dd31
+VERIFIER_SHA256: d6a7e493cd9ae177e0c3a8c84ba91e5f363f2c9cd711350275c24275fc68037b
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 2
+ARTIFACT_SHA256: b55549110675ff08d09595e63ec89b6571c5b8b81695fe75bf0a93120b7aab7d
+VERIFIER_SHA256: d6a7e493cd9ae177e0c3a8c84ba91e5f363f2c9cd711350275c24275fc68037b
+H1 PASS — 7 组导入均匹配编码/分隔符/别名/额外列/引号姓名；5 组拒绝均为 `data-error=true`、无预览计数/名单行/存储；样例 BOM+4 行。
+H2 PASS — 确认后 3 行全空、摘要含“已录 0”、next=1、`select` 且计算器归零；取消与 Esc 均保持 2 条历史及结果 24。
+H3 PASS — 除零/空等号不消耗名额；顺序回填 30/7/11，next 2→3→无；录满提示正确，追加计算不改变名单。
+H4 PASS — 三人编辑 seq2 10→8，首末行不变，刷新保留；五人部分名单 next=3；五十人末行编辑可见，取消后焦点回该行。
+H5 PASS — 名单 seq 为 1,2,3；无名单历史无 `data-seq` 且最新在上；编辑较早记录后共 3 条，原记录不变。
+H6 PASS — UTF-8 BOM、CRLF、正确表头/行及文件名；缺序号/成绩补列、同义列保留、引号字段完整；重导入 3 人全空且导出无副作用。
+H7 PASS — 存储 v1 结构及 seq1=50、seq2=7 与页面一致；刷新恢复；清除与坏数据路径正确；Storage 抛错时内存录入 50 且仅警告、无 pageerror。
+H8 PASS — 390×844 与真 320×568 各 5 态均无横向溢出；最小控件 44px、输入字号 16px、名单字号 13px；语义、焦点、纵向顺序及编辑第 3 位“李四”标签正确。
+H9 PASS — 五个冻结哈希匹配；17 个基线通过，`cold-start` 唯一失败为 `cold-start.keys-disabled`；5 个 roster 场景覆盖 import/fill/edit/export/storage 且全部通过。
+H10 PASS — 产物 72046 字节、闭合、外链 0；43 个实测页面无 pageerror/console error；两个全新 context 的名单行、entry 与导出 CSV 深度一致。
+HARD: PASS

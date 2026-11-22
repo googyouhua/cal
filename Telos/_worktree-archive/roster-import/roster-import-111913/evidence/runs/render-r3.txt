@@ -1,0 +1,97 @@
+ROUND: 3
+ARTIFACT_SHA256: d482b35002911561747c303b511e2f14ab250edcba86fd5150716a1eef69c62d
+TREE_SHA256: 1e6115483ab4128f0f3c95cdbfe542d5aa126b2184ad37c359c706deff38f52a
+VERIFIER_SHA256: d6a7e493cd9ae177e0c3a8c84ba91e5f363f2c9cd711350275c24275fc68037b
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+ROUND: 3
+ARTIFACT_SHA256: d482b35002911561747c303b511e2f14ab250edcba86fd5150716a1eef69c62d
+VERIFIER_SHA256: d6a7e493cd9ae177e0c3a8c84ba91e5f363f2c9cd711350275c24275fc68037b
+S1.cdp=false
+S1.viewport=390x844
+S1.docOverflow=0
+S1.bodyOverflow=0
+S1.rows=0
+S1.filled=0
+S1.nextSeq=null
+S1.nextText=null
+S1.dialogOpen=true
+S1.dialog=DIALOG:true
+S1.rosterVisible=false
+S1.editVisible=false
+S1.firstRowRect=none
+S1.secondRowRect=none
+S1.editDraftRect=0,0,0x0
+S1.activeTestid=import-select
+S1.state=select
+S1.png=390x844
+S1.bytes=51954
+S1.uniqueColors=2392
+S1.luminanceStdDev=32.778375793394474
+S1.sha256=cef01183edde033d13ea7287e4b9b9006768024ef0b3fc17c4df04ba13943e5c
+S2.cdp=false
+S2.viewport=390x844
+S2.docOverflow=0
+S2.bodyOverflow=0
+S2.rows=0
+S2.filled=0
+S2.nextSeq=null
+S2.nextText=null
+S2.dialogOpen=true
+S2.dialog=DIALOG:true
+S2.rosterVisible=false
+S2.editVisible=false
+S2.firstRowRect=none
+S2.secondRowRect=none
+S2.editDraftRect=0,0,0x0
+S2.activeTestid=import-confirm
+S2.state=result
+S2.png=390x844
+S2.bytes=71923
+S2.uniqueColors=3707
+S2.luminanceStdDev=36.88588046219772
+S2.sha256=ea6a32c34485b4cb1157ac90ccaed7600ba3f3531d266e5f5f11b65c440710da
+S3.cdp=false
+S3.viewport=390x844
+S3.docOverflow=0
+S3.bodyOverflow=0
+S3.rows=5
+S3.filled=2
+S3.nextSeq=3
+S3.nextText=下一位 3 李四 · 按 = 记入成绩
+S3.dialogOpen=false
+S3.dialog=DIALOG:false
+S3.rosterVisible=true
+S3.editVisible=false
+S3.firstRowRect=669.391,760.984,344x91.594
+S3.secondRowRect=768.984,860.578,344x91.594
+S3.editDraftRect=0,0,0x0
+S3.activeTestid=calc-input
+S3.state=result
+S3.png=390x844
+S3.bytes=88039
+S3.uniqueColors=9514
+S3.luminanceStdDev=40.37068917062093
+S3.sha256=f8b8c665a4fa7bc7fa6c599caffba28189c58aea3f124a3ffd13cfda7cc5201c
+S4.cdp=true
+S4.viewport=320x568
+S4.docOverflow=0
+S4.bodyOverflow=0
+S4.rows=5
+S4.filled=3
+S4.nextSeq=4
+S4.nextText=下一位 4 丁四 · 按 = 记入成绩
+S4.dialogOpen=false
+S4.dialog=DIALOG:false
+S4.rosterVisible=true
+S4.editVisible=true
+S4.firstRowRect=-99.625,-8.031,274x91.594
+S4.secondRowRect=-0.031,96.156,274x96.188
+S4.editDraftRect=356,558,300x202
+S4.activeTestid=calc-input
+S4.state=edit
+S4.png=320x568
+S4.bytes=49032
+S4.uniqueColors=4734
+S4.luminanceStdDev=39.047952695492064
+S4.sha256=5610c3635b71538896b5f1ff880876f0e907b1ca00e49723def217fc78cdebc6

@@ -1,0 +1,22 @@
+ROUND: 1
+ARTIFACT_SHA256: b55549110675ff08d09595e63ec89b6571c5b8b81695fe75bf0a93120b7aab7d
+TREE_SHA256: 530561e146d8199a6c58f717a9f73ea19db71d11e2cb4df45e0c5f036ed8dd31
+VERIFIER_SHA256: 333bfcbd871ea4384128842d53ed830a8fb8188a26a1d4a971e761ca7e9b4f58
+KEKKAI_RUNNER_SHA256: 6611ec7fb8f6e1b7bd07b66f0a1f57f146276e879641885be45e3e21be0cf0c8
+
+证据：`/ws/cal_phone-worktrees/roster-import/Telos/roster-import-111913/evidence/attempts/first-r1-20261119-143457-953/hard-r1.txt`；渲染图与 `manifest-r1.json` 已核对为 S1–S4 精确集合，metrics 哈希一致。
+
+ROUND: 1
+ARTIFACT_SHA256: b55549110675ff08d09595e63ec89b6571c5b8b81695fe75bf0a93120b7aab7d
+VERIFIER_SHA256: 333bfcbd871ea4384128842d53ed830a8fb8188a26a1d4a971e761ca7e9b4f58
+H1 PASS — A:3/B:2/C:2/missing-id:1/missing-name:1/extra:1/quoted:2；5 组拒绝均 `data-error=true`、无行、无存储；样例 BOM+4 行。
+H2 PASS — 确认后 3 行全空、摘要含 `已录 0`、next=1、state=`select`、无 operator/算式/结果/输入/草稿/历史；取消与 Esc 均保持 2 条历史及原计算状态。
+H3 PASS — 除零与空 `=` 不写入；依次回填 30→7→11 至 seq 1/2/3，next 1→2→3→无；额外计算结果显示 2 但名单不变且提示录满。
+H4 PASS — 第 2 行编辑后 10→8，第 1/3 行不变；刷新仍为 8；关闭编辑恢复 focus；5 人部分名单 next=3；50 人末行草稿在视口内。
+H5 PASS — 名单 seq=[1,2,3]；无名单历史无 `data-seq` 且最新在上；编辑旧记录追加第 3 条并保持原两条不变。
+H6 PASS — 文件名 `高一3班-成绩-20261119.csv`，BOM+CRLF+三行内容正确；缺序号/缺成绩/同义列/引号字段均正确；重导入 3 人且全空，导出无副作用。
+H7 PASS — 存储 version=1、rows=3；实测 row0=seq1(12+30+8=50)、row1=seq2(3+4=7)、row2=null（H7 文案的 row0=null 与 H3 顺序回填冲突，按 H3 语义核验）；刷新/清除/storage 抛错/坏 JSON/version 99 均符合要求。
+H8 PASS — 390×844 与 320×568 各 5 态均无横向溢出；控件最小 44px、输入字号 16px、名单字号 13px；语义角色、row3 aria-label、next 文案、纵向关系及 dialog modal/focus 返回均通过。
+H9 PASS — 五个冻结文件 sha256 全匹配；17 个基线 PASS，cold-start 唯一失败集恰为 `{cold-start.keys-disabled}`；roster 场景 5 个覆盖 import/fill/edit/export/storage 且全部 PASS。
+H10 PASS — 72046 bytes、`</html>` 存在、外链 0；全部页面 pageerror/consoleError=0；两全新 context 的 rows 与导出 CSV 深度一致。
+HARD: PASS

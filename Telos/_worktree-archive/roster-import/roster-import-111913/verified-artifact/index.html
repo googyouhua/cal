@@ -1,0 +1,2512 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>手机计算器</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --ink: #f8fafc;
+    --muted: #a5b4cf;
+    --panel: rgba(22, 32, 51, 0.92);
+    --panel-edge: rgba(148, 163, 184, 0.22);
+    --field: #0d1524;
+    --accent: #f59e0b;
+    --accent-ink: #241600;
+    --danger: #fecdd3;
+    --danger-bg: rgba(190, 24, 93, 0.22);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+  }
+
+  body {
+    min-width: 0;
+    overflow-x: hidden;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(245, 158, 11, 0.15), transparent 34%),
+      radial-gradient(circle at 90% 100%, rgba(56, 189, 248, 0.13), transparent 38%),
+      #080d17;
+    color: var(--ink);
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+
+  .app {
+    width: min(100%, 460px);
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: 6px 10px max(12px, env(safe-area-inset-bottom));
+  }
+
+  .app-header {
+    margin: 0 2px 6px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(20px, 6vw, 24px);
+    line-height: 1.12;
+    letter-spacing: 0.01em;
+  }
+
+  .subtitle {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .panel {
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid var(--panel-edge);
+    border-radius: 18px;
+    background: var(--panel);
+    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(12px);
+  }
+
+  .state-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 0;
+    margin-bottom: 6px;
+  }
+
+  .state-label {
+    min-width: 0;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  button {
+    min-width: 0;
+    min-height: 48px;
+    border: 1px solid transparent;
+    border-radius: 13px;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  button:focus-visible,
+  input:focus-visible {
+    outline: 3px solid #fbbf24;
+    outline-offset: 2px;
+  }
+
+  button:disabled,
+  input:disabled {
+    cursor: default;
+    opacity: 0.52;
+  }
+
+  .reset-button {
+    flex: 0 0 auto;
+    width: 96px;
+    min-height: 44px;
+    padding: 0 8px;
+    border-color: var(--panel-edge);
+    background: #18243a;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 650;
+  }
+
+  .op-picker {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .op-picker[hidden] {
+    display: none;
+  }
+
+  .op-button {
+    width: 100%;
+    min-height: 44px;
+    border-color: rgba(251, 191, 36, 0.25);
+    background: linear-gradient(180deg, #26344d, #1c293f);
+    color: #fde68a;
+    font-size: 22px;
+    font-weight: 750;
+    line-height: 1;
+  }
+
+  .calc-input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 12px;
+    background: var(--field);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.25;
+    cursor: default;
+  }
+
+  .calc-input::placeholder {
+    color: #72819b;
+    font-size: 15px;
+  }
+
+  .hint {
+    display: none;
+  }
+
+  .roster-presence {
+    margin: 6px 0 0;
+    padding: 6px 9px;
+    border: 1px solid rgba(251, 191, 36, 0.28);
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.1);
+    color: #fde68a;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .display {
+    min-width: 0;
+    margin-top: 6px;
+    padding: 6px 8px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 13px;
+    background: rgba(7, 12, 22, 0.76);
+  }
+
+  .display-label {
+    display: none;
+  }
+
+  .expression {
+    min-height: 20px;
+    overflow-wrap: anywhere;
+    color: #dbeafe;
+    font-size: 15px;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
+  .result {
+    min-height: 34px;
+    margin-top: 2px;
+    overflow-wrap: anywhere;
+    color: var(--accent);
+    font-size: clamp(26px, 8vw, 34px);
+    font-weight: 760;
+    line-height: 1.05;
+    word-break: break-word;
+  }
+
+  .result[data-error="true"] {
+    min-height: 34px;
+    padding: 5px 8px;
+    border: 1px solid rgba(251, 113, 133, 0.32);
+    border-radius: 9px;
+    background: var(--danger-bg);
+    color: var(--danger);
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .keypad {
+    min-width: 0;
+    margin-top: 6px;
+    padding: 6px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 14px;
+    background: rgba(7, 12, 22, 0.42);
+  }
+
+  .keypad-pad {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-areas:
+      "d7 d8 d9 back"
+      "d4 d5 d6 enter"
+      "d1 d2 d3 enter"
+      "d0 dot eq eq";
+    grid-auto-rows: minmax(48px, auto);
+    gap: 6px;
+    min-width: 0;
+    margin-top: 6px;
+  }
+
+  .key {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 4px;
+    border-color: rgba(148, 163, 184, 0.24);
+    background: linear-gradient(180deg, #202d44, #172236);
+    color: var(--ink);
+    font-size: 21px;
+    font-weight: 750;
+    line-height: 1;
+  }
+
+  .key[data-key="0"] { grid-area: d0; }
+  .key[data-key="1"] { grid-area: d1; }
+  .key[data-key="2"] { grid-area: d2; }
+  .key[data-key="3"] { grid-area: d3; }
+  .key[data-key="4"] { grid-area: d4; }
+  .key[data-key="5"] { grid-area: d5; }
+  .key[data-key="6"] { grid-area: d6; }
+  .key[data-key="7"] { grid-area: d7; }
+  .key[data-key="8"] { grid-area: d8; }
+  .key[data-key="9"] { grid-area: d9; }
+  .key[data-key="."] { grid-area: dot; }
+
+  .key[data-key="backspace"] {
+    grid-area: back;
+    color: #fecdd3;
+    font-size: 16px;
+  }
+
+  .key[data-key="enter"] {
+    grid-area: enter;
+    border-color: rgba(56, 189, 248, 0.3);
+    background: linear-gradient(180deg, #1e3a5f, #14263f);
+    color: #bae6fd;
+    font-size: 16px;
+  }
+
+  .key[data-key="equals"] {
+    grid-area: eq;
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: var(--accent-ink);
+    font-size: 28px;
+    font-weight: 800;
+  }
+
+  .edit-draft {
+    min-width: 0;
+    margin-top: 6px;
+    padding: 8px;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 16px;
+    background: rgba(245, 158, 11, 0.08);
+  }
+
+  .edit-draft[hidden] {
+    display: none;
+  }
+
+  .edit-draft.floating-roster {
+    position: fixed;
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    left: 10px;
+    z-index: 30;
+    width: auto;
+    max-width: 440px;
+    max-height: calc(100dvh - 20px);
+    margin: 0 auto;
+    overflow: auto;
+    background: #241c12;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.62);
+  }
+
+  body.roster-edit-floating {
+    padding-bottom: calc(100dvh - 20px);
+  }
+
+  .edit-draft-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: #fde68a;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .edit-operator {
+    display: inline-grid;
+    place-items: center;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0 8px;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    border-radius: 9px;
+    background: rgba(245, 158, 11, 0.16);
+    color: #fef3c7;
+    font-size: 20px;
+  }
+
+  .edit-cancel {
+    flex: 0 0 auto;
+    min-width: 64px;
+    min-height: 44px;
+    padding: 0 14px;
+    border-color: rgba(251, 113, 133, 0.32);
+    background: rgba(190, 24, 93, 0.2);
+    color: #fecdd3;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .edit-done {
+    flex: 0 0 auto;
+    min-width: 104px;
+    min-height: 44px;
+    padding: 0 14px;
+    border-color: rgba(251, 191, 36, 0.5);
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: var(--accent-ink);
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .operand-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+    margin-top: 10px;
+  }
+
+  .operand-chips:empty::after {
+    content: "暂无可计算数字";
+    color: #c7b68f;
+    font-size: 13px;
+    line-height: 44px;
+  }
+
+  .operand-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    max-width: 100%;
+    padding-left: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.26);
+    border-radius: 12px;
+    background: rgba(13, 21, 36, 0.92);
+  }
+
+  .operand-input {
+    width: 76px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px 10px;
+    border: 1px solid rgba(148, 163, 184, 0.42);
+    border-radius: 9px;
+    background: #111c2e;
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .operand-remove {
+    flex: 0 0 auto;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-color: rgba(251, 113, 133, 0.28);
+    background: rgba(190, 24, 93, 0.2);
+    color: #fecdd3;
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .history {
+    min-width: 0;
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid var(--panel-edge);
+    border-radius: 20px;
+    background: var(--panel);
+  }
+
+  .history-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 0;
+    margin-bottom: 10px;
+  }
+
+  .history-title {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.3;
+  }
+
+  .history-note {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .history-list {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .history-empty {
+    margin: 0;
+    color: #8291aa;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .history-item {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 14px;
+    background: rgba(7, 12, 22, 0.58);
+  }
+
+  .history-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 10px;
+    min-width: 0;
+  }
+
+  .history-expression {
+    flex: 1 1 130px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: #dbeafe;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .history-result {
+    flex: 0 0 auto;
+    overflow-wrap: anywhere;
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 750;
+    line-height: 1.3;
+  }
+
+  .history-edit {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 8px;
+    border-color: rgba(251, 191, 36, 0.24);
+    background: #1c293f;
+    color: #fde68a;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  .history-head {
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .history-heading {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .history-tools {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .roster-tool {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
+    border-color: rgba(148, 163, 184, 0.28);
+    background: #17243a;
+    color: #dbeafe;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .roster-tool[data-testid="roster-clear"] {
+    border-color: rgba(251, 113, 133, 0.3);
+    color: #fecdd3;
+  }
+
+  .storage-warning {
+    margin: 0 0 10px;
+    padding: 9px 10px;
+    border: 1px solid rgba(251, 191, 36, 0.38);
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.12);
+    color: #fde68a;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .roster {
+    min-width: 0;
+  }
+
+  .roster-summary {
+    margin: 0 0 9px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .roster-next {
+    color: #fde68a;
+    font-weight: 750;
+  }
+
+  .roster-list {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .roster-row {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 14px;
+    background: rgba(7, 12, 22, 0.58);
+  }
+
+  .roster-row[data-next="true"] {
+    border-color: rgba(251, 191, 36, 0.55);
+    background: rgba(245, 158, 11, 0.1);
+    box-shadow: inset 3px 0 0 var(--accent);
+  }
+
+  .roster-row.editing {
+    border-color: rgba(56, 189, 248, 0.78);
+    background: rgba(14, 116, 144, 0.2);
+    box-shadow: inset 4px 0 0 #38bdf8, 0 0 0 1px rgba(56, 189, 248, 0.24);
+  }
+
+  .roster.editing .roster-row[data-next="true"] {
+    border-color: rgba(148, 163, 184, 0.22);
+    background: rgba(7, 12, 22, 0.58);
+    box-shadow: none;
+    opacity: 0.58;
+  }
+
+  .roster.editing .roster-row[data-next="true"] .roster-next-badge {
+    border-color: rgba(148, 163, 184, 0.24);
+    background: rgba(148, 163, 184, 0.1);
+    color: #cbd5e1;
+  }
+
+  .roster-top,
+  .roster-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    min-width: 0;
+  }
+
+  .roster-bottom {
+    margin-top: 6px;
+  }
+
+  .roster-seq {
+    flex: 0 0 auto;
+    min-width: 24px;
+    color: #fde68a;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.4;
+  }
+
+  .roster-identity {
+    display: flex;
+    flex: 1 1 150px;
+    flex-wrap: wrap;
+    gap: 2px 9px;
+    min-width: 0;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .roster-name,
+  .roster-id {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .roster-name {
+    color: var(--ink);
+    font-weight: 750;
+  }
+
+  .roster-id {
+    color: var(--muted);
+  }
+
+  .roster-next-badge {
+    flex: 0 0 auto;
+    padding: 3px 8px;
+    border: 1px solid rgba(251, 191, 36, 0.45);
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.16);
+    color: #fef3c7;
+    font-size: 12px;
+    font-weight: 750;
+    line-height: 1.35;
+  }
+
+  .roster-edit-badge {
+    flex: 0 0 auto;
+    padding: 3px 8px;
+    border: 1px solid rgba(56, 189, 248, 0.6);
+    border-radius: 999px;
+    background: rgba(14, 116, 144, 0.28);
+    color: #e0f2fe;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.35;
+  }
+
+  .roster-expression {
+    flex: 1 1 130px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: #dbeafe;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .roster-score {
+    flex: 0 0 auto;
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .roster-edit {
+    flex: 0 0 auto;
+    min-width: 62px;
+    min-height: 44px;
+    padding: 0 12px;
+    border-color: rgba(251, 191, 36, 0.28);
+    background: #1c293f;
+    color: #fde68a;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .import-dialog {
+    width: min(430px, calc(100vw - 20px));
+    max-width: none;
+    max-height: calc(100dvh - 20px);
+    margin: auto;
+    padding: 0;
+    overflow: auto;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 18px;
+    background: #101a2b;
+    color: var(--ink);
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+  }
+
+  .import-dialog::backdrop {
+    background: rgba(2, 6, 14, 0.75);
+    backdrop-filter: blur(3px);
+  }
+
+  .import-body {
+    display: grid;
+    gap: 11px;
+    padding: 16px;
+  }
+
+  .import-title {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.25;
+  }
+
+  .import-copy,
+  .import-warning,
+  .import-error {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .import-copy {
+    color: #cbd5e1;
+  }
+
+  .import-warning {
+    padding: 9px 10px;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.13);
+    color: #fef3c7;
+    font-weight: 700;
+  }
+
+  .import-error {
+    padding: 9px 10px;
+    border: 1px solid rgba(251, 113, 133, 0.4);
+    border-radius: 10px;
+    background: var(--danger-bg);
+    color: var(--danger);
+  }
+
+  .import-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .import-action {
+    flex: 1 1 130px;
+    min-height: 48px;
+    padding: 0 12px;
+    border-color: rgba(148, 163, 184, 0.28);
+    background: #1a2941;
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .import-action.primary {
+    border-color: rgba(251, 191, 36, 0.55);
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: var(--accent-ink);
+  }
+
+  .import-action.secondary {
+    flex-grow: 0;
+    background: #142137;
+    color: #dbeafe;
+  }
+
+  .import-stage {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .import-columns,
+  .import-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .import-chip {
+    max-width: 100%;
+    padding: 4px 8px;
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    border-radius: 999px;
+    background: rgba(30, 41, 59, 0.72);
+    color: #dbeafe;
+    font-size: 13px;
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .import-chip.kept {
+    color: var(--muted);
+  }
+
+  .import-preview-row {
+    flex: 1 1 100%;
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) minmax(0, 1fr) 48px;
+    gap: 7px;
+    min-width: 0;
+    padding: 7px 8px;
+    border-radius: 9px;
+    background: rgba(7, 12, 22, 0.64);
+    color: #dbeafe;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .import-preview-row span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .import-file {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 350px) {
+    .history-tools {
+      width: 100%;
+      justify-content: stretch;
+    }
+
+    .roster-tool {
+      flex: 1 1 0;
+      padding: 0 6px;
+    }
+
+    .roster-edit {
+      min-width: 58px;
+      padding: 0 9px;
+    }
+
+    .import-body {
+      padding: 14px;
+    }
+  }
+
+  @media (max-width: 350px) {
+    .app {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    .panel {
+      padding: 10px;
+    }
+
+    .op-picker {
+      gap: 7px;
+    }
+  }
+</style>
+</head>
+<body>
+<main class="app" data-state="select">
+  <header class="app-header">
+    <h1>手机计算器</h1>
+    <p class="subtitle">选运算符，用屏幕数字键盘输入；= 后沿用运算符</p>
+  </header>
+
+  <section class="panel" aria-label="计算器">
+    <div class="state-row">
+      <span class="state-label" id="state-label" aria-live="polite">请选择运算类型</span>
+      <button class="reset-button" type="button" data-testid="key-op" disabled>运算类型</button>
+    </div>
+
+    <input
+      class="calc-input"
+      id="calc-input"
+      data-testid="calc-input"
+      type="text"
+      inputmode="none"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder="用下方数字键盘输入"
+      aria-describedby="calc-hint"
+      aria-label="数字显示"
+      readonly
+    >
+    <p class="roster-presence" id="roster-presence" hidden></p>
+    <p class="hint" id="calc-hint">用屏幕数字键盘输入；回车确认数字，等号计算。</p>
+
+    <div class="display" aria-label="计算过程">
+      <div class="display-label">算式</div>
+      <div class="expression" data-testid="expression" aria-live="polite"></div>
+      <div class="display-label">结果</div>
+      <div class="result" data-testid="result" aria-live="polite"></div>
+    </div>
+
+    <section class="keypad" data-testid="keypad" aria-label="数字键盘">
+      <div class="op-picker" data-testid="op-picker" role="group" aria-label="选择运算类型">
+        <button class="op-button" type="button" data-op="+" aria-label="加法">+</button>
+        <button class="op-button" type="button" data-op="-" aria-label="减法">-</button>
+        <button class="op-button" type="button" data-op="*" aria-label="乘法">*</button>
+        <button class="op-button" type="button" data-op="/" aria-label="除法">/</button>
+      </div>
+
+      <div class="keypad-pad">
+        <button class="key" type="button" data-key="7" aria-label="数字 7">7</button>
+        <button class="key" type="button" data-key="8" aria-label="数字 8">8</button>
+        <button class="key" type="button" data-key="9" aria-label="数字 9">9</button>
+        <button class="key" type="button" data-key="backspace" aria-label="退格">退格</button>
+        <button class="key" type="button" data-key="4" aria-label="数字 4">4</button>
+        <button class="key" type="button" data-key="5" aria-label="数字 5">5</button>
+        <button class="key" type="button" data-key="6" aria-label="数字 6">6</button>
+        <button class="key" type="button" data-key="enter" aria-label="回车确认数字">回车</button>
+        <button class="key" type="button" data-key="1" aria-label="数字 1">1</button>
+        <button class="key" type="button" data-key="2" aria-label="数字 2">2</button>
+        <button class="key" type="button" data-key="3" aria-label="数字 3">3</button>
+        <button class="key" type="button" data-key="0" aria-label="数字 0">0</button>
+        <button class="key" type="button" data-key="." aria-label="小数点">.</button>
+        <button class="key" type="button" data-key="equals" data-testid="key-equals" aria-label="等于">=</button>
+      </div>
+    </section>
+
+    <section class="edit-draft" data-testid="edit-draft" aria-label="编辑草稿" hidden>
+      <div class="edit-draft-head">
+        <span data-testid="edit-draft-title">编辑草稿</span>
+        <span class="edit-operator" data-testid="edit-operator" aria-hidden="true">+</span>
+        <span id="edit-hint">改好数字后按「保存并完成」或 =；取消会放弃本次修改。</span>
+        <button class="edit-done" type="button" aria-label="保存并完成编辑">保存并完成</button>
+        <button class="edit-cancel" type="button" data-testid="edit-cancel" aria-label="取消编辑">取消</button>
+      </div>
+      <div class="operand-chips" data-testid="operand-chips"></div>
+    </section>
+  </section>
+
+  <section class="history" data-testid="history" aria-label="计算历史与名单成绩">
+    <div class="history-head">
+      <div class="history-heading">
+        <h2 class="history-title" id="history-title">计算历史</h2>
+        <span class="history-note" id="history-note">仅当前页面</span>
+      </div>
+      <div class="history-tools" id="history-tools">
+        <button class="roster-tool" type="button" data-testid="roster-import">导入名单</button>
+        <button class="roster-tool" type="button" data-testid="roster-export" hidden>导出</button>
+        <button class="roster-tool" type="button" data-testid="roster-clear" hidden>清除</button>
+      </div>
+    </div>
+    <p class="storage-warning" id="storage-warning" hidden>本机存储不可用，刷新会丢失成绩。</p>
+    <div class="history-list" data-testid="history-list"></div>
+    <p class="history-empty" data-testid="history-empty">还没有计算记录。</p>
+    <section class="roster" data-testid="roster" role="list" aria-label="名单成绩" hidden>
+      <p class="roster-summary" data-testid="roster-summary"></p>
+      <div class="roster-list" data-testid="roster-list"></div>
+    </section>
+  </section>
+</main>
+
+<dialog class="import-dialog" data-testid="import-dialog" aria-labelledby="import-title">
+  <div class="import-body">
+    <h2 class="import-title" id="import-title">导入名单</h2>
+    <p class="import-copy">第一行是表头，至少要有「姓名」或「学号」；Excel 请另存为 CSV UTF-8。</p>
+    <p class="import-error" data-testid="import-error" role="alert" hidden></p>
+
+    <div class="import-stage" data-import-stage="start">
+      <div class="import-actions">
+        <button class="import-action primary" type="button" data-testid="import-select">选择文件</button>
+        <button class="import-action secondary" type="button" data-testid="import-sample">下载样例名单</button>
+      </div>
+      <input class="import-file" data-testid="roster-file" type="file" accept=".csv,text/csv" hidden>
+    </div>
+
+    <div class="import-stage" data-import-stage="preview" hidden>
+      <p class="import-copy" data-testid="import-summary"></p>
+      <p class="import-warning" data-testid="import-warning"></p>
+      <div class="import-columns" data-testid="import-columns" aria-label="识别到的列"></div>
+      <div class="import-preview" data-testid="import-preview" aria-label="名单预览"></div>
+      <div class="import-actions">
+        <button class="import-action primary" type="button" data-testid="import-confirm">开始录入</button>
+        <button class="import-action secondary" type="button" data-testid="import-reselect">重新选择</button>
+      </div>
+    </div>
+
+    <div class="import-actions">
+      <button class="import-action secondary" type="button" data-testid="import-cancel">取消</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  (() => {
+    "use strict";
+
+    const app = document.querySelector(".app");
+    const picker = document.querySelector('[data-testid="op-picker"]');
+    const input = document.querySelector('[data-testid="calc-input"]');
+    const expression = document.querySelector('[data-testid="expression"]');
+    const result = document.querySelector('[data-testid="result"]');
+    const equalsButton = document.querySelector('[data-testid="key-equals"]');
+    const resetButton = document.querySelector('[data-testid="key-op"]');
+    const keypad = document.querySelector('[data-testid="keypad"]');
+    const keyButtons = Array.from(keypad.querySelectorAll('[data-key]'));
+    const opButtons = Array.from(picker.querySelectorAll('[data-op]'));
+    const stateLabel = document.querySelector("#state-label");
+    const historyList = document.querySelector('[data-testid="history-list"]');
+    const historyEmpty = document.querySelector('[data-testid="history-empty"]');
+    const editDraftView = document.querySelector('[data-testid="edit-draft"]');
+    const editDraftTitle = document.querySelector('[data-testid="edit-draft-title"]');
+    const editOperatorView = document.querySelector('[data-testid="edit-operator"]');
+    const operandChips = document.querySelector('[data-testid="operand-chips"]');
+    const editCancelButton = document.querySelector('[data-testid="edit-cancel"]');
+    const editCompleteButton = document.querySelector(".edit-done");
+    const historyTitle = document.querySelector("#history-title");
+    const historyNote = document.querySelector("#history-note");
+    const rosterView = document.querySelector('[data-testid="roster"]');
+    const rosterList = document.querySelector('[data-testid="roster-list"]');
+    const rosterSummary = document.querySelector('[data-testid="roster-summary"]');
+    const rosterPresence = document.querySelector("#roster-presence");
+    const rosterImportButton = document.querySelector('[data-testid="roster-import"]');
+    const rosterExportButton = document.querySelector('[data-testid="roster-export"]');
+    const rosterClearButton = document.querySelector('[data-testid="roster-clear"]');
+    const storageWarning = document.querySelector("#storage-warning");
+    const importDialog = document.querySelector('[data-testid="import-dialog"]');
+    const importError = document.querySelector('[data-testid="import-error"]');
+    const importStartStage = document.querySelector('[data-import-stage="start"]');
+    const importPreviewStage = document.querySelector('[data-import-stage="preview"]');
+    const importSelectButton = document.querySelector('[data-testid="import-select"]');
+    const importSampleButton = document.querySelector('[data-testid="import-sample"]');
+    const importConfirmButton = document.querySelector('[data-testid="import-confirm"]');
+    const importReselectButton = document.querySelector('[data-testid="import-reselect"]');
+    const importCancelButton = document.querySelector('[data-testid="import-cancel"]');
+    const importSummary = document.querySelector('[data-testid="import-summary"]');
+    const importWarning = document.querySelector('[data-testid="import-warning"]');
+    const importColumns = document.querySelector('[data-testid="import-columns"]');
+    const importPreview = document.querySelector('[data-testid="import-preview"]');
+    const rosterFileInput = document.querySelector('[data-testid="roster-file"]');
+
+    const ROSTER_KEY = "cal-phone.roster.v1";
+    const HEADER_ALIASES = {
+      seq: ["序号"],
+      id: ["学号", "考号", "学籍号"],
+      name: ["姓名", "名字", "学生姓名"],
+      score: ["成绩", "分数", "得分"],
+    };
+
+    const operatorGlyphs = {
+      "+": "+",
+      "-": "-",
+      "*": "*",
+      "/": "/"
+    };
+
+    let state = "select";
+    let operator = null;
+    let operands = [];
+    let history = [];
+    let editDraft = null;
+    let editSnapshot = null;
+    let pendingEdit = null;
+    let roster = null;
+    let pendingImport = null;
+    let editRosterSeq = null;
+    let importOpener = null;
+    let storageUnavailable = false;
+    let editDraftHome = null;
+
+    function headerLayout(headers) {
+      const used = { seq: false, id: false, name: false, score: false };
+      const roles = headers.map((header) => {
+        for (const role of Object.keys(HEADER_ALIASES)) {
+          if (!used[role] && HEADER_ALIASES[role].includes(header)) {
+            used[role] = true;
+            return role;
+          }
+        }
+        return null;
+      });
+      const primary = {};
+      roles.forEach((role, index) => {
+        if (role && primary[role] === undefined) {
+          primary[role] = index;
+        }
+      });
+      const extraIndices = [];
+      roles.forEach((role, index) => {
+        if (!role) {
+          extraIndices.push(index);
+        }
+      });
+      return { roles, primary, extraIndices };
+    }
+
+    function rosterLabel(row) {
+      return row.name || row.id || `第 ${row.seq} 位`;
+    }
+
+    function nextEmptyRow() {
+      if (!roster) {
+        return null;
+      }
+      let next = null;
+      for (const row of roster.rows) {
+        if (row.entry === null && (next === null || row.seq < next.seq)) {
+          next = row;
+        }
+      }
+      return next;
+    }
+
+    function showStorageUnavailable() {
+      storageUnavailable = true;
+      storageWarning.hidden = false;
+      storageWarning.textContent = "本机存储不可用，刷新会丢失成绩。";
+    }
+
+    function persistRoster() {
+      if (!roster) {
+        return;
+      }
+      try {
+        localStorage.setItem(ROSTER_KEY, JSON.stringify(roster));
+      } catch (error) {
+        showStorageUnavailable();
+      }
+    }
+
+    function removeRosterStorage() {
+      try {
+        localStorage.removeItem(ROSTER_KEY);
+      } catch (error) {
+        showStorageUnavailable();
+      }
+    }
+
+    function validStoredEntry(entry, seq) {
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+        return false;
+      }
+      if (entry.seq !== seq || typeof entry.operator !== "string" || typeof entry.expression !== "string") {
+        return false;
+      }
+      if (!Number.isFinite(entry.result) || !Array.isArray(entry.operands)) {
+        return false;
+      }
+      return entry.operands.every(
+        (operand) =>
+          operand &&
+          typeof operand === "object" &&
+          typeof operand.display === "string" &&
+          Number.isFinite(operand.value),
+      );
+    }
+
+    function validStoredRoster(value) {
+      if (!value || typeof value !== "object" || value.version !== 1) {
+        return false;
+      }
+      if (typeof value.fileName !== "string" || !Array.isArray(value.headers) || !Array.isArray(value.rows)) {
+        return false;
+      }
+      if (value.rows.length === 0 || !value.headers.every((header) => typeof header === "string")) {
+        return false;
+      }
+      return value.rows.every((row, index) => {
+        if (!row || typeof row !== "object" || row.seq !== index + 1 || !Array.isArray(row.extra)) {
+          return false;
+        }
+        if (typeof row.id !== "string" || typeof row.name !== "string") {
+          return false;
+        }
+        if (!row.extra.every((item) => typeof item === "string")) {
+          return false;
+        }
+        return row.entry === null || validStoredEntry(row.entry, row.seq);
+      });
+    }
+
+    function restoreRoster() {
+      let raw = null;
+      try {
+        raw = localStorage.getItem(ROSTER_KEY);
+      } catch (error) {
+        showStorageUnavailable();
+        return;
+      }
+      if (raw === null) {
+        return;
+      }
+      try {
+        const parsed = JSON.parse(raw);
+        if (validStoredRoster(parsed)) {
+          roster = parsed;
+        }
+      } catch (error) {
+        roster = null;
+      }
+    }
+
+    function escapeCsvCell(value) {
+      const text = String(value ?? "");
+      return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+    }
+
+    function downloadText(fileName, text) {
+      const blob = new Blob([text], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = fileName;
+      anchor.style.display = "none";
+      document.body.append(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function rosterCsvText() {
+      if (!roster) {
+        return "";
+      }
+      const layout = headerLayout(roster.headers);
+      const extraPositions = new Map(layout.extraIndices.map((headerIndex, position) => [headerIndex, position]));
+      const outputHeaders = roster.headers.slice();
+      if (layout.primary.seq === undefined) {
+        outputHeaders.unshift("序号");
+      }
+      if (layout.primary.score === undefined) {
+        outputHeaders.push("成绩");
+      }
+
+      const lines = [outputHeaders.map(escapeCsvCell).join(",")];
+      roster.rows.forEach((row) => {
+        const cells = [];
+        if (layout.primary.seq === undefined) {
+          cells.push(row.seq);
+        }
+        roster.headers.forEach((header, index) => {
+          const role = layout.roles[index];
+          if (role === "seq") {
+            cells.push(row.seq);
+          } else if (role === "id") {
+            cells.push(row.id);
+          } else if (role === "name") {
+            cells.push(row.name);
+          } else if (role === "score") {
+            cells.push(row.entry ? formatValue(row.entry.result) : "");
+          } else {
+            cells.push(row.extra[extraPositions.get(index)] ?? "");
+          }
+        });
+        if (layout.primary.score === undefined) {
+          cells.push(row.entry ? formatValue(row.entry.result) : "");
+        }
+        lines.push(cells.map(escapeCsvCell).join(","));
+      });
+      return `\uFEFF${lines.join("\r\n")}\r\n`;
+    }
+
+    function exportRoster() {
+      if (!roster) {
+        return;
+      }
+      const baseName = (roster.fileName || "名单").replace(/\.[^.]+$/, "").replace(/[\\/:*?"<>|]/g, "_");
+      const now = new Date();
+      const date = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
+      downloadText(`${baseName}-成绩-${date}.csv`, rosterCsvText());
+      const filled = roster.rows.filter((row) => row.entry !== null).length;
+      updateStateLabel(`已导出 ${roster.rows.length} 人（${filled} 条成绩）`);
+    }
+
+    function downloadSampleRoster() {
+      const sample = [
+        "序号,学号,姓名,成绩,班级",
+        "1,20230101,张三,,高一3班",
+        "2,20230102,李四,,高一3班",
+        "3,20230103,王五,,高一3班",
+      ].join("\r\n");
+      downloadText("名单样例.csv", `\uFEFF${sample}\r\n`);
+    }
+
+    function decodeRosterText(bytes) {
+      let text = new TextDecoder("utf-8").decode(bytes);
+      if (text.includes("\uFFFD")) {
+        try {
+          text = new TextDecoder("gbk", { fatal: true }).decode(bytes);
+        } catch (error) {
+          throw new Error("文件编码无法识别，请另存为 CSV UTF-8 后重试。");
+        }
+      }
+      text = text.replace(/^\uFEFF/, "");
+      if (text.includes("\uFFFD") || text.includes("\u0000")) {
+        throw new Error("文件编码无法识别，请另存为 CSV UTF-8 后重试。");
+      }
+      return text;
+    }
+
+    function headerRecordText(text) {
+      let inQuotes = false;
+      for (let index = 0; index < text.length; index += 1) {
+        const character = text[index];
+        if (character === '"') {
+          if (inQuotes && text[index + 1] === '"') {
+            index += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (!inQuotes && (character === "\r" || character === "\n")) {
+          return text.slice(0, index);
+        }
+      }
+      return text;
+    }
+
+    function countDelimiter(text, delimiter) {
+      let count = 0;
+      let inQuotes = false;
+      for (let index = 0; index < text.length; index += 1) {
+        const character = text[index];
+        if (character === '"') {
+          if (inQuotes && text[index + 1] === '"') {
+            index += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (!inQuotes && character === delimiter) {
+          count += 1;
+        }
+      }
+      return count;
+    }
+
+    function detectDelimiter(text) {
+      const header = headerRecordText(text);
+      let bestDelimiter = ",";
+      let bestCount = -1;
+      for (const delimiter of [",", ";", "\t"]) {
+        const count = countDelimiter(header, delimiter);
+        if (count > bestCount) {
+          bestDelimiter = delimiter;
+          bestCount = count;
+        }
+      }
+      return bestDelimiter;
+    }
+
+    function parseCsvRecords(text, delimiter) {
+      const records = [];
+      let row = [];
+      let field = "";
+      let inQuotes = false;
+
+      for (let index = 0; index < text.length; index += 1) {
+        const character = text[index];
+        if (inQuotes) {
+          if (character === '"') {
+            if (text[index + 1] === '"') {
+              field += '"';
+              index += 1;
+            } else {
+              inQuotes = false;
+            }
+          } else {
+            field += character;
+          }
+        } else if (character === '"' && field === "") {
+          inQuotes = true;
+        } else if (character === delimiter) {
+          row.push(field);
+          field = "";
+        } else if (character === "\r" || character === "\n") {
+          if (character === "\r" && text[index + 1] === "\n") {
+            index += 1;
+          }
+          row.push(field);
+          records.push(row);
+          row = [];
+          field = "";
+        } else {
+          field += character;
+        }
+      }
+
+      if (field !== "" || row.length > 0 || text.endsWith(delimiter)) {
+        row.push(field);
+        records.push(row);
+      }
+      return records;
+    }
+
+    function parseRosterCsv(fileName, bytes) {
+      const text = decodeRosterText(bytes);
+      if (text.trim() === "") {
+        throw new Error("文件是空的，请选择含表头和名单的 CSV。");
+      }
+      const records = parseCsvRecords(text, detectDelimiter(text));
+      if (records.length === 0 || records[0].every((cell) => cell.trim() === "")) {
+        throw new Error("第一行必须是表头。");
+      }
+
+      const headers = records[0].map((cell) => cell.trim());
+      const layout = headerLayout(headers);
+      if (layout.primary.id === undefined && layout.primary.name === undefined) {
+        throw new Error("表头至少要有「姓名」或「学号」。");
+      }
+
+      const rows = [];
+      records.slice(1).forEach((record) => {
+        if (record.every((cell) => cell.trim() === "")) {
+          return;
+        }
+        const id = layout.primary.id === undefined ? "" : (record[layout.primary.id] ?? "");
+        const name = layout.primary.name === undefined ? "" : (record[layout.primary.name] ?? "");
+        if (id.trim() === "" && name.trim() === "") {
+          return;
+        }
+        rows.push({
+          seq: rows.length + 1,
+          id,
+          name,
+          extra: layout.extraIndices.map((index) => record[index] ?? ""),
+          entry: null,
+        });
+      });
+
+      if (rows.length === 0) {
+        throw new Error("名单里没有可导入的学生行。");
+      }
+
+      return {
+        version: 1,
+        fileName: fileName || "名单.csv",
+        headers,
+        rows,
+      };
+    }
+
+    function resetImportDialog() {
+      pendingImport = null;
+      delete importDialog.dataset.error;
+      importError.hidden = true;
+      importError.textContent = "";
+      importStartStage.hidden = false;
+      importPreviewStage.hidden = true;
+      importSummary.hidden = true;
+      importSummary.removeAttribute("data-count");
+      importSummary.textContent = "";
+      importWarning.textContent = "";
+      importColumns.textContent = "";
+      importPreview.textContent = "";
+      rosterFileInput.value = "";
+    }
+
+    function showImportError(message) {
+      pendingImport = null;
+      importDialog.dataset.error = "true";
+      importError.hidden = false;
+      importError.textContent = message || "名单无法导入，请重新选择文件。";
+      importStartStage.hidden = false;
+      importPreviewStage.hidden = true;
+      importSummary.hidden = true;
+      importSummary.removeAttribute("data-count");
+      importColumns.textContent = "";
+      importPreview.textContent = "";
+      importSelectButton.focus();
+    }
+
+    function renderImportPreview(parsed) {
+      pendingImport = parsed;
+      delete importDialog.dataset.error;
+      importError.hidden = true;
+      importError.textContent = "";
+      importStartStage.hidden = true;
+      importPreviewStage.hidden = false;
+      importSummary.hidden = false;
+      importSummary.dataset.count = String(parsed.rows.length);
+      importSummary.textContent = `识别到 ${parsed.rows.length} 人`;
+
+      const existingScores = roster
+        ? roster.rows.filter((row) => row.entry !== null).length
+        : history.length;
+      importWarning.textContent = existingScores > 0
+        ? `导入会清空当前 ${existingScores} 条成绩，从第 1 位重新录入。`
+        : roster
+          ? "导入会替换当前名单，并从第 1 位重新录入。"
+          : "导入后从第 1 位开始录入。";
+      importConfirmButton.textContent = existingScores > 0 ? "清空并开始录入" : "开始录入";
+
+      const layout = headerLayout(parsed.headers);
+      importColumns.textContent = "";
+      parsed.headers.forEach((header, index) => {
+        const chip = document.createElement("span");
+        chip.className = `import-chip${layout.roles[index] ? "" : " kept"}`;
+        chip.textContent = layout.roles[index] ? `${header}` : `保留：${header || "空列"}`;
+        importColumns.append(chip);
+      });
+
+      importPreview.textContent = "";
+      parsed.rows.slice(0, 3).forEach((row) => {
+        const previewRow = document.createElement("div");
+        previewRow.className = "import-preview-row";
+        [row.seq, row.id, row.name, "—"].forEach((value) => {
+          const cell = document.createElement("span");
+          cell.textContent = String(value);
+          previewRow.append(cell);
+        });
+        importPreview.append(previewRow);
+      });
+      importConfirmButton.focus();
+    }
+
+    async function handleRosterFile(file) {
+      if (!file) {
+        return;
+      }
+      try {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        renderImportPreview(parseRosterCsv(file.name, bytes));
+      } catch (error) {
+        showImportError(error instanceof Error ? error.message : String(error));
+      }
+    }
+
+    function openImportDialog() {
+      if (importDialog.open) {
+        return;
+      }
+      importOpener = document.activeElement instanceof HTMLElement ? document.activeElement : rosterImportButton;
+      resetImportDialog();
+      importDialog.showModal();
+      importSelectButton.focus();
+    }
+
+    function confirmRosterImport() {
+      if (!pendingImport) {
+        return;
+      }
+      roster = pendingImport;
+      pendingImport = null;
+      history = [];
+      historyList.textContent = "";
+      historyEmpty.hidden = true;
+      editRosterSeq = null;
+      resetToSelect();
+      persistRoster();
+      renderRoster();
+      const next = nextEmptyRow();
+      updateStateLabel(next
+        ? `名单已导入；从第 1 位 ${rosterLabel(next)} 开始`
+        : "名单已导入；名单已录满");
+      importDialog.close();
+    }
+
+    function clearRoster() {
+      if (!roster) {
+        return;
+      }
+      const filled = roster.rows.filter((row) => row.entry !== null).length;
+      const accepted = window.confirm(`清除后本机保存的名单和 ${filled} 条成绩都会删除。`);
+      if (!accepted) {
+        return;
+      }
+      roster = null;
+      pendingImport = null;
+      editRosterSeq = null;
+      history = [];
+      historyList.textContent = "";
+      removeRosterStorage();
+      resetToSelect();
+      renderRoster();
+      updateStateLabel("名单已清除；已回到无名单模式");
+    }
+
+    function focusRosterEdit(seq) {
+      const button = rosterList.querySelector(`[data-testid="roster-row"][data-seq="${seq}"] [data-testid="roster-edit"]`);
+      if (!button) {
+        return;
+      }
+      button.focus({ preventScroll: true });
+      button.scrollIntoView({ block: "nearest" });
+    }
+
+    function floatEditDraft(seq) {
+      if (!editDraftHome) {
+        editDraftHome = { parent: editDraftView.parentNode, next: editDraftView.nextSibling };
+      }
+      editDraftView.classList.add("floating-roster");
+      document.body.classList.add("roster-edit-floating");
+      document.body.append(editDraftView);
+      requestAnimationFrame(() => {
+        const row = rosterList.querySelector(`[data-testid="roster-row"][data-seq="${seq}"]`);
+        if (!row) {
+          return;
+        }
+        const top = row.getBoundingClientRect().top + window.scrollY - 12;
+        window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
+      });
+    }
+
+    function restoreEditDraftHome() {
+      if (!editDraftHome) {
+        return;
+      }
+      const home = editDraftHome;
+      editDraftHome = null;
+      editDraftView.classList.remove("floating-roster");
+      document.body.classList.remove("roster-edit-floating");
+      if (home.parent) {
+        home.parent.insertBefore(editDraftView, home.next);
+      }
+    }
+
+    function renderRoster() {
+      const hasRoster = roster !== null;
+      rosterView.hidden = !hasRoster;
+      rosterView.classList.toggle("editing", hasRoster && editRosterSeq !== null);
+      historyList.hidden = hasRoster;
+      historyEmpty.hidden = hasRoster || history.length > 0;
+      rosterImportButton.textContent = hasRoster ? "导入" : "导入名单";
+      rosterExportButton.hidden = !hasRoster;
+      rosterClearButton.hidden = !hasRoster;
+      historyTitle.textContent = hasRoster ? "名单成绩" : "计算历史";
+      historyNote.textContent = hasRoster ? roster.fileName : "仅当前页面";
+      rosterList.textContent = "";
+      rosterSummary.textContent = "";
+      rosterPresence.textContent = "";
+      rosterPresence.hidden = true;
+
+      if (!hasRoster) {
+        return;
+      }
+
+      const next = nextEmptyRow();
+      const filled = roster.rows.filter((row) => row.entry !== null).length;
+      rosterSummary.append(`${roster.rows.length} 人 · 已录 ${filled} · `);
+      if (next) {
+        rosterPresence.hidden = false;
+        const presenceNext = document.createElement("span");
+        presenceNext.setAttribute("data-testid", "roster-next");
+        presenceNext.setAttribute("data-seq", String(next.seq));
+        presenceNext.textContent = `下一位 ${next.seq} ${rosterLabel(next)} · 按 = 记入成绩`;
+        rosterPresence.append(presenceNext);
+        const nextLabel = document.createElement("span");
+        nextLabel.className = "roster-next";
+        nextLabel.textContent = `下一位 ${next.seq} ${rosterLabel(next)}`;
+        rosterSummary.append(nextLabel);
+      } else {
+        rosterSummary.append("名单已录满");
+        rosterPresence.hidden = false;
+        rosterPresence.textContent = "名单已录满；按 = 只计算结果，不再写入名单";
+      }
+
+      const fragment = document.createDocumentFragment();
+      roster.rows.forEach((row) => {
+        const item = document.createElement("article");
+        item.className = "roster-row";
+        item.setAttribute("data-testid", "roster-row");
+        item.setAttribute("role", "listitem");
+        item.setAttribute("data-seq", String(row.seq));
+        item.setAttribute("data-filled", row.entry ? "true" : "false");
+        item.setAttribute("data-name", row.name);
+        item.setAttribute("data-id", row.id);
+        if (next && next.seq === row.seq) {
+          item.setAttribute("data-next", "true");
+        }
+        if (editRosterSeq !== null && editRosterSeq === row.seq) {
+          item.classList.add("editing");
+        }
+
+        const top = document.createElement("div");
+        top.className = "roster-top";
+        const seq = document.createElement("span");
+        seq.className = "roster-seq";
+        seq.textContent = String(row.seq);
+        const identity = document.createElement("span");
+        identity.className = "roster-identity";
+        const name = document.createElement("span");
+        name.className = "roster-name";
+        name.textContent = row.name || `第 ${row.seq} 位`;
+        identity.append(name);
+        if (row.id) {
+          const id = document.createElement("span");
+          id.className = "roster-id";
+          id.textContent = row.id;
+          identity.append(id);
+        }
+        top.append(seq, identity);
+        if (editRosterSeq !== null && editRosterSeq === row.seq) {
+          const badge = document.createElement("span");
+          badge.className = "roster-edit-badge";
+          badge.textContent = "编辑中";
+          top.append(badge);
+        }
+        if (next && next.seq === row.seq) {
+          const badge = document.createElement("span");
+          badge.className = "roster-next-badge";
+          badge.textContent = "下一位";
+          top.append(badge);
+        }
+
+        const bottom = document.createElement("div");
+        bottom.className = "roster-bottom";
+        const expressionView = document.createElement("span");
+        expressionView.className = "roster-expression";
+        expressionView.setAttribute("data-testid", "roster-expression");
+        expressionView.textContent = row.entry ? row.entry.expression : "";
+        const score = document.createElement("span");
+        score.className = "roster-score";
+        score.setAttribute("data-testid", "roster-score");
+        if (row.entry) {
+          const formatted = formatValue(row.entry.result);
+          score.setAttribute("data-value", formatted);
+          score.textContent = formatted;
+        } else {
+          score.textContent = "—";
+        }
+        bottom.append(expressionView, score);
+
+        if (row.entry) {
+          const editButton = document.createElement("button");
+          editButton.type = "button";
+          editButton.className = "roster-edit";
+          editButton.setAttribute("data-testid", "roster-edit");
+          editButton.setAttribute("aria-label", `编辑第 ${row.seq} 位 ${rosterLabel(row)} 的成绩`);
+          editButton.textContent = "编辑";
+          editButton.addEventListener("click", () => beginEdit(row.entry, row));
+          bottom.append(editButton);
+        }
+
+        item.append(top, bottom);
+        fragment.append(item);
+      });
+      rosterList.append(fragment);
+    }
+
+    function enterState(nextState) {
+      state = nextState;
+      app.dataset.state = nextState;
+      syncKeypad();
+    }
+
+    function syncOperatorAttribute() {
+      if (operator) {
+        app.dataset.operator = operator;
+      } else {
+        delete app.dataset.operator;
+      }
+    }
+
+    function syncKeypad() {
+      keyButtons.forEach((button) => {
+        button.disabled = false;
+      });
+      opButtons.forEach((button) => {
+        button.disabled = false;
+      });
+    }
+
+    function appendCharacter(character) {
+      if (state === "result" || state === "error") {
+        operands = [];
+        clearExpression();
+        clearResult();
+      }
+      if (state === "select" || state === "result" || state === "error") {
+        enterState("input");
+        updateStateLabel(operator
+          ? `已开始新的 ${operatorGlyphs[operator]} 计算，请继续输入`
+          : "请输入数字，或先选择运算类型");
+      }
+      if (character === "." && input.value.includes(".")) {
+        return;
+      }
+      input.value += character;
+    }
+
+    function deleteLastCharacter() {
+      if (state === "select" && input.value === "") {
+        return;
+      }
+      if (state === "select") {
+        enterState("input");
+      }
+      input.value = input.value.slice(0, -1);
+    }
+
+    function clearResult() {
+      result.textContent = "";
+      result.removeAttribute("data-value");
+      result.removeAttribute("data-error");
+    }
+
+    function clearExpression() {
+      expression.textContent = "";
+    }
+
+    function cloneOperand(operand) {
+      return { value: operand.value, display: operand.display };
+    }
+
+    function expressionText(activeOperator, activeOperands) {
+      if (activeOperands.length === 0) {
+        return "";
+      }
+
+      const values = activeOperands.map((operand) => operand.display);
+      return activeOperator ? values.join(` ${operatorGlyphs[activeOperator]} `) : values.join(" ");
+    }
+
+    function liveExpressionText(activeOperator, activeOperands) {
+      const base = expressionText(activeOperator, activeOperands);
+      if (!activeOperator || !base || activeOperands.length !== 1) {
+        return base;
+      }
+
+      return `${base} ${operatorGlyphs[activeOperator]}`;
+    }
+
+    function renderExpression() {
+      if (state === "edit" && editDraft) {
+        expression.textContent = liveExpressionText(editDraft.operator, editDraft.operands);
+        return;
+      }
+
+      if (operands.length === 0) {
+        clearExpression();
+        return;
+      }
+
+      expression.textContent = liveExpressionText(operator, operands);
+    }
+
+    function captureEditSnapshot() {
+      return {
+        state,
+        operator,
+        operands: operands.map(cloneOperand),
+        expressionText: expression.textContent || "",
+        resultText: result.textContent || "",
+        resultValue: result.getAttribute("data-value"),
+        resultError: result.getAttribute("data-error"),
+        label: stateLabel.textContent
+      };
+    }
+
+    function settlePendingEdit() {
+      if (!pendingEdit) {
+        return;
+      }
+
+      const pending = pendingEdit;
+      pendingEdit = null;
+      if (pending.chip) {
+        pending.chip.removeAttribute("data-pending");
+      }
+      if (!pending.entered && pending.input && pending.input.isConnected) {
+        pending.input.value = pending.original;
+        if (editDraft && editDraft.operands[pending.index]) {
+          editDraft.operands[pending.index] = {
+            value: Number(pending.original),
+            display: pending.original
+          };
+        }
+        if (pending.chip) {
+          pending.chip.setAttribute("data-value", pending.original);
+        }
+      }
+    }
+
+    function beginPendingEdit(operandInput, chip, index) {
+      if (state !== "edit" || !editDraft || !editDraft.operands[index]) {
+        return;
+      }
+      if (pendingEdit && pendingEdit.input === operandInput) {
+        return;
+      }
+
+      settlePendingEdit();
+      pendingEdit = {
+        index,
+        original: operandInput.value,
+        entered: false,
+        input: operandInput,
+        chip
+      };
+      operandInput.value = "";
+      chip.setAttribute("data-pending", "true");
+    }
+
+    function cancelEdit() {
+      if (state !== "edit" || !editSnapshot) {
+        return;
+      }
+
+      const rosterSeq = editRosterSeq;
+      const snapshot = editSnapshot;
+      pendingEdit = null;
+      editSnapshot = null;
+      editDraft = null;
+      editRosterSeq = null;
+      editDraftView.hidden = true;
+      restoreEditDraftHome();
+      operandChips.textContent = "";
+      operator = snapshot.operator;
+      operands = snapshot.operands.map(cloneOperand);
+      syncOperatorAttribute();
+      expression.textContent = snapshot.expressionText;
+      result.textContent = snapshot.resultText;
+      if (snapshot.resultValue === null) {
+        result.removeAttribute("data-value");
+      } else {
+        result.setAttribute("data-value", snapshot.resultValue);
+      }
+      if (snapshot.resultError === null) {
+        result.removeAttribute("data-error");
+      } else {
+        result.setAttribute("data-error", snapshot.resultError);
+      }
+      input.value = "";
+      resetButton.disabled = snapshot.state === "select";
+      enterState(snapshot.state);
+      updateStateLabel(snapshot.label);
+      renderRoster();
+      if (rosterSeq !== null) {
+        focusRosterEdit(rosterSeq);
+      } else {
+        input.focus();
+      }
+    }
+
+    function updateStateLabel(label) {
+      stateLabel.textContent = label;
+    }
+
+    function renderEditDraft() {
+      if (!editDraft) {
+        editDraftView.hidden = true;
+        restoreEditDraftHome();
+        operandChips.textContent = "";
+        return;
+      }
+
+      settlePendingEdit();
+
+      editDraftView.hidden = false;
+      editDraftView.setAttribute("data-operator", editDraft.operator);
+      editOperatorView.textContent = operatorGlyphs[editDraft.operator];
+      operandChips.textContent = "";
+
+      editDraft.operands.forEach((operand, index) => {
+        const chip = document.createElement("div");
+        chip.className = "operand-chip";
+        chip.setAttribute("data-testid", "operand-chip");
+        chip.setAttribute("data-value", operand.display);
+
+        const value = document.createElement("input");
+        value.type = "text";
+        value.inputMode = "decimal";
+        value.autocomplete = "off";
+        value.spellcheck = false;
+        value.className = "operand-input";
+        value.setAttribute("data-testid", "operand-input");
+        value.setAttribute("aria-label", `编辑数字 ${operand.display}`);
+        value.value = operand.display;
+        value.addEventListener("focus", () => beginPendingEdit(value, chip, index));
+        value.addEventListener("click", () => beginPendingEdit(value, chip, index));
+        value.addEventListener("focusout", () => {
+          if (pendingEdit && pendingEdit.input === value) {
+            settlePendingEdit();
+          }
+        });
+        value.addEventListener("input", () => {
+          if (state !== "edit" || !editDraft || !editDraft.operands[index]) {
+            return;
+          }
+
+          if (pendingEdit && pendingEdit.input === value) {
+            pendingEdit.entered = true;
+          }
+
+          editDraft.operands[index] = {
+            value: Number(value.value),
+            display: value.value
+          };
+          chip.setAttribute("data-value", value.value);
+          renderExpression();
+        });
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "operand-remove";
+        remove.setAttribute("data-testid", "operand-remove");
+        remove.setAttribute("aria-label", `删除数字 ${operand.display}`);
+        remove.textContent = "×";
+        remove.addEventListener("click", () => {
+          if (state !== "edit" || !editDraft) {
+            return;
+          }
+
+          settlePendingEdit();
+          editDraft.operands.splice(index, 1);
+          renderEditDraft();
+          renderExpression();
+          input.focus();
+        });
+
+        chip.append(value, remove);
+        operandChips.append(chip);
+      });
+    }
+
+    function beginEdit(entry, rosterRow = null) {
+      if (state !== "edit" || !editSnapshot) {
+        editSnapshot = captureEditSnapshot();
+      }
+      pendingEdit = null;
+      editRosterSeq = rosterRow ? rosterRow.seq : null;
+      renderRoster();
+      if (!rosterRow) {
+        restoreEditDraftHome();
+      }
+      operator = entry.operator;
+      syncOperatorAttribute();
+      editDraft = {
+        operator: entry.operator,
+        operands: entry.operands.map(cloneOperand)
+      };
+      input.value = "";
+      resetButton.disabled = false;
+      clearResult();
+      renderEditDraft();
+      enterState("edit");
+      renderExpression();
+      updateStateLabel(rosterRow
+        ? `正在编辑 ${rosterRow.seq} ${rosterLabel(rosterRow)} 的成绩`
+        : `正在编辑 ${operatorGlyphs[entry.operator]} 记录`);
+      input.focus({ preventScroll: true });
+      editDraftTitle.textContent = rosterRow ? `正在编辑 ${rosterRow.seq} ${rosterLabel(rosterRow)}` : "编辑草稿";
+      if (rosterRow) {
+        floatEditDraft(rosterRow.seq);
+      } else {
+        requestAnimationFrame(() => {
+          if (!editDraftView.hidden) {
+            editDraftView.scrollIntoView({ block: "nearest" });
+          }
+        });
+      }
+    }
+
+    function renderHistoryItem(entry) {
+      const item = document.createElement("article");
+      item.className = "history-item";
+      item.setAttribute("data-testid", "history-item");
+      item.setAttribute("data-operator", entry.operator);
+      item.setAttribute("data-operands", JSON.stringify(entry.operands.map((operand) => operand.display)));
+
+      const line = document.createElement("div");
+      line.className = "history-line";
+
+      const historyExpression = document.createElement("span");
+      historyExpression.className = "history-expression";
+      historyExpression.setAttribute("data-testid", "history-expression");
+      historyExpression.textContent = entry.expression;
+
+      const historyResult = document.createElement("span");
+      historyResult.className = "history-result";
+      historyResult.setAttribute("data-testid", "history-result");
+      historyResult.setAttribute("data-value", formatValue(entry.result));
+      historyResult.textContent = formatValue(entry.result);
+
+      line.append(historyExpression, historyResult);
+
+      const editButton = document.createElement("button");
+      editButton.type = "button";
+      editButton.className = "history-edit";
+      editButton.setAttribute("data-testid", "history-edit");
+      editButton.textContent = "编辑";
+      editButton.addEventListener("click", () => beginEdit(entry));
+
+      item.append(line, editButton);
+      return item;
+    }
+
+    function appendHistory(entry) {
+      history.unshift(entry);
+      historyEmpty.hidden = true;
+      historyList.prepend(renderHistoryItem(entry));
+    }
+
+    function resetToSelect() {
+      pendingEdit = null;
+      editSnapshot = null;
+      editRosterSeq = null;
+      operator = null;
+      syncOperatorAttribute();
+      operands = [];
+      editDraft = null;
+      editDraftView.hidden = true;
+      restoreEditDraftHome();
+      operandChips.textContent = "";
+      input.value = "";
+      resetButton.disabled = true;
+      clearExpression();
+      clearResult();
+      enterState("select");
+      updateStateLabel("请选择运算类型");
+    }
+
+    function chooseOperator(nextOperator) {
+      settlePendingEdit();
+      if (state === "edit" && editDraft) {
+        editDraft.operator = nextOperator;
+        renderEditDraft();
+        renderExpression();
+        const editingRow = roster && editRosterSeq !== null
+          ? roster.rows.find((row) => row.seq === editRosterSeq)
+          : null;
+        updateStateLabel(editingRow
+          ? `正在编辑 ${editingRow.seq} ${rosterLabel(editingRow)} 的成绩`
+          : `正在编辑 ${operatorGlyphs[nextOperator]} 记录`);
+        input.focus();
+        return;
+      }
+
+      const preserveOperands = state === "input";
+      operator = nextOperator;
+      syncOperatorAttribute();
+      if (!preserveOperands) {
+        operands = [];
+        input.value = "";
+        clearExpression();
+        clearResult();
+      }
+      resetButton.disabled = false;
+      enterState("input");
+      renderExpression();
+      updateStateLabel(preserveOperands
+        ? `已更换为 ${operatorGlyphs[nextOperator]}，已输入的数字会保留`
+        : `已选择 ${operatorGlyphs[nextOperator]}，请输入数字`);
+      input.focus();
+    }
+
+    function commitInput() {
+      if (state !== "select" && state !== "input" && state !== "result" && state !== "error" && state !== "edit") {
+        return false;
+      }
+
+      const rawValue = input.value.trim();
+      if (rawValue === "") {
+        return false;
+      }
+
+      const numericValue = Number(rawValue);
+      if (!Number.isFinite(numericValue)) {
+        return false;
+      }
+
+      if (state === "select") {
+        enterState("input");
+        updateStateLabel("请输入数字，或先选择运算类型");
+      }
+
+      if (state === "edit" && editDraft) {
+        editDraft.operands.push({ value: numericValue, display: rawValue });
+        renderEditDraft();
+      } else {
+        if (state === "result" || state === "error") {
+          operands = [];
+          clearExpression();
+          clearResult();
+          enterState("input");
+          updateStateLabel(`已开始新的 ${operatorGlyphs[operator]} 计算，请继续输入`);
+        }
+        operands.push({ value: numericValue, display: rawValue });
+      }
+      input.value = "";
+      renderExpression();
+      return true;
+    }
+
+    function formatValue(value) {
+      return String(Object.is(value, -0) ? 0 : value);
+    }
+
+    function showDivisionByZero(activeOperator) {
+      pendingEdit = null;
+      editSnapshot = null;
+      editRosterSeq = null;
+      operator = activeOperator;
+      syncOperatorAttribute();
+      operands = [];
+      editDraft = null;
+      editDraftView.hidden = true;
+      restoreEditDraftHome();
+      operandChips.textContent = "";
+      if (roster) {
+        renderRoster();
+      }
+      clearExpression();
+      result.textContent = "不能除以零";
+      result.removeAttribute("data-value");
+      result.setAttribute("data-error", "true");
+      input.value = "";
+      resetButton.disabled = false;
+      enterState("error");
+      updateStateLabel("不能除以零；直接输入数字可开始新的计算，或更换运算符");
+      input.focus();
+    }
+
+    function readOperandInputValues() {
+      return Array.from(operandChips.querySelectorAll('[data-testid="operand-input"]'))
+        .map((element) => element.value);
+    }
+
+    function invalidOperandValue(rawValue) {
+      return rawValue.trim() === "" || !Number.isFinite(Number(rawValue));
+    }
+
+    function calculate() {
+      if (state !== "input" && state !== "result" && state !== "error" && state !== "edit") {
+        return;
+      }
+
+      settlePendingEdit();
+
+      const wasEditing = state === "edit" && editDraft !== null;
+      let activeOperator;
+      let activeOperands;
+
+      if (wasEditing) {
+        const editedValues = readOperandInputValues();
+        if (editedValues.length === 0 || editedValues.some(invalidOperandValue)) {
+          return;
+        }
+
+        editDraft.operands = editedValues.map((rawValue) => ({
+          value: Number(rawValue),
+          display: rawValue
+        }));
+        commitInput();
+
+        const currentValues = readOperandInputValues();
+        if (currentValues.length === 0 || currentValues.some(invalidOperandValue)) {
+          return;
+        }
+
+        activeOperator = editDraft.operator;
+        activeOperands = currentValues.map((rawValue) => ({
+          value: Number(rawValue),
+          display: rawValue
+        }));
+      } else {
+        commitInput();
+        activeOperator = operator;
+        activeOperands = operands;
+      }
+
+      if (!activeOperator || activeOperands.length === 0) {
+        return;
+      }
+
+      let accumulator = activeOperands[0].value;
+      for (let index = 1; index < activeOperands.length; index += 1) {
+        const nextValue = activeOperands[index].value;
+        if (activeOperator === "/" && nextValue === 0) {
+          showDivisionByZero(activeOperator);
+          return;
+        }
+
+        switch (activeOperator) {
+          case "+":
+            accumulator += nextValue;
+            break;
+          case "-":
+            accumulator -= nextValue;
+            break;
+          case "*":
+            accumulator *= nextValue;
+            break;
+          case "/":
+            accumulator /= nextValue;
+            break;
+          default:
+            return;
+        }
+      }
+
+      const displayValue = formatValue(accumulator);
+      const editingSeq = wasEditing ? editRosterSeq : null;
+      let targetRow = null;
+      if (roster) {
+        targetRow = editingSeq !== null
+          ? roster.rows.find((row) => row.seq === editingSeq) || null
+          : nextEmptyRow();
+      }
+      const entry = {
+        operator: activeOperator,
+        operands: activeOperands.map(cloneOperand),
+        base: null,
+        expression: expressionText(activeOperator, activeOperands),
+        result: accumulator
+      };
+      if (targetRow) {
+        entry.seq = targetRow.seq;
+      }
+      operator = activeOperator;
+      syncOperatorAttribute();
+      operands = [];
+      expression.textContent = entry.expression;
+      let recordedRow = null;
+      if (roster) {
+        if (targetRow) {
+          targetRow.entry = entry;
+          recordedRow = targetRow;
+          editRosterSeq = null;
+          persistRoster();
+          renderRoster();
+        }
+      } else {
+        appendHistory(entry);
+      }
+      result.textContent = displayValue;
+      result.setAttribute("data-value", displayValue);
+      result.removeAttribute("data-error");
+      input.value = "";
+      resetButton.disabled = false;
+      editDraft = null;
+      editSnapshot = null;
+      editRosterSeq = null;
+      pendingEdit = null;
+      editDraftView.hidden = true;
+      restoreEditDraftHome();
+      operandChips.textContent = "";
+      enterState("result");
+      if (roster && editingSeq !== null && recordedRow) {
+        const next = nextEmptyRow();
+        updateStateLabel(`已更新 ${recordedRow.seq} ${rosterLabel(recordedRow)}：${displayValue}${next ? `；下一位 ${next.seq} ${rosterLabel(next)}` : "；名单已录满"}`);
+        requestAnimationFrame(() => focusRosterEdit(recordedRow.seq));
+      } else if (roster && recordedRow) {
+        const next = nextEmptyRow();
+        updateStateLabel(`已记录 ${recordedRow.seq} ${rosterLabel(recordedRow)}：${displayValue}${next ? `；下一位 ${next.seq} ${rosterLabel(next)}` : "；名单已录满"}`);
+        input.focus();
+      } else if (roster) {
+        updateStateLabel(`名单已录满（${roster.rows.length} 人）；结果 ${displayValue} 未写入，如需修改请点行内编辑`);
+        input.focus();
+      } else {
+        updateStateLabel(`计算完成；继续输入数字按回车或 = 即可沿用 ${operatorGlyphs[activeOperator]}`);
+        input.focus();
+      }
+    }
+
+    picker.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-op]");
+      if (!button) {
+        return;
+      }
+
+      const nextOperator = button.getAttribute("data-op");
+      if (Object.prototype.hasOwnProperty.call(operatorGlyphs, nextOperator)) {
+        chooseOperator(nextOperator);
+      }
+    });
+
+    keypad.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-key]");
+      if (!button || button.disabled) {
+        return;
+      }
+
+      const key = button.getAttribute("data-key");
+      if (/^[0-9]$/.test(key) || key === ".") {
+        appendCharacter(key);
+      } else if (key === "backspace") {
+        deleteLastCharacter();
+      } else if (key === "enter") {
+        commitInput();
+      } else if (key === "equals") {
+        calculate();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.ctrlKey || event.metaKey || event.altKey) {
+        return;
+      }
+      if (event.target instanceof Element && event.target.closest('[data-testid="operand-input"]')) {
+        return;
+      }
+      if (event.target instanceof Element && event.target.closest('[data-testid="import-dialog"]')) {
+        return;
+      }
+
+      const key = event.key;
+      if (/^[0-9]$/.test(key) || key === ".") {
+        appendCharacter(key);
+      } else if (key === "Backspace") {
+        deleteLastCharacter();
+      } else if (key === "Enter") {
+        commitInput();
+      } else if (key === "=") {
+        calculate();
+      } else {
+        return;
+      }
+      event.preventDefault();
+    });
+
+    resetButton.addEventListener("click", resetToSelect);
+    editCancelButton.addEventListener("click", cancelEdit);
+    editCompleteButton.addEventListener("click", calculate);
+    rosterImportButton.addEventListener("click", openImportDialog);
+    rosterExportButton.addEventListener("click", exportRoster);
+    rosterClearButton.addEventListener("click", clearRoster);
+    importSelectButton.addEventListener("click", () => rosterFileInput.click());
+    importSampleButton.addEventListener("click", downloadSampleRoster);
+    importConfirmButton.addEventListener("click", confirmRosterImport);
+    importReselectButton.addEventListener("click", () => {
+      rosterFileInput.value = "";
+      rosterFileInput.click();
+    });
+    importCancelButton.addEventListener("click", () => {
+      if (importDialog.open) {
+        importDialog.close();
+      }
+    });
+    rosterFileInput.addEventListener("change", () => {
+      handleRosterFile(rosterFileInput.files && rosterFileInput.files[0]);
+    });
+    importDialog.addEventListener("close", () => {
+      resetImportDialog();
+      if (importOpener && typeof importOpener.focus === "function") {
+        importOpener.focus();
+      }
+      importOpener = null;
+    });
+    input.addEventListener("focus", settlePendingEdit);
+    restoreRoster();
+    resetToSelect();
+    renderRoster();
+    if (roster) {
+      const next = nextEmptyRow();
+      updateStateLabel(next
+        ? `名单已恢复；下一位 ${next.seq} ${rosterLabel(next)}`
+        : "名单已恢复；名单已录满");
+    }
+    syncKeypad();
+  })();
+</script>
+</body>
+</html>
