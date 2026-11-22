@@ -1,0 +1,15 @@
+ROUND: 1
+ARTIFACT_SHA256: a275e40bf0e85ec0e86bc8bda88bee15a5bde4048677594d113e1c4a31371a14
+TREE_SHA256: 2ed177bb9eab7875934d9ab263c16f9fc9e1a9bfbcaff3f0a086944c61027636
+VERIFIER_SHA256: 219465474a78f0ea5d13e0eacc1f7965a09f667f66cdc36985cb97c1a9824ce0
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 1
+ARTIFACT_SHA256: a275e40bf0e85ec0e86bc8bda88bee15a5bde4048677594d113e1c4a31371a14
+H1 PASS — pause0.5: result=3, t50ms input empty/result 3/state result, kb250 empty, dot350 empty, t600 input 4; pause1: t50 empty t1250 4; pause2: t50 empty t1100 empty t2400 4; pause0: immediate 4; physical-keyboard digits and dot covered
+H2 PASS — default value 1; persist 0.5/0/2 round-trip via reload; abc and empty blur restore prior value 2; localStorage cal-phone.settings.v1 parses with keys autoConfirm,autoEquals,baseEnabled,baseValue,haptics,resultPause,voiceKeys,voiceResult
+H3 PASS — manual = paused as H1; auto path autoConfirm=0 autoEquals=2 yields result 14, immediate tap 4 empty, after-pause tap 4; divzero result data-error true then immediate tap 1 gives input 1; bare = then tap 1 gives 1; backspace/enter/equals during pause add 0 pageerrors
+H4 PASS — auto-confirm options n=24 strictly ascending unique containing 0.1 and legacy 0/0.2/0.4/0.5/1…10; 0.1 tap 9 at 250ms expression 9+ input empty; 0 tap 9 at 1200ms input 9 expression empty; 0.2 tap 9 at 600ms expression 9+
+H5 PASS — suite 18/18 ids present all pass incl cold-start with cold-start.keys-enabled; single keypress with vibrate mock yields window.__v exactly [10]; history/edit/divzero/settings covered by passing history-order edit-* error-recovery and H2 probes
+H6 PASS — closing </html> present, 95220 bytes ≥1024, external refs 0 (script-src/link-href/img-src/@import/url(http) all 0); aggregate H1–H5 page pageerror 0 console-error 0
+HARD: PASS

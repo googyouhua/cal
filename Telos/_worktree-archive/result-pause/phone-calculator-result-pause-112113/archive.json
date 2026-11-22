@@ -1,0 +1,29 @@
+{
+  "archived_at": "2026-11-22T00:56:51.378Z",
+  "source_worktree": "/ws/cal_phone-worktrees/result-pause",
+  "source_branch": "result-pause",
+  "source_head": "fe06f8f1d687b2b5b91a14f398693559dad0eff8",
+  "gate_slug": "phone-calculator-result-pause-112113",
+  "gate_status": "in-loop",
+  "gate_repo": "/ws/cal_phone-worktrees/result-pause",
+  "gate_artifact": "/ws/cal_phone-worktrees/result-pause/index.html",
+  "stop": "STOP: rounds=0 reason=blocked by=instrument",
+  "declared": null,
+  "artifact": {
+    "path": "/ws/cal_phone-worktrees/result-pause/index.html",
+    "sha256": "b7447a32ff5d900b4cfecd95fee25a09e7859603b1e7d264781b78c7b3eaa8f3",
+    "declared_sha256": null,
+    "matches_declared": false,
+    "stale": false,
+    "copy": null,
+    "main_path": "/ws/cal_phone/index.html",
+    "main_sha256": "a593d8b82bdb81eb394085da473d7e016f6497908795b66b3eea0d6cdf950368",
+    "matches_main": false
+  },
+  "tree": {
+    "source_sha256_at_archive": "ff099aba33fdaac38a6aedfece333d4d985ad94eb7616ae0fb2b02c5906f4289",
+    "main_sha256_at_archive": "988a9e507452d9f21569598411573ed2f15a20eff0876836563e17a6a036e738",
+    "note": "TREE_SHA256 is content-based and includes every non-gate file; adding tooling/docs later changes it. The declared value comes from the gate run and is the authoritative one for that run."
+  },
+  "note": "Archived evidence belongs to the source worktree/checkout. It is not an active gate and does not attest later edits in the main worktree."
+}

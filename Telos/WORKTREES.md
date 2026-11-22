@@ -46,6 +46,9 @@ kekkai status /ws/cal_phone-worktrees/keypad/Telos/phone-calculator-keypad-11151
 <!-- archives:start -->
 | 时间 | 分支 | gate | STOP | artifact | TREE | 归档目录 |
 |---|---|---|---|---|---|---|
+| 2026-11-22T01:30:10.916Z | result-pause | phone-calculator-result-pause-3-112200 | STOP: rounds=1 reason=converged | `a275e40bf0e8` | `2ed177bb9eab` | `result-pause/phone-calculator-result-pause-3-112200` |
+| 2026-11-22T00:56:51.450Z | result-pause | phone-calculator-result-pause-2-112200 | STOP: rounds=1 reason=converged | `b7447a32ff5d` | `ff099aba33fd` | `result-pause/phone-calculator-result-pause-2-112200` |
+| 2026-11-22T00:56:51.378Z | result-pause | phone-calculator-result-pause-112113 | STOP: rounds=0 reason=blocked by=instrument | `b7447a32ff5d` | `—` | `result-pause/phone-calculator-result-pause-112113` |
 | 2026-11-22T00:09:32.443Z | voice-double-announcement | phone-calculator-voice-double-announcement-112111 | STOP: rounds=1 reason=converged | `620ab30da006` | `a6ef39391d88` | `voice-double-announcement/phone-calculator-voice-double-announcement-112111` |
 | 2026-11-22T00:09:32.356Z | voice-double-announcement | phone-calculator-voice-confirm-silent-v2-112114 | STOP: rounds=1 reason=converged | `a593d8b82bdb` | `b17eb0790916` | `voice-double-announcement/phone-calculator-voice-confirm-silent-v2-112114` |
 | 2026-11-22T00:09:32.286Z | voice-double-announcement | phone-calculator-voice-confirm-silent-rebased-112113 | STOP: rounds=0 reason=blocked by=instrument | `a593d8b82bdb` | `—` | `voice-double-announcement/phone-calculator-voice-confirm-silent-rebased-112113` |

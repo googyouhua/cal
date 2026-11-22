@@ -1,0 +1,35 @@
+{
+  "archived_at": "2026-11-22T01:30:10.916Z",
+  "source_worktree": "/ws/cal_phone-worktrees/result-pause",
+  "source_branch": "result-pause",
+  "source_head": "446d4cdfdc7a25e5459ed658c8c3e0bfae016d2b",
+  "gate_slug": "phone-calculator-result-pause-3-112200",
+  "gate_status": "converged",
+  "gate_repo": "/ws/cal_phone-worktrees/result-pause",
+  "gate_artifact": "/ws/cal_phone-worktrees/result-pause/index.html",
+  "stop": "STOP: rounds=1 reason=converged",
+  "declared": {
+    "round": 1,
+    "artifact_sha256": "a275e40bf0e85ec0e86bc8bda88bee15a5bde4048677594d113e1c4a31371a14",
+    "tree_sha256": "2ed177bb9eab7875934d9ab263c16f9fc9e1a9bfbcaff3f0a086944c61027636",
+    "verifier_sha256": "219465474a78f0ea5d13e0eacc1f7965a09f667f66cdc36985cb97c1a9824ce0",
+    "run_file": "evidence/runs/hard-r1.txt"
+  },
+  "artifact": {
+    "path": "/ws/cal_phone-worktrees/result-pause/index.html",
+    "sha256": "a275e40bf0e85ec0e86bc8bda88bee15a5bde4048677594d113e1c4a31371a14",
+    "declared_sha256": "a275e40bf0e85ec0e86bc8bda88bee15a5bde4048677594d113e1c4a31371a14",
+    "matches_declared": true,
+    "stale": false,
+    "copy": "verified-artifact/index.html",
+    "main_path": "/ws/cal_phone/index.html",
+    "main_sha256": "a593d8b82bdb81eb394085da473d7e016f6497908795b66b3eea0d6cdf950368",
+    "matches_main": false
+  },
+  "tree": {
+    "source_sha256_at_archive": "2ed177bb9eab7875934d9ab263c16f9fc9e1a9bfbcaff3f0a086944c61027636",
+    "main_sha256_at_archive": "a4e3ef9afa7147027d041a9e6e7d45ef2c7774505f6edac3c2277943f5c2fa88",
+    "note": "TREE_SHA256 is content-based and includes every non-gate file; adding tooling/docs later changes it. The declared value comes from the gate run and is the authoritative one for that run."
+  },
+  "note": "Archived evidence belongs to the source worktree/checkout. It is not an active gate and does not attest later edits in the main worktree."
+}

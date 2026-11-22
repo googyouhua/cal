@@ -1,0 +1,16 @@
+ROUND: 1
+ARTIFACT_SHA256: a275e40bf0e85ec0e86bc8bda88bee15a5bde4048677594d113e1c4a31371a14
+TREE_SHA256: 2ed177bb9eab7875934d9ab263c16f9fc9e1a9bfbcaff3f0a086944c61027636
+VERIFIER_SHA256: 219465474a78f0ea5d13e0eacc1f7965a09f667f66cdc36985cb97c1a9824ce0
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 1
+ARTIFACT_SHA256: a275e40bf0e85ec0e86bc8bda88bee15a5bde4048677594d113e1c4a31371a14
+VERIFIER_SHA256: 219465474a78f0ea5d13e0eacc1f7965a09f667f66cdc36985cb97c1a9824ce0
+H1 PASS — pause=0.5: setback=0.5 result=3 block50ms(input="",result=3,state=result) key5@250ms="" dot@350ms="" key4@600ms="4" | pause=1.0: setback=1 result=3 key4@50ms="" key4@1200ms="4" | pause=2.0: setback=2 result=3 key4@50ms="" key4@1000ms="" key4@2300ms="4" | pause=0: setback=0 result=3 key4@0ms="4"
+H2 PASS — default=1 | persist0.5 setback=0.5 reload=0.5 | persist0 setback=0 reload=0 | persist2 setback=2 reload=2 | invalid-abc blur-restore=2 | invalid-empty blur-restore=2 | storage={"autoConfirm":0,"autoEquals":0,"resultPause":2,"baseEnabled":false,"baseValue":"0","haptics":true,"voiceKeys":false,"voiceResult":false}
+H3 PASS — manual result=3 key1@50ms="" | auto result=14 key4@0ms="" key4@1300ms="4" | div0 error=true key1@0ms="1" | bare-eq(no-op/operand) key1="1" | bare-eq(op-no-operands) stateAfterEq=input key1="1" | pause-keys result=3 newPageErrors=0
+H4 PASS — options n=24 has0.1=true sorted=true nodup=true orig24=true [0,0.1,0.2,0.4,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10] | ac0.1 expr="9 +" input="" | ac0 expr="" input="9" | ac0.2 expr="9 +"
+H5 PASS — suite scenarios=18/18 missing=[] failed=[] cold-keys-enabled=true failedChecks=[] | haptics __v=[10] | history result=3 items=1 editOpen=true editCancel=true | divzero error=true | settings-persist setback=0.5 reload=0.5
+H6 PASS — close=true bytes=95220 extrefs=0 pageerrors=0 consoleerrors=0
+HARD: PASS

@@ -1,0 +1,15 @@
+ROUND: 1
+ARTIFACT_SHA256: b7447a32ff5d900b4cfecd95fee25a09e7859603b1e7d264781b78c7b3eaa8f3
+TREE_SHA256: ff099aba33fdaac38a6aedfece333d4d985ad94eb7616ae0fb2b02c5906f4289
+VERIFIER_SHA256: 219465474a78f0ea5d13e0eacc1f7965a09f667f66cdc36985cb97c1a9824ce0
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 1
+ARTIFACT_SHA256: b7447a32ff5d900b4cfecd95fee25a09e7859603b1e7d264781b78c7b3eaa8f3
+H1 PASS — result=3; p0.5 t50 input="" result=3 state=result, t250 phys5="", t350 dot="", t600="4"; p1.0 t50="", t1200="4"; p2.0 t50="", t1000="", t2300="4"; p0 immediate="4"
+H2 PASS — default=1; reload 0.5->0.5, 0->0, 2->2; abc 2->2; empty->2; ls has autoConfirm/baseEnabled/haptics, resultPause=2
+H3 PASS — manual=covered(H1); auto(0/2) result=14 immediate4="" after="4"; div0 err=true immediate1="1"; nop equals+1="1"; pause-keys backspace/enter/equals pageerror=0
+H4 PASS — opts len=24 has0.1 uniq asc, keeps 0/0.2/0.4/0.5/1/10; 0.1 t250 input="" expr="9"; 0 t1200 input="9" expr=""; 0.2 t600 expr="9"
+H5 PASS — suite 18/18 pass: self-contained(4) cold-start(9 incl keys-enabled) compute(9) arithmetic(10) history-order(9) reset(8) continuity(15) error-recovery(13) sticky-operator(11) edit-recompute(13) edit-multi(12) edit-invalid(11) edit-divzero(10) edit-cancel-restore(17) edit-pending-replace(13) edit-pending-recent-value(10) layout(26) determinism(6); idle vib=[10]
+H6 PASS — close=true bytes=95394 ext=0 pageerr=0 consoleerr=0
+HARD: PASS
