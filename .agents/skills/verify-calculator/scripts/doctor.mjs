@@ -196,7 +196,7 @@ async function main() {
       disabledKeys === 0 &&
       panelOpen &&
       panelClosed &&
-      autoConfirmOptions === 23 &&
+      autoConfirmOptions === 24 &&
       errors.length === 0;
     record(
       "browser_boot",

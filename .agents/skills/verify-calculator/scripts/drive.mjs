@@ -449,7 +449,7 @@ async function settingsPanel({ openPage, run }) {
   await toggle.click();
   run.equal("settings.panel_open", await panelOpen(), true);
   run.equal("settings.aria_expanded", await toggle.getAttribute("aria-expanded"), "true");
-  run.equal("settings.auto_confirm_options", await page.locator('[data-testid="settings-auto-confirm"] option').count(), 23);
+  run.equal("settings.auto_confirm_options", await page.locator('[data-testid="settings-auto-confirm"] option').count(), 24);
   run.equal(
     "settings.auto_confirm_default",
     await page.locator('[data-testid="settings-auto-confirm"]').inputValue(),

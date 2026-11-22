@@ -45,7 +45,7 @@ node .agents/skills/verify-calculator/scripts/doctor.mjs
 # or: node .../doctor.mjs --url http://127.0.0.1:4180 --no-browser
 ```
 
-It checks: our pid file is alive and owns an `http.server`; `/` returns 200; served bytes hash-equal `index.html` (right version); `<title>手机计算器</title>`; every required `data-testid` (including the settings dialog, auto-equals field, base marker, auto-confirm progress, edit cancel) and four `data-op` hooks are present; no external `http(s)` references; viewport meta present; and — unless `--no-browser` — a real Chromium boot leaves the app in `select` state with all 14 keys enabled, a settings dialog that opens and closes, 23 auto-confirm options, and zero console errors.
+It checks: our pid file is alive and owns an `http.server`; `/` returns 200; served bytes hash-equal `index.html` (right version); `<title>手机计算器</title>`; every required `data-testid` (including the settings dialog, auto-equals field, base marker, auto-confirm progress, edit cancel) and four `data-op` hooks are present; no external `http(s)` references; viewport meta present; and — unless `--no-browser` — a real Chromium boot leaves the app in `select` state with all 14 keys enabled, a settings dialog that opens and closes, 24 auto-confirm options, and zero console errors.
 
 Ends with `doctor=ok` (exit 0) or `doctor=failed checks=[...]` (exit 1). `--resolve-only` only reports the Playwright version (`setup.sh` uses it).
 
