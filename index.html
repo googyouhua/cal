@@ -991,6 +991,577 @@
       gap: 7px;
     }
   }
+
+  .roster-presence {
+    margin: 6px 0 0;
+    padding: 6px 9px;
+    border: 1px solid rgba(251, 191, 36, 0.28);
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.1);
+    color: #fde68a;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .roster-presence[hidden] {
+    display: none;
+  }
+
+  .edit-draft.floating-roster {
+    position: fixed;
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    left: 10px;
+    z-index: 30;
+    width: auto;
+    max-width: 440px;
+    max-height: calc(100dvh - 20px);
+    margin: 0 auto;
+    overflow: auto;
+    background: #241c12;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.62);
+  }
+
+  body.roster-edit-floating {
+    padding-bottom: 180px;
+  }
+
+  .edit-done {
+    flex: 0 0 auto;
+    min-width: 104px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid rgba(251, 191, 36, 0.5);
+    border-radius: 11px;
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: #231303;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  .history-head {
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .history-heading {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .history-tools {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .roster-tool {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 11px;
+    background: #17243a;
+    color: #dbeafe;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .roster-tool[data-testid="roster-clear"] {
+    border-color: rgba(251, 113, 133, 0.3);
+    background: transparent;
+    color: #fecdd3;
+    margin-left: auto;
+  }
+
+  .storage-warning,
+  .roster-data-warning {
+    margin: 0 0 10px;
+    padding: 9px 10px;
+    border: 1px solid rgba(251, 191, 36, 0.38);
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.12);
+    color: #fde68a;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .roster-summary {
+    margin: 0 0 9px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .roster-next {
+    color: #fde68a;
+    font-weight: 750;
+  }
+
+  .roster-list {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .roster-row {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 14px;
+    background: rgba(7, 12, 22, 0.58);
+  }
+
+  .roster-row[data-next="true"] {
+    border-color: rgba(251, 191, 36, 0.55);
+    background: rgba(245, 158, 11, 0.1);
+    box-shadow: inset 3px 0 0 var(--accent);
+  }
+
+  .roster-row.editing {
+    border-color: rgba(56, 189, 248, 0.78);
+    background: rgba(14, 116, 144, 0.2);
+    box-shadow: inset 4px 0 0 #38bdf8, 0 0 0 1px rgba(56, 189, 248, 0.24);
+  }
+
+  .roster.editing .roster-row[data-next="true"] {
+    border-color: rgba(148, 163, 184, 0.22);
+    background: rgba(7, 12, 22, 0.58);
+    box-shadow: none;
+    opacity: 0.58;
+  }
+
+  .roster.editing .roster-row[data-next="true"] .roster-next-badge {
+    border-color: rgba(148, 163, 184, 0.24);
+    background: rgba(148, 163, 184, 0.1);
+    color: #cbd5e1;
+  }
+
+  .roster-top,
+  .roster-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    min-width: 0;
+  }
+
+  .roster-bottom {
+    margin-top: 6px;
+  }
+
+  .roster-seq {
+    flex: 0 0 auto;
+    min-width: 24px;
+    color: #fde68a;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.4;
+  }
+
+  .roster-identity {
+    display: flex;
+    flex: 1 1 150px;
+    flex-wrap: wrap;
+    gap: 2px 9px;
+    min-width: 0;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .roster-name,
+  .roster-id {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .roster-name {
+    color: var(--ink);
+    font-weight: 750;
+  }
+
+  .roster-id {
+    color: var(--muted);
+  }
+
+  .roster-next-badge {
+    flex: 0 0 auto;
+    padding: 3px 8px;
+    border: 1px solid rgba(251, 191, 36, 0.45);
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.16);
+    color: #fef3c7;
+    font-size: 12px;
+    font-weight: 750;
+    line-height: 1.35;
+  }
+
+  .roster-edit-badge {
+    flex: 0 0 auto;
+    padding: 3px 8px;
+    border: 1px solid rgba(56, 189, 248, 0.6);
+    border-radius: 999px;
+    background: rgba(14, 116, 144, 0.28);
+    color: #e0f2fe;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.35;
+  }
+
+  .roster-expression {
+    flex: 1 1 130px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: #dbeafe;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .roster-score {
+    flex: 0 0 auto;
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .roster-score.empty {
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .roster-edit {
+    flex: 0 0 auto;
+    min-width: 62px;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1px solid rgba(251, 191, 36, 0.28);
+    border-radius: 11px;
+    background: #1c293f;
+    color: #fde68a;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .import-dialog {
+    width: min(430px, calc(100vw - 20px));
+    max-width: none;
+    max-height: calc(100dvh - 20px);
+    margin: auto;
+    padding: 0;
+    overflow: auto;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 18px;
+    background: #101a2b;
+    color: var(--ink);
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+  }
+
+  .import-dialog::backdrop {
+    background: rgba(2, 6, 14, 0.75);
+  }
+
+  .import-body {
+    display: grid;
+    gap: 11px;
+    padding: 16px;
+    min-width: 0;
+  }
+
+  .import-title {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.25;
+  }
+
+  .import-copy,
+  .import-warning,
+  .import-error {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+  }
+
+  .import-copy {
+    color: #cbd5e1;
+  }
+
+  .import-copy[data-testid="import-summary"] {
+    color: #fef3c7;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .import-warning {
+    padding: 9px 10px;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.13);
+    color: #fef3c7;
+    font-weight: 700;
+  }
+
+  .import-warning.danger {
+    border-color: rgba(251, 113, 133, 0.55);
+    background: rgba(127, 29, 29, 0.35);
+    color: #fecdd3;
+  }
+
+  .import-error {
+    padding: 9px 10px;
+    border: 1px solid rgba(251, 113, 133, 0.4);
+    border-radius: 10px;
+    background: var(--danger-bg);
+    color: var(--danger);
+  }
+
+  .import-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .import-action {
+    flex: 1 1 130px;
+    min-height: 48px;
+    white-space: nowrap;
+    padding: 0 12px;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 11px;
+    background: #1a2941;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  @media (max-width: 360px) {
+    .import-stage[data-import-stage="preview"] .import-actions > .import-action {
+      flex-basis: 100%;
+    }
+  }
+
+  .import-action.primary {
+    border-color: rgba(251, 191, 36, 0.55);
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: #231303;
+  }
+
+  .import-action.danger {
+    border-color: rgba(251, 113, 133, 0.6);
+    background: linear-gradient(180deg, #f87171, #dc2626);
+    color: #fff1f2;
+  }
+
+  .import-action.secondary {
+    flex-grow: 0;
+    background: #142137;
+    color: #dbeafe;
+  }
+
+  .import-stage {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .import-paste-text {
+    width: 100%;
+    min-height: 132px;
+    padding: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 11px;
+    background: rgba(7, 12, 22, 0.7);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.5;
+    resize: vertical;
+  }
+
+  .import-map {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .import-field {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .import-label {
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .import-select {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 8px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 11px;
+    background: rgba(7, 12, 22, 0.7);
+    color: var(--ink);
+    font-size: 16px;
+  }
+
+  .import-map-note {
+    margin: 0;
+    color: #fde68a;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .import-columns,
+  .import-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .import-chip {
+    max-width: 100%;
+    padding: 4px 8px;
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    border-radius: 999px;
+    background: rgba(30, 41, 59, 0.72);
+    color: #dbeafe;
+    font-size: 13px;
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .import-chip.active {
+    border-color: rgba(251, 191, 36, 0.7);
+    background: rgba(245, 158, 11, 0.22);
+    color: #fef3c7;
+  }
+
+  .import-preview-row span.active {
+    outline: 2px solid rgba(251, 191, 36, 0.7);
+    border-radius: 6px;
+    background: rgba(245, 158, 11, 0.18);
+  }
+
+  .import-preview-row {
+    flex: 1 1 100%;
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1fr) 48px;
+    gap: 7px;
+    min-width: 0;
+    padding: 7px 8px;
+    border-radius: 9px;
+    background: rgba(7, 12, 22, 0.64);
+    color: #dbeafe;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .import-preview-row span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .import-mode {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 11px;
+    min-width: 0;
+  }
+
+  .import-mode legend {
+    padding: 0 6px;
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .import-mode-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px;
+    border-radius: 9px;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.45;
+    cursor: pointer;
+  }
+
+  .import-mode-option input {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 auto;
+    margin: 0;
+    accent-color: #f59e0b;
+  }
+
+  .import-file {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 350px) {
+    .history-tools {
+      width: 100%;
+      justify-content: stretch;
+    }
+
+    .roster-tool {
+      flex: 1 1 0;
+      padding: 0 6px;
+    }
+
+    .roster-edit {
+      min-width: 58px;
+      padding: 0 9px;
+    }
+
+    .import-body {
+      padding: 14px;
+    }
+
+    .import-map {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
 </style>
 </head>
 <body>
@@ -1032,6 +1603,7 @@
       aria-label="数字显示"
       readonly
     >
+    <p class="roster-presence" id="roster-presence" hidden></p>
     <p class="hint" id="calc-hint">用屏幕数字键盘输入；按“确认”收下数字，按 = 计算。</p>
 
     <div class="display" aria-label="计算过程">
@@ -1070,7 +1642,7 @@
 
     <section class="edit-draft" data-testid="edit-draft" aria-label="编辑草稿" hidden>
       <div class="edit-draft-head">
-        <span>编辑草稿</span>
+        <span data-testid="edit-draft-title">编辑草稿</span>
         <span class="edit-operator" data-testid="edit-operator" aria-hidden="true">+</span>
         <span class="base-marker" data-testid="edit-base-marker" hidden></span>
         <span id="edit-hint">换运算符不会清空数字；按“确认”追加数字。</span>
@@ -1082,12 +1654,91 @@
 
   <section class="history" data-testid="history" aria-label="计算历史">
     <div class="history-head">
-      <h2 class="history-title">计算历史</h2>
-      <span class="history-note">仅当前页面</span>
+      <div class="history-heading">
+        <h2 class="history-title" id="history-title">计算历史</h2>
+        <span class="history-note" id="history-note">仅当前页面</span>
+      </div>
+      <div class="history-tools" id="history-tools">
+        <button class="roster-tool" type="button" data-testid="roster-import">导入名单</button>
+        <button class="roster-tool" type="button" data-testid="roster-export" hidden>导出</button>
+        <button class="roster-tool" type="button" data-testid="roster-clear" hidden>清除</button>
+      </div>
     </div>
+    <p class="storage-warning" data-testid="storage-warning" hidden>本机存储不可用，刷新会丢失成绩。</p>
+    <p class="roster-data-warning" data-testid="roster-data-warning" hidden>本机名单数据无法读取，已忽略；原数据未覆盖。</p>
     <div class="history-list" data-testid="history-list"></div>
     <p class="history-empty" data-testid="history-empty">还没有计算记录。</p>
+    <section class="roster" data-testid="roster" role="list" aria-label="名单成绩" hidden>
+      <p class="roster-summary" data-testid="roster-summary"></p>
+      <div class="roster-list" data-testid="roster-list"></div>
+    </section>
   </section>
+
+  <dialog class="import-dialog" data-testid="import-dialog" aria-labelledby="import-title">
+    <div class="import-body">
+      <h2 class="import-title" id="import-title">导入名单</h2>
+      <p class="import-copy">第一行是<b>表头</b>（至少要有「姓名」或「学号」），例如：<b>学号,姓名,成绩</b>。<br>如有多列成绩，下一步会让你指定哪一列为成绩，其余忽略。<br>Excel 请另存为 <b>CSV UTF-8（逗号分隔）</b>。</p>
+      <p class="import-copy import-steps">流程：选文件 → 选列 → 选保留/清空 → 逐个录入 → 导出共 5 步。</p>
+      <p class="import-error" data-testid="import-error" role="alert" hidden></p>
+
+      <div class="import-stage" data-import-stage="start">
+        <div class="import-actions">
+          <button class="import-action primary" type="button" data-testid="import-select">选择文件</button>
+          <button class="import-action" type="button" data-testid="import-paste">粘贴名单</button>
+          <button class="import-action" type="button" data-testid="import-sample">下载样例名单</button>
+        </div>
+        <input class="import-file" data-testid="roster-file" type="file" accept=".csv,text/csv" hidden>
+      </div>
+
+      <div class="import-stage" data-import-stage="paste" hidden>
+        <label class="import-label" for="import-paste-text">粘贴名单文本（CSV，同文件规则）</label>
+        <textarea class="import-paste-text" data-testid="import-paste-text" id="import-paste-text" autocomplete="off" spellcheck="false"></textarea>
+        <div class="import-actions">
+          <button class="import-action primary" type="button" data-testid="import-paste-parse">解析</button>
+          <button class="import-action" type="button" data-testid="import-paste-back">返回</button>
+        </div>
+      </div>
+
+      <div class="import-stage" data-import-stage="preview" hidden>
+        <p class="import-copy" data-testid="import-summary" hidden></p>
+        <div class="import-map" data-testid="import-map" data-id-index="" data-name-index="" data-score-index="" data-seq-index="">
+          <div class="import-field">
+            <label class="import-label" for="import-id-column">学号列</label>
+            <select class="import-select" data-testid="import-id-column" id="import-id-column"></select>
+          </div>
+          <div class="import-field">
+            <label class="import-label" for="import-name-column">姓名列</label>
+            <select class="import-select" data-testid="import-name-column" id="import-name-column"></select>
+          </div>
+          <div class="import-field">
+            <label class="import-label" for="import-score-column">成绩列</label>
+            <select class="import-select" data-testid="import-score-column" id="import-score-column"></select>
+          </div>
+          <div class="import-field">
+            <label class="import-label" for="import-seq-column">序号列（可选）</label>
+            <select class="import-select" data-testid="import-seq-column" id="import-seq-column"></select>
+          </div>
+        </div>
+        <p class="import-map-note" data-testid="import-map-note" hidden></p>
+        <div class="import-columns" data-testid="import-columns" aria-label="识别到的列"></div>
+        <div class="import-preview" data-testid="import-preview" aria-label="前 3 行预览"></div>
+        <fieldset class="import-mode" data-testid="import-mode" hidden>
+          <legend>导入方式</legend>
+          <label class="import-mode-option"><input type="radio" name="import-mode" data-testid="import-mode-keep" value="keep"><span data-testid="import-mode-keep-label"></span></label>
+          <label class="import-mode-option"><input type="radio" name="import-mode" data-testid="import-mode-clear" value="clear"><span data-testid="import-mode-clear-label"></span></label>
+        </fieldset>
+        <p class="import-warning" data-testid="import-warning" hidden></p>
+        <div class="import-actions">
+          <button class="import-action primary" type="button" data-testid="import-confirm">开始录入</button>
+          <button class="import-action" type="button" data-testid="import-reselect">重新选择</button>
+        </div>
+      </div>
+
+      <div class="import-actions">
+        <button class="import-action secondary" type="button" data-testid="import-cancel">取消</button>
+      </div>
+    </div>
+  </dialog>
 
   <dialog class="settings-panel" data-testid="settings-panel" aria-label="统分设置">
     <h2 class="settings-title">统分设置</h2>
@@ -1211,6 +1862,52 @@
     const editOperatorView = document.querySelector('[data-testid="edit-operator"]');
     const operandChips = document.querySelector('[data-testid="operand-chips"]');
     const editCancelButton = document.querySelector('[data-testid="edit-cancel"]');
+    const editDraftTitle = document.querySelector('[data-testid="edit-draft-title"]');
+    const editHint = document.getElementById("edit-hint");
+    const historySection = document.querySelector('[data-testid="history"]');
+    const historyTitle = document.getElementById("history-title");
+    const historyNote = document.getElementById("history-note");
+    const rosterImportButton = document.querySelector('[data-testid="roster-import"]');
+    const rosterExportButton = document.querySelector('[data-testid="roster-export"]');
+    const rosterClearButton = document.querySelector('[data-testid="roster-clear"]');
+    const storageWarning = document.querySelector('[data-testid="storage-warning"]');
+    const rosterDataWarning = document.querySelector('[data-testid="roster-data-warning"]');
+    const rosterView = document.querySelector('[data-testid="roster"]');
+    const rosterSummary = document.querySelector('[data-testid="roster-summary"]');
+    const rosterList = document.querySelector('[data-testid="roster-list"]');
+    const rosterPresence = document.getElementById("roster-presence");
+    const importDialog = document.querySelector('[data-testid="import-dialog"]');
+    const importError = document.querySelector('[data-testid="import-error"]');
+    const importStages = Array.from(importDialog.querySelectorAll("[data-import-stage]"));
+    const importSelectButton = document.querySelector('[data-testid="import-select"]');
+    const importPasteButton = document.querySelector('[data-testid="import-paste"]');
+    const importSampleButton = document.querySelector('[data-testid="import-sample"]');
+    const rosterFileInput = document.querySelector('[data-testid="roster-file"]');
+    const importPasteText = document.querySelector('[data-testid="import-paste-text"]');
+    const importPasteParse = document.querySelector('[data-testid="import-paste-parse"]');
+    const importPasteBack = document.querySelector('[data-testid="import-paste-back"]');
+    const importMap = document.querySelector('[data-testid="import-map"]');
+    const importMapNote = document.querySelector('[data-testid="import-map-note"]');
+    const importColumns = document.querySelector('[data-testid="import-columns"]');
+    const importPreview = document.querySelector('[data-testid="import-preview"]');
+    const importSummary = document.querySelector('[data-testid="import-summary"]');
+    const importMode = document.querySelector('[data-testid="import-mode"]');
+    const importModeKeep = document.querySelector('[data-testid="import-mode-keep"]');
+    const importModeKeepLabel = document.querySelector('[data-testid="import-mode-keep-label"]');
+    const importModeClear = document.querySelector('[data-testid="import-mode-clear"]');
+    const importModeClearLabel = document.querySelector('[data-testid="import-mode-clear-label"]');
+    const importWarning = document.querySelector('[data-testid="import-warning"]');
+    const importConfirmButton = document.querySelector('[data-testid="import-confirm"]');
+    const importReselectButton = document.querySelector('[data-testid="import-reselect"]');
+    const importCancelButton = document.querySelector('[data-testid="import-cancel"]');
+    const importColumnSelects = {
+      id: document.querySelector('[data-testid="import-id-column"]'),
+      name: document.querySelector('[data-testid="import-name-column"]'),
+      score: document.querySelector('[data-testid="import-score-column"]'),
+      seq: document.querySelector('[data-testid="import-seq-column"]')
+    };
+    const EDIT_HINT_DEFAULT = editHint ? editHint.textContent : "";
+    const EDIT_HINT_ROSTER = "改好数字后按「保存并完成」或 =；取消会放弃本次修改。";
     const settingsToggle = document.querySelector('[data-testid="settings-toggle"]');
     const settingsIndicator = document.querySelector('[data-testid="settings-indicator"]');
     const settingsSummary = document.querySelector('[data-testid="settings-summary"]');
@@ -1256,6 +1953,24 @@
     let editDraft = null;
     let editSnapshot = null;
     let pendingEdit = null;
+    let editRosterSeq = null;
+    let roster = null;
+    let pendingImport = null;
+    let importOpener = null;
+    let storageUnavailable = false;
+    let editDraftHome = null;
+    let editDoneButton = null;
+
+    const ROSTER_KEY = "cal-phone.roster.v1";
+    const ROSTER_VERSION = 1;
+    const ROSTER_ROLES = ["seq", "id", "name", "score", "extra"];
+    const HEADER_ALIASES = {
+      seq: ["序号"],
+      id: ["学号", "考号", "学籍号"],
+      name: ["姓名", "名字", "学生姓名"],
+      score: ["成绩", "分数", "得分"]
+    };
+    const ROLE_LABELS = { seq: "序号", id: "学号", name: "姓名", score: "成绩" };
     let inputStartedFromResult = false;
 
     const SETTINGS_KEY = "cal-phone.settings.v1";
@@ -1365,6 +2080,1159 @@
       lastMs: 0
     };
 
+    /* ================= Roster roster ================= */
+
+    function rosterLabel(row) {
+      if (!row) {
+        return "";
+      }
+      return row.name || row.id || `第 ${row.seq} 位`;
+    }
+
+    function nextEmptyRow() {
+      if (!roster) {
+        return null;
+      }
+      let next = null;
+      for (const row of roster.rows) {
+        if (row.entry === null && (next === null || row.seq < next.seq)) {
+          next = row;
+        }
+      }
+      return next;
+    }
+
+    function showStorageUnavailable() {
+      storageUnavailable = true;
+      storageWarning.hidden = false;
+    }
+
+    function persistRoster() {
+      if (!roster) {
+        return;
+      }
+      try {
+        window.localStorage.setItem(ROSTER_KEY, JSON.stringify(roster));
+      } catch (error) {
+        showStorageUnavailable();
+      }
+    }
+
+    function removeRosterStorage() {
+      try {
+        window.localStorage.removeItem(ROSTER_KEY);
+      } catch (error) {
+        showStorageUnavailable();
+      }
+    }
+
+    function validStoredEntry(entry, seq) {
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+        return false;
+      }
+      if (entry.seq !== seq || typeof entry.operator !== "string" || entry.operator === "") {
+        return false;
+      }
+      if (typeof entry.expression !== "string" || !Number.isFinite(entry.result)) {
+        return false;
+      }
+      if (!Array.isArray(entry.operands) || entry.operands.length === 0) {
+        return false;
+      }
+      const operandsOk = entry.operands.every(
+        (operand) =>
+          operand &&
+          typeof operand === "object" &&
+          typeof operand.display === "string" &&
+          Number.isFinite(operand.value),
+      );
+      if (!operandsOk) {
+        return false;
+      }
+      if (entry.base !== null && entry.base !== undefined) {
+        if (
+          !entry.base ||
+          typeof entry.base !== "object" ||
+          typeof entry.base.display !== "string" ||
+          !Number.isFinite(entry.base.value)
+        ) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function validStoredRoster(value) {
+      if (!value || typeof value !== "object" || Array.isArray(value)) {
+        return false;
+      }
+      if (value.version !== ROSTER_VERSION) {
+        return false;
+      }
+      if (typeof value.fileName !== "string" || !Array.isArray(value.headers) || !Array.isArray(value.rows)) {
+        return false;
+      }
+      if (value.rows.length === 0 || !value.headers.every((header) => typeof header === "string")) {
+        return false;
+      }
+      if (!Array.isArray(value.roles) || value.roles.length !== value.headers.length) {
+        return false;
+      }
+      const seen = {};
+      for (const role of value.roles) {
+        if (!ROSTER_ROLES.includes(role)) {
+          return false;
+        }
+        if (role !== "extra") {
+          if (seen[role]) {
+            return false;
+          }
+          seen[role] = true;
+        }
+      }
+      const extraCount = value.roles.filter((role) => role === "extra").length;
+      for (let index = 0; index < value.rows.length; index += 1) {
+        const row = value.rows[index];
+        if (!row || typeof row !== "object" || row.seq !== index + 1) {
+          return false;
+        }
+        if (typeof row.id !== "string" || typeof row.name !== "string") {
+          return false;
+        }
+        if (!Array.isArray(row.extra) || row.extra.length !== extraCount) {
+          return false;
+        }
+        if (!row.extra.every((item) => typeof item === "string")) {
+          return false;
+        }
+        if (!(row.entry === null || validStoredEntry(row.entry, row.seq))) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function restoreRoster() {
+      let raw = null;
+      try {
+        raw = window.localStorage.getItem(ROSTER_KEY);
+      } catch (error) {
+        showStorageUnavailable();
+        return;
+      }
+      if (raw === null) {
+        return;
+      }
+      let parsed = null;
+      try {
+        parsed = JSON.parse(raw);
+      } catch (error) {
+        parsed = null;
+      }
+      if (!validStoredRoster(parsed)) {
+        rosterDataWarning.hidden = false;
+        return;
+      }
+      roster = parsed;
+    }
+
+    function ensureEditDoneButton() {
+      if (editDoneButton && editDoneButton.isConnected) {
+        return editDoneButton;
+      }
+      editDoneButton = document.createElement("button");
+      editDoneButton.type = "button";
+      editDoneButton.className = "edit-done";
+      editDoneButton.setAttribute("data-testid", "edit-done");
+      editDoneButton.textContent = "保存并完成";
+      editDoneButton.addEventListener("click", calculate);
+      return editDoneButton;
+    }
+
+    function removeEditDoneButton() {
+      if (editDoneButton && editDoneButton.isConnected) {
+        editDoneButton.remove();
+      }
+    }
+
+    function focusRosterEdit(seq) {
+      const button = rosterList.querySelector(
+        `[data-testid="roster-row"][data-seq="${seq}"] [data-testid="roster-edit"]`,
+      );
+      if (!button) {
+        return;
+      }
+      button.focus({ preventScroll: true });
+      button.scrollIntoView({ block: "nearest" });
+    }
+
+    function floatEditDraft(seq) {
+      if (!editDraftHome) {
+        editDraftHome = { parent: editDraftView.parentNode, next: editDraftView.nextSibling };
+      }
+      editDraftView.classList.add("floating-roster");
+      document.body.classList.add("roster-edit-floating");
+      document.body.append(editDraftView);
+      requestAnimationFrame(() => {
+        const row = rosterList.querySelector(`[data-testid="roster-row"][data-seq="${seq}"]`);
+        if (!row) {
+          return;
+        }
+        const rowRect = row.getBoundingClientRect();
+        const draftHeight = editDraftView.getBoundingClientRect().height;
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const maxTop = Math.max(0, window.scrollY + viewportHeight - draftHeight - 12);
+        const top = Math.min(maxTop, rowRect.top + window.scrollY - 12);
+        window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
+      });
+    }
+
+    function restoreEditDraftHome() {
+      if (!editDraftHome) {
+        return;
+      }
+      const home = editDraftHome;
+      editDraftHome = null;
+      editDraftView.classList.remove("floating-roster");
+      document.body.classList.remove("roster-edit-floating");
+      if (home.parent) {
+        home.parent.insertBefore(editDraftView, home.next);
+      }
+    }
+    function renderRoster() {
+      const hasRoster = roster !== null;
+      rosterView.hidden = !hasRoster;
+      rosterView.classList.toggle("editing", hasRoster && editRosterSeq !== null);
+      historyList.hidden = hasRoster;
+      historyEmpty.hidden = hasRoster || history.length > 0;
+      rosterImportButton.textContent = hasRoster ? "导入" : "导入名单";
+      rosterExportButton.hidden = !hasRoster;
+      rosterClearButton.hidden = !hasRoster;
+      historyTitle.textContent = hasRoster ? "名单成绩" : "计算历史";
+      historyNote.textContent = hasRoster ? roster.fileName : "仅当前页面";
+      historySection.setAttribute("aria-label", hasRoster ? "名单成绩" : "计算历史");
+      rosterList.textContent = "";
+      rosterSummary.textContent = "";
+      rosterPresence.textContent = "";
+      rosterPresence.hidden = true;
+
+      if (!hasRoster) {
+        return;
+      }
+
+      const next = nextEmptyRow();
+      const filled = roster.rows.filter((row) => row.entry !== null).length;
+      rosterSummary.append(`${roster.rows.length} 人 · 已录 ${filled} · `);
+      if (next) {
+        rosterPresence.hidden = false;
+        const presenceNext = document.createElement("span");
+        presenceNext.setAttribute("data-testid", "roster-next");
+        presenceNext.setAttribute("data-seq", String(next.seq));
+        presenceNext.textContent = `下一位 ${next.seq} ${rosterLabel(next)} · 按 = 记入成绩`;
+        rosterPresence.append(presenceNext);
+        const nextLabel = document.createElement("span");
+        nextLabel.className = "roster-next";
+        nextLabel.textContent = `下一位 ${next.seq} ${rosterLabel(next)}`;
+        rosterSummary.append(nextLabel);
+      } else {
+        rosterSummary.append("名单已录满");
+        rosterPresence.hidden = false;
+        rosterPresence.textContent = "名单已录满；按 = 只计算结果，不再写入名单";
+      }
+
+      const fragment = document.createDocumentFragment();
+      roster.rows.forEach((row) => {
+        const item = document.createElement("article");
+        item.className = "roster-row";
+        item.setAttribute("data-testid", "roster-row");
+        item.setAttribute("role", "listitem");
+        item.setAttribute("data-seq", String(row.seq));
+        item.setAttribute("data-filled", row.entry ? "true" : "false");
+        item.setAttribute("data-name", row.name);
+        item.setAttribute("data-id", row.id);
+        if (next && next.seq === row.seq) {
+          item.setAttribute("data-next", "true");
+        }
+        if (editRosterSeq !== null && editRosterSeq === row.seq) {
+          item.classList.add("editing");
+        }
+
+        const top = document.createElement("div");
+        top.className = "roster-top";
+        const seq = document.createElement("span");
+        seq.className = "roster-seq";
+        seq.textContent = String(row.seq);
+        const identity = document.createElement("span");
+        identity.className = "roster-identity";
+        const name = document.createElement("span");
+        name.className = "roster-name";
+        name.textContent = row.name || `第 ${row.seq} 位`;
+        identity.append(name);
+        if (row.id) {
+          const id = document.createElement("span");
+          id.className = "roster-id";
+          id.textContent = row.id;
+          identity.append(id);
+        }
+        top.append(seq, identity);
+        if (editRosterSeq !== null && editRosterSeq === row.seq) {
+          const badge = document.createElement("span");
+          badge.className = "roster-edit-badge";
+          badge.textContent = "编辑中";
+          top.append(badge);
+        }
+        if (next && next.seq === row.seq) {
+          const badge = document.createElement("span");
+          badge.className = "roster-next-badge";
+          badge.textContent = "下一位";
+          top.append(badge);
+        }
+
+        const bottom = document.createElement("div");
+        bottom.className = "roster-bottom";
+        const expressionView = document.createElement("span");
+        expressionView.className = "roster-expression";
+        expressionView.setAttribute("data-testid", "roster-expression");
+        expressionView.textContent = row.entry ? row.entry.expression : "";
+        const score = document.createElement("span");
+        score.className = "roster-score";
+        score.setAttribute("data-testid", "roster-score");
+        if (row.entry) {
+          const formatted = formatValue(row.entry.result);
+          score.setAttribute("data-value", formatted);
+          score.textContent = formatted;
+        } else {
+          score.classList.add("empty");
+          score.textContent = "—";
+        }
+        bottom.append(expressionView, score);
+
+        if (row.entry) {
+          const editButton = document.createElement("button");
+          editButton.type = "button";
+          editButton.className = "roster-edit";
+          editButton.setAttribute("data-testid", "roster-edit");
+          if (row.name || row.id) {
+            editButton.setAttribute("aria-label", `编辑第 ${row.seq} 位 ${rosterLabel(row)} 的成绩`);
+          } else {
+            editButton.setAttribute("aria-label", `编辑第 ${row.seq} 位的成绩`);
+          }
+          editButton.textContent = "编辑";
+          editButton.addEventListener("click", () => beginEdit(row.entry, row));
+          bottom.append(editButton);
+        }
+
+        item.append(top, bottom);
+        fragment.append(item);
+      });
+      rosterList.append(fragment);
+    }
+    function decodeRosterBytes(bytes) {
+      let text = new TextDecoder("utf-8").decode(bytes);
+      if (text.includes("\uFFFD")) {
+        try {
+          text = new TextDecoder("gbk", { fatal: true }).decode(bytes);
+        } catch (error) {
+          throw new Error("文件编码无法识别，请另存为 CSV UTF-8 后重试。");
+        }
+      }
+      text = text.replace(/^\uFEFF/, "");
+      if (text.includes("\uFFFD") || text.includes("\u0000")) {
+        throw new Error("文件编码无法识别，请另存为 CSV UTF-8 后重试。");
+      }
+      return text;
+    }
+
+    function headerRecordText(text) {
+      let inQuotes = false;
+      for (let index = 0; index < text.length; index += 1) {
+        const character = text[index];
+        if (character === '"') {
+          if (inQuotes && text[index + 1] === '"') {
+            index += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (!inQuotes && (character === "\r" || character === "\n")) {
+          return text.slice(0, index);
+        }
+      }
+      return text;
+    }
+
+    function countDelimiter(text, delimiter) {
+      let count = 0;
+      let inQuotes = false;
+      for (let index = 0; index < text.length; index += 1) {
+        const character = text[index];
+        if (character === '"') {
+          if (inQuotes && text[index + 1] === '"') {
+            index += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (!inQuotes && character === delimiter) {
+          count += 1;
+        }
+      }
+      return count;
+    }
+
+    function detectDelimiter(text) {
+      const header = headerRecordText(text);
+      let bestDelimiter = ",";
+      let bestCount = -1;
+      for (const delimiter of [",", ";", "\t"]) {
+        const count = countDelimiter(header, delimiter);
+        if (count > bestCount) {
+          bestDelimiter = delimiter;
+          bestCount = count;
+        }
+      }
+      return bestDelimiter;
+    }
+
+    function parseCsvRecords(text, delimiter) {
+      const records = [];
+      let row = [];
+      let field = "";
+      let inQuotes = false;
+
+      for (let index = 0; index < text.length; index += 1) {
+        const character = text[index];
+        if (inQuotes) {
+          if (character === '"') {
+            if (text[index + 1] === '"') {
+              field += '"';
+              index += 1;
+            } else {
+              inQuotes = false;
+            }
+          } else {
+            field += character;
+          }
+        } else if (character === '"' && field === "") {
+          inQuotes = true;
+        } else if (character === delimiter) {
+          row.push(field);
+          field = "";
+        } else if (character === "\r" || character === "\n") {
+          if (character === "\r" && text[index + 1] === "\n") {
+            index += 1;
+          }
+          row.push(field);
+          records.push(row);
+          row = [];
+          field = "";
+        } else {
+          field += character;
+        }
+      }
+
+      if (field !== "" || row.length > 0 || text.endsWith(delimiter)) {
+        row.push(field);
+        records.push(row);
+      }
+      return records;
+    }
+
+    function defaultRoleIndexes(headers) {
+      const used = {};
+      const indexes = { seq: null, id: null, name: null, score: null };
+      ["id", "name", "score", "seq"].forEach((role) => {
+        for (let index = 0; index < headers.length; index += 1) {
+          if (used[index]) {
+            continue;
+          }
+          if (HEADER_ALIASES[role].includes(headers[index])) {
+            indexes[role] = index;
+            used[index] = true;
+            break;
+          }
+        }
+      });
+      return indexes;
+    }
+
+    function buildRoles(headers, indexes) {
+      const roles = headers.map(() => "extra");
+      ["seq", "id", "name", "score"].forEach((role) => {
+        const index = indexes[role];
+        if (index !== null && index !== undefined && index >= 0 && index < headers.length) {
+          roles[index] = role;
+        }
+      });
+      return roles;
+    }
+
+    function buildPreviewRows(records, headers, indexes) {
+      const rows = [];
+      for (let recordIndex = 1; recordIndex < records.length; recordIndex += 1) {
+        const record = records[recordIndex];
+        if (record.every((cell) => cell.trim() === "")) {
+          continue;
+        }
+        const id = indexes.id === null ? "" : String(record[indexes.id] ?? "");
+        const name = indexes.name === null ? "" : String(record[indexes.name] ?? "");
+        if (id.trim() === "" && name.trim() === "") {
+          continue;
+        }
+        rows.push({
+          seq: rows.length + 1,
+          id,
+          name,
+          extra: headers.map((header, index) => String(record[index] ?? "")),
+        });
+      }
+      return rows;
+    }
+
+    function parseRosterText(fileName, bytes) {
+      const text = decodeRosterBytes(bytes);
+      if (text.trim() === "") {
+        throw new Error("文件是空的，请选择含表头和名单的 CSV。");
+      }
+      const records = parseCsvRecords(text, detectDelimiter(text));
+      if (records.length === 0 || records[0].every((cell) => cell.trim() === "")) {
+        throw new Error("第一行必须是表头。");
+      }
+      const headers = records[0].map((cell) => cell.trim());
+      if (headers.every((header) => header === "")) {
+        throw new Error("第一行必须是表头。");
+      }
+      const indexes = defaultRoleIndexes(headers);
+      const preview = buildPreviewRows(records, headers, indexes);
+      return { version: ROSTER_VERSION, fileName: fileName || "名单.csv", headers, indexes, preview, records };
+    }
+    function setImportStage(name) {
+      importStages.forEach((stage) => {
+        stage.hidden = stage.getAttribute("data-import-stage") !== name;
+      });
+    }
+
+    function renderPreviewEmpty() {
+      importSummary.hidden = true;
+      importSummary.textContent = "";
+      importSummary.removeAttribute("data-count");
+      importSummary.removeAttribute("data-keep-count");
+      importSummary.removeAttribute("data-drop-count");
+      importSummary.removeAttribute("data-new-count");
+      importMapNote.hidden = true;
+      importMapNote.textContent = "";
+      importColumns.textContent = "";
+      importPreview.textContent = "";
+      importMode.hidden = true;
+      importWarning.hidden = true;
+      importWarning.textContent = "";
+      importWarning.classList.remove("danger");
+      importConfirmButton.disabled = false;
+      importConfirmButton.classList.remove("danger");
+      importConfirmButton.textContent = "开始录入";
+      rosterFileInput.value = "";
+    }
+
+    function resetImportDialog() {
+      pendingImport = null;
+      delete importDialog.dataset.error;
+      delete importDialog.dataset.mode;
+      importError.hidden = true;
+      importError.textContent = "";
+      importPasteText.value = "";
+      setImportStage("start");
+      renderPreviewEmpty();
+    }
+
+    function showImportError(message) {
+      pendingImport = null;
+      importDialog.dataset.error = "true";
+      importError.hidden = false;
+      importError.textContent = message || "名单无法导入，请重新选择文件。";
+      setImportStage("start");
+      renderPreviewEmpty();
+      importSelectButton.focus();
+    }
+
+    function columnOptionLabel(index, header) {
+      return `第 ${index + 1} 列：${header === "" ? "空列" : header}`;
+    }
+
+    function refreshColumnSelects() {
+      if (!pendingImport) {
+        return;
+      }
+      const chosen = pendingImport.indexes;
+      ["id", "name", "score", "seq"].forEach((role) => {
+        const select = importColumnSelects[role];
+        select.textContent = "";
+        const none = document.createElement("option");
+        none.value = "";
+        none.textContent = "无";
+        select.append(none);
+        pendingImport.headers.forEach((header, index) => {
+          const takenByOther = ["id", "name", "score", "seq"].some(
+            (other) => other !== role && chosen[other] === index,
+          );
+          if (takenByOther) {
+            return;
+          }
+          const option = document.createElement("option");
+          option.value = String(index);
+          option.textContent = columnOptionLabel(index, header);
+          select.append(option);
+        });
+        select.value = chosen[role] === null ? "" : String(chosen[role]);
+      });
+      importMap.dataset.idIndex = chosen.id === null ? "" : String(chosen.id);
+      importMap.dataset.nameIndex = chosen.name === null ? "" : String(chosen.name);
+      importMap.dataset.scoreIndex = chosen.score === null ? "" : String(chosen.score);
+      importMap.dataset.seqIndex = chosen.seq === null ? "" : String(chosen.seq);
+    }
+
+    function currentIdCounts(rows, idIndex) {
+      const counts = new Map();
+      if (idIndex === null) {
+        return counts;
+      }
+      rows.forEach((row) => {
+        const key = String(row.extra[idIndex] ?? "").trim();
+        if (key !== "") {
+          counts.set(key, (counts.get(key) || 0) + 1);
+        }
+      });
+      return counts;
+    }
+
+    function duplicateIds(counts) {
+      const dups = [];
+      counts.forEach((count, key) => {
+        if (count > 1) {
+          dups.push(key);
+        }
+      });
+      return dups.sort();
+    }
+
+    function keepAvailability() {
+      if (!pendingImport) {
+        return { available: false, reason: "" };
+      }
+      const indexes = pendingImport.indexes;
+      const filledOld = roster ? roster.rows.filter((row) => row.entry !== null) : [];
+      if (filledOld.length === 0) {
+        return { available: false, reason: "none" };
+      }
+      if (indexes.id === null) {
+        return { available: false, reason: "no-id" };
+      }
+      const oldCounts = new Map();
+      roster.rows.forEach((row) => {
+        const key = String(row.id).trim();
+        if (key !== "") {
+          oldCounts.set(key, (oldCounts.get(key) || 0) + 1);
+        }
+      });
+      const oldDups = duplicateIds(oldCounts);
+      if (oldDups.length > 0) {
+        return { available: false, reason: "dup", dups: oldDups };
+      }
+      const newCounts = currentIdCounts(pendingImport.preview, indexes.id);
+      const newDups = duplicateIds(newCounts);
+      if (newDups.length > 0) {
+        return { available: false, reason: "dup", dups: newDups };
+      }
+      const oldFilledById = new Map();
+      filledOld.forEach((row) => {
+        oldFilledById.set(String(row.id).trim(), row);
+      });
+      let keep = 0;
+      pendingImport.preview.forEach((row) => {
+        const key = String(row.extra[indexes.id] ?? "").trim();
+        if (key !== "" && oldFilledById.has(key)) {
+          keep += 1;
+        }
+      });
+      if (keep === 0) {
+        return { available: false, reason: "zero" };
+      }
+      return { available: true, keep };
+    }
+
+    function refreshMapHighlight() {
+      document.querySelectorAll(".import-chip.active").forEach((chip) => chip.classList.remove("active"));
+      document.querySelectorAll(".import-preview-row span.active").forEach((cell) => cell.classList.remove("active"));
+      const focused = document.activeElement;
+      if (!focused || !focused.classList || !focused.classList.contains("import-select") || !pendingImport) {
+        return;
+      }
+      const match = /import-(id|name|score|seq)-column/.exec(focused.getAttribute("data-testid") || "");
+      if (!match) {
+        return;
+      }
+      const role = match[1];
+      const index = pendingImport.indexes[role];
+      if (index === null || index === undefined) {
+        return;
+      }
+      document.querySelectorAll(`.import-chip[data-index="${index}"]`).forEach((chip) => chip.classList.add("active"));
+      document.querySelectorAll(`.import-preview-row span[data-preview-role="${role}"]`).forEach((cell) => cell.classList.add("active"));
+    }
+
+    function renderPreview() {
+      if (!pendingImport) {
+        return;
+      }
+      delete importDialog.dataset.error;
+      importError.hidden = true;
+      importError.textContent = "";
+      setImportStage("preview");
+      refreshColumnSelects();
+
+      const preview = pendingImport.preview;
+      importSummary.hidden = false;
+      importSummary.dataset.count = String(preview.length);
+      importSummary.textContent = `识别到 ${preview.length} 人`;
+
+      importMapNote.hidden = true;
+      importMapNote.textContent = "";
+      const noMapping = pendingImport.indexes.id === null && pendingImport.indexes.name === null;
+      const zeroPeople = preview.length === 0;
+      if (noMapping) {
+        importMapNote.hidden = false;
+        importMapNote.textContent = "请指定姓名或学号列。";
+      } else if (zeroPeople) {
+        importMapNote.hidden = false;
+        importMapNote.textContent = "当前映射下没有可导入的学生行。";
+      } else if (pendingImport.indexes.seq === null) {
+        importMapNote.hidden = false;
+        importMapNote.textContent = "序号列可保持「无」，将按导入顺序自动编号。";
+      }
+      importConfirmButton.disabled = noMapping || zeroPeople;
+
+      importColumns.textContent = "";
+      pendingImport.headers.forEach((header, index) => {
+        const chip = document.createElement("span");
+        chip.className = "import-chip";
+        const role = pendingImport.roles[index];
+        chip.dataset.role = role;
+        chip.dataset.index = String(index);
+        chip.textContent = role && role !== "extra"
+          ? ROLE_LABELS[role]
+          : `不导入：${header || "空列"}`;
+        importColumns.append(chip);
+      });
+
+      importPreview.textContent = "";
+      const fileScoreIndex = pendingImport.indexes.score;
+      preview.slice(0, 3).forEach((row) => {
+        const previewRow = document.createElement("div");
+        previewRow.className = "import-preview-row";
+        const fileScore = fileScoreIndex === null ? "" : String(row.extra[fileScoreIndex] ?? "");
+        const previewCells = [String(row.seq), row.id, row.name, fileScore === "" ? "—" : fileScore];
+        const previewRoles = ["seq", "id", "name", "score"];
+        previewCells.forEach((value, cellPosition) => {
+          const cell = document.createElement("span");
+          cell.dataset.previewRole = previewRoles[cellPosition];
+          cell.textContent = value;
+          previewRow.append(cell);
+        });
+        importPreview.append(previewRow);
+      });
+
+      const keepOption = importModeKeep.closest("label");
+      if (keepOption) {
+        keepOption.style.display = "";
+      }
+      const filledOld = roster ? roster.rows.filter((row) => row.entry !== null).length : 0;
+      const keep = keepAvailability();
+      if (filledOld === 0) {
+        importMode.hidden = true;
+        delete importDialog.dataset.mode;
+        importSummary.removeAttribute("data-keep-count");
+        importSummary.removeAttribute("data-drop-count");
+        importSummary.removeAttribute("data-new-count");
+        importModeKeep.checked = false;
+        importModeClear.checked = false;
+        if (preview.length > 0 && !noMapping) {
+          importWarning.hidden = false;
+          importWarning.classList.remove("danger");
+          importWarning.textContent = roster
+            ? "导入会替换当前名单，并从第 1 位重新录入。"
+            : "导入后从第 1 位开始录入。";
+        } else {
+          importWarning.hidden = true;
+          importWarning.textContent = "";
+        }
+        importConfirmButton.classList.remove("danger");
+        importConfirmButton.textContent = "开始录入";
+        return;
+      }
+
+      importMode.hidden = false;
+      if (keep.available) {
+        const keepCount = keep.keep;
+        const oldIds = new Set();
+        roster.rows.forEach((row) => {
+          if (row.entry !== null) {
+            oldIds.add(String(row.id).trim());
+          }
+        });
+        const newIds = new Set();
+        pendingImport.preview.forEach((row) => {
+          const key = String(row.extra[pendingImport.indexes.id] ?? "").trim();
+          if (key !== "") {
+            newIds.add(key);
+          }
+        });
+        let drop = 0;
+        oldIds.forEach((key) => {
+          if (key !== "" && !newIds.has(key)) {
+            drop += 1;
+          }
+        });
+        let added = 0;
+        newIds.forEach((key) => {
+          if (!oldIds.has(key)) {
+            added += 1;
+          }
+        });
+        importSummary.dataset.keepCount = String(keepCount);
+        importSummary.dataset.dropCount = String(drop);
+        importSummary.dataset.newCount = String(added);
+        if (pendingImport.userClear) {
+          if (pendingImport.mode !== "keep" && pendingImport.mode !== "clear") {
+            pendingImport.mode = "clear";
+          }
+        } else {
+          pendingImport.mode = "keep";
+        }
+        importModeKeepLabel.textContent = `保留同学号成绩（命中${keepCount}人）`;
+        importModeClearLabel.textContent = `清空重录（现存${filledOld}条将删）`;
+        importModeKeep.checked = pendingImport.mode === "keep";
+        importModeClear.checked = pendingImport.mode === "clear";
+        importDialog.dataset.mode = pendingImport.mode;
+        importWarning.hidden = false;
+        if (pendingImport.mode === "keep") {
+          importWarning.classList.remove("danger");
+          importWarning.textContent = `命中${keepCount}人保留；旧成绩丢弃${drop}条；新增${added}人。`;
+          importConfirmButton.classList.remove("danger");
+          importConfirmButton.textContent = "保留成绩并开始录入";
+        } else {
+          importWarning.classList.add("danger");
+          importWarning.textContent = `清空后现存${filledOld}条成绩都会删除；本次新入${preview.length}人。`;
+          importConfirmButton.classList.add("danger");
+          importConfirmButton.textContent = "清空并开始录入";
+        }
+      } else {
+        importSummary.removeAttribute("data-keep-count");
+        importSummary.removeAttribute("data-drop-count");
+        importSummary.removeAttribute("data-new-count");
+        pendingImport.mode = "clear";
+        importModeKeep.checked = false;
+        importModeClear.checked = true;
+        if (keepOption) {
+          keepOption.style.display = "none";
+        }
+        importModeClearLabel.textContent = `清空重录（现存${filledOld}条将删）`;
+        importDialog.dataset.mode = "clear";
+        importWarning.hidden = false;
+        importWarning.classList.add("danger");
+        if (keep.reason === "dup") {
+          const listed = (keep.dups || []).slice(0, 3).join("、");
+          importWarning.textContent = `无法按学号保留：学号 ${listed} 重复；只能清空重录。`;
+        } else if (keep.reason === "no-id") {
+          importWarning.textContent = "未指定学号列，只能清空重录。";
+        } else {
+          importWarning.textContent = "没有可保留的同学号成绩，只能清空重录。";
+        }
+        importConfirmButton.classList.add("danger");
+        importConfirmButton.textContent = "清空并开始录入";
+      }
+      refreshMapHighlight();
+    }
+
+    function applyMappingChange(role, value) {
+      if (!pendingImport) {
+        return;
+      }
+      const next = value === "" ? null : Number(value);
+      ["id", "name", "score", "seq"].forEach((other) => {
+        if (other !== role && pendingImport.indexes[other] === next && next !== null) {
+          pendingImport.indexes[other] = null;
+        }
+      });
+      pendingImport.indexes[role] = next;
+      pendingImport.roles = buildRoles(pendingImport.headers, pendingImport.indexes);
+      pendingImport.preview = buildPreviewRows(pendingImport.records, pendingImport.headers, pendingImport.indexes);
+      if (pendingImport.mode === "keep" && !keepAvailability().available) {
+        pendingImport.mode = "clear";
+      }
+      renderPreview();
+    }
+
+    function openImportDialog() {
+      stopAutoConfirm();
+      importOpener = document.activeElement instanceof Element ? document.activeElement : null;
+      resetImportDialog();
+      if (typeof importDialog.showModal === "function") {
+        if (!importDialog.open) {
+          importDialog.showModal();
+        }
+      } else {
+        importDialog.setAttribute("open", "");
+      }
+      importDialog.scrollTop = 0;
+      importSelectButton.focus();
+    }
+
+    function handleRosterFile(file) {
+      if (!file) {
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const bytes = new Uint8Array(reader.result);
+          pendingImport = parseRosterText(file.name || "名单.csv", bytes);
+          pendingImport.mode = null;
+          pendingImport.userClear = false;
+          pendingImport.roles = buildRoles(pendingImport.headers, pendingImport.indexes);
+          pendingImport.preview = buildPreviewRows(pendingImport.records, pendingImport.headers, pendingImport.indexes);
+          renderPreview();
+        } catch (error) {
+          showImportError(error && error.message ? error.message : "名单无法导入，请重新选择文件。");
+        }
+      };
+      reader.onerror = () => {
+        showImportError("文件读取失败，请重新选择文件。");
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function handlePasteParse() {
+      const rawText = importPasteText.value;
+      if (rawText.trim() === "") {
+        pendingImport = null;
+        importDialog.dataset.error = "true";
+        importError.hidden = false;
+        importError.textContent = "粘贴内容是空的，请粘贴含表头和名单的 CSV。";
+        setImportStage("paste");
+        importPasteText.focus();
+        return;
+      }
+      try {
+        const bytes = new TextEncoder().encode(rawText);
+        pendingImport = parseRosterText("粘贴名单", bytes);
+        pendingImport.mode = null;
+        pendingImport.userClear = false;
+        pendingImport.roles = buildRoles(pendingImport.headers, pendingImport.indexes);
+        pendingImport.preview = buildPreviewRows(pendingImport.records, pendingImport.headers, pendingImport.indexes);
+        renderPreview();
+      } catch (error) {
+        pendingImport = null;
+        importDialog.dataset.error = "true";
+        importError.hidden = false;
+        importError.textContent = error && error.message ? error.message : "名单无法导入，请重新粘贴。";
+        setImportStage("paste");
+        importPasteText.focus();
+      }
+    }
+    function buildRosterFromImport() {
+      const parsed = pendingImport;
+      const roles = parsed.roles;
+      const idIndex = parsed.indexes.id;
+      const nameIndex = parsed.indexes.name;
+      const extraIndices = [];
+      roles.forEach((role, index) => {
+        if (role === "extra") {
+          extraIndices.push(index);
+        }
+      });
+      const rows = parsed.preview.map((previewRow, position) => ({
+        seq: position + 1,
+        id: idIndex === null ? "" : String(previewRow.extra[idIndex] ?? ""),
+        name: nameIndex === null ? "" : String(previewRow.extra[nameIndex] ?? ""),
+        extra: extraIndices.map((index) => String(previewRow.extra[index] ?? "")),
+        entry: null,
+      }));
+      return {
+        version: ROSTER_VERSION,
+        fileName: parsed.fileName,
+        headers: parsed.headers.slice(),
+        roles: roles.slice(),
+        rows,
+      };
+    }
+
+    function confirmRosterImport() {
+      if (!pendingImport || importConfirmButton.disabled) {
+        return;
+      }
+      const built = buildRosterFromImport();
+      const useKeep = pendingImport.mode === "keep" && keepAvailability().available && roster;
+      if (useKeep) {
+        const oldById = new Map();
+        roster.rows.forEach((oldRow) => {
+          if (oldRow.entry !== null) {
+            oldById.set(String(oldRow.id).trim(), oldRow.entry);
+          }
+        });
+        built.rows.forEach((row) => {
+          const key = String(row.id).trim();
+          if (key !== "" && oldById.has(key)) {
+            const carried = oldById.get(key);
+            row.entry = {
+              seq: row.seq,
+              operator: carried.operator,
+              operands: carried.operands.map(cloneOperand),
+              base: carried.base ? { value: carried.base.value, display: carried.base.display } : null,
+              expression: carried.expression,
+              result: carried.result,
+            };
+          }
+        });
+      }
+      const keptCount = built.rows.filter((row) => row.entry !== null).length;
+      roster = built;
+      pendingImport = null;
+      history = [];
+      historyList.textContent = "";
+      historyEmpty.hidden = true;
+      editRosterSeq = null;
+      dropQueuedSpeech("key");
+      dropPendingResults();
+      resetToSelect();
+      persistRoster();
+      renderRoster();
+      const target = nextEmptyRow();
+      if (!target) {
+        updateStateLabel("名单已导入；名单已录满");
+      } else if (keptCount > 0) {
+        updateStateLabel(`已导入；保留 ${keptCount} 条成绩；下一位 ${target.seq} ${rosterLabel(target)}`);
+      } else {
+        updateStateLabel(`已导入；从第 1 位 ${rosterLabel(target)} 开始`);
+      }
+      if (importDialog.open) {
+        importDialog.close();
+      }
+    }
+
+    function clearRoster() {
+      if (!roster) {
+        return;
+      }
+      const filled = roster.rows.filter((row) => row.entry !== null).length;
+      const accepted = window.confirm(`清除后本机保存的名单和 ${filled} 条成绩都会删除。`);
+      if (!accepted) {
+        return;
+      }
+      roster = null;
+      pendingImport = null;
+      editRosterSeq = null;
+      history = [];
+      historyList.textContent = "";
+      removeRosterStorage();
+      resetToSelect();
+      renderRoster();
+      updateStateLabel("名单已清除；已回到无名单模式");
+    }
+
+    function escapeCsvCell(value) {
+      const cell = String(value ?? "");
+      return /[",\r\n]/.test(cell) ? `"${cell.replace(/"/g, '""')}"` : cell;
+    }
+
+    function rosterLayout() {
+      const primary = {};
+      roster.roles.forEach((role, index) => {
+        if (role !== "extra" && primary[role] === undefined) {
+          primary[role] = index;
+        }
+      });
+      const extraPositions = new Map();
+      roster.roles.forEach((role, index) => {
+        if (role === "extra") {
+          extraPositions.set(index, extraPositions.size);
+        }
+      });
+      return { primary, extraPositions };
+    }
+
+    function rosterCsvText() {
+      if (!roster) {
+        return "";
+      }
+      const layout = rosterLayout();
+      const outputHeaders = roster.headers.slice();
+      if (layout.primary.seq === undefined) {
+        outputHeaders.unshift("序号");
+      }
+      if (layout.primary.score === undefined) {
+        outputHeaders.push("成绩");
+      }
+      const lines = [outputHeaders.map(escapeCsvCell).join(",")];
+      roster.rows.forEach((row) => {
+        const cells = [];
+        if (layout.primary.seq === undefined) {
+          cells.push(row.seq);
+        }
+        roster.headers.forEach((header, index) => {
+          const role = roster.roles[index];
+          if (role === "seq") {
+            cells.push(row.seq);
+          } else if (role === "id") {
+            cells.push(row.id);
+          } else if (role === "name") {
+            cells.push(row.name);
+          } else if (role === "score") {
+            cells.push(row.entry ? formatValue(row.entry.result) : "");
+          } else {
+            cells.push(row.extra[layout.extraPositions.get(index)] ?? "");
+          }
+        });
+        if (layout.primary.score === undefined) {
+          cells.push(row.entry ? formatValue(row.entry.result) : "");
+        }
+        lines.push(cells.map(escapeCsvCell).join(","));
+      });
+      return "\uFEFF" + lines.join("\r\n") + "\r\n";
+    }
+
+    function downloadText(fileName, content) {
+      try {
+        const blob = new Blob([content], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        window.setTimeout(() => { link.remove(); URL.revokeObjectURL(url); }, 1000);
+      } catch (error) {
+        updateStateLabel("导出失败：浏览器不支持下载。");
+      }
+    }
+
+    function exportRoster() {
+      if (!roster) {
+        return;
+      }
+      const baseName = (roster.fileName || "名单").replace(/\.[^.]+$/, "").replace(/[\\/:*?"<>|]/g, "_") || "名单";
+      const now = new Date();
+      const date = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
+      downloadText(`${baseName}-成绩-${date}.csv`, rosterCsvText());
+      const filled = roster.rows.filter((row) => row.entry !== null).length;
+      updateStateLabel(`已导出 ${roster.rows.length} 人（${filled} 条成绩）`);
+    }
+
+    function downloadSampleRoster() {
+      const sample = [
+        "序号,学号,姓名,成绩,班级",
+        "1,20230101,张三,,高一3班",
+        "2,20230102,李四,,高一3班",
+        "3,20230103,王五,,高一3班",
+      ].join("\r\n");
+      downloadText("名单样例.csv", "\uFEFF" + sample + "\r\n");
+    }
     function enterState(nextState) {
       state = nextState;
       app.dataset.state = nextState;
@@ -2175,11 +4043,25 @@
 
       stopAutoConfirm();
       clearResultPause();
+      const rosterSeq = editRosterSeq;
       const snapshot = editSnapshot;
       pendingEdit = null;
       editSnapshot = null;
       editDraft = null;
+      editRosterSeq = null;
       editDraftView.hidden = true;
+      removeEditDoneButton();
+      if (editHint) {
+        editHint.textContent = EDIT_HINT_DEFAULT;
+      }
+      if (editDraftTitle) {
+        editDraftTitle.textContent = "编辑草稿";
+      }
+      if (editCancelButton) {
+        editCancelButton.textContent = "关闭";
+        editCancelButton.setAttribute("aria-label", "关闭编辑");
+      }
+      restoreEditDraftHome();
       operandChips.textContent = "";
       operator = snapshot.operator;
       operands = snapshot.operands.map(cloneOperand);
@@ -2200,7 +4082,12 @@
       resetButton.disabled = snapshot.state === "select";
       enterState(snapshot.state);
       updateStateLabel(snapshot.label);
-      input.focus();
+      renderRoster();
+      if (rosterSeq !== null) {
+        focusRosterEdit(rosterSeq);
+      } else {
+        input.focus();
+      }
     }
 
     function updateStateLabel(label) {
@@ -2410,6 +4297,9 @@
       if (settingsPanel.open) {
         return false;
       }
+      if (importDialog.open) {
+        return false;
+      }
       if (input.value === "" || input.value.endsWith(".")) {
         return false;
       }
@@ -2588,13 +4478,25 @@
       });
     }
 
-    function beginEdit(entry) {
+    function beginEdit(entry, rosterRow = null) {
+      if (rosterRow && state === "edit" && editDraft && editRosterSeq !== null && editRosterSeq !== rosterRow.seq) {
+        updateStateLabel("先保存或取消当前编辑，再编辑其他行。");
+        return;
+      }
+      if (rosterRow && state === "edit" && editDraft && editRosterSeq !== null && editRosterSeq === rosterRow.seq) {
+        return;
+      }
       stopAutoConfirm();
       clearResultPause();
       if (state !== "edit" || !editSnapshot) {
         editSnapshot = captureEditSnapshot();
       }
       pendingEdit = null;
+      editRosterSeq = rosterRow ? rosterRow.seq : null;
+      renderRoster();
+      if (!rosterRow) {
+        restoreEditDraftHome();
+      }
       operator = entry.operator;
       syncOperatorAttribute();
       editDraft = {
@@ -2608,8 +4510,42 @@
       renderEditDraft();
       enterState("edit");
       renderExpression();
-      updateStateLabel(`正在编辑 ${operatorGlyphs[entry.operator]} 记录`);
-      input.focus();
+      if (rosterRow) {
+        updateStateLabel(`正在编辑 ${rosterRow.seq} ${rosterLabel(rosterRow)} 的成绩`);
+        if (editDraftTitle) {
+          const titleName = (rosterRow.name || "").trim();
+          const titleId = (rosterRow.id || "").trim();
+          const titleCore = [titleName, titleId].filter((part) => part !== "").join(" ") || rosterLabel(rosterRow);
+          editDraftTitle.textContent = `正在编辑 ${rosterRow.seq} ${titleCore}`;
+        }
+        if (editHint) {
+          editHint.textContent = EDIT_HINT_ROSTER;
+        }
+        const done = ensureEditDoneButton();
+        if (!done.isConnected) {
+          editDraftView.querySelector(".edit-draft-head").append(done);
+        }
+        if (editCancelButton) {
+          editCancelButton.textContent = "取消";
+          editCancelButton.setAttribute("aria-label", "取消编辑");
+        }
+        input.focus({ preventScroll: true });
+        floatEditDraft(rosterRow.seq);
+      } else {
+        updateStateLabel(`正在编辑 ${operatorGlyphs[entry.operator]} 记录`);
+        if (editDraftTitle) {
+          editDraftTitle.textContent = "编辑草稿";
+        }
+        if (editHint) {
+          editHint.textContent = EDIT_HINT_DEFAULT;
+        }
+        removeEditDoneButton();
+        if (editCancelButton) {
+          editCancelButton.textContent = "关闭";
+          editCancelButton.setAttribute("aria-label", "关闭编辑");
+        }
+        input.focus();
+      }
     }
 
     function renderHistoryItem(entry) {
@@ -2660,12 +4596,21 @@
       clearResultPause();
       pendingEdit = null;
       editSnapshot = null;
+      editRosterSeq = null;
       operator = null;
       inputStartedFromResult = false;
       syncOperatorAttribute();
       operands = [];
       editDraft = null;
       editDraftView.hidden = true;
+      removeEditDoneButton();
+      if (editHint) {
+        editHint.textContent = EDIT_HINT_DEFAULT;
+      }
+      if (editDraftTitle) {
+        editDraftTitle.textContent = "编辑草稿";
+      }
+      restoreEditDraftHome();
       operandChips.textContent = "";
       input.value = "";
       resetButton.disabled = true;
@@ -2788,12 +4733,24 @@
       clearResultPause();
       pendingEdit = null;
       editSnapshot = null;
+      editRosterSeq = null;
       operator = activeOperator;
       syncOperatorAttribute();
       operands = [];
       editDraft = null;
       editDraftView.hidden = true;
+      removeEditDoneButton();
+      if (editHint) {
+        editHint.textContent = EDIT_HINT_DEFAULT;
+      }
+      if (editDraftTitle) {
+        editDraftTitle.textContent = "编辑草稿";
+      }
+      restoreEditDraftHome();
       operandChips.textContent = "";
+      if (roster) {
+        renderRoster();
+      }
       clearExpression();
       result.textContent = "不能除以零";
       result.removeAttribute("data-value");
@@ -2890,6 +4847,13 @@
       }
 
       const displayValue = formatValue(accumulator);
+      const editingSeq = wasEditing ? editRosterSeq : null;
+      let targetRow = null;
+      if (roster) {
+        targetRow = editingSeq !== null
+          ? roster.rows.find((row) => row.seq === editingSeq) || null
+          : nextEmptyRow();
+      }
       const entry = {
         operator: activeOperator,
         operands: activeOperands.map(cloneOperand),
@@ -2897,11 +4861,25 @@
         expression: expressionText(activeOperator, activeOperands, activeBase),
         result: accumulator
       };
+      if (targetRow) {
+        entry.seq = targetRow.seq;
+      }
       operator = activeOperator;
       syncOperatorAttribute();
       operands = [];
       expression.textContent = entry.expression;
-      appendHistory(entry);
+      let recordedRow = null;
+      if (roster) {
+        if (targetRow) {
+          targetRow.entry = entry;
+          recordedRow = targetRow;
+          editRosterSeq = null;
+          persistRoster();
+          renderRoster();
+        }
+      } else {
+        appendHistory(entry);
+      }
       result.textContent = displayValue;
       result.setAttribute("data-value", displayValue);
       result.removeAttribute("data-error");
@@ -2909,15 +4887,41 @@
       resetButton.disabled = false;
       editDraft = null;
       editSnapshot = null;
+      editRosterSeq = null;
       pendingEdit = null;
       inputStartedFromResult = false;
       editDraftView.hidden = true;
+      removeEditDoneButton();
+      if (editHint) {
+        editHint.textContent = EDIT_HINT_DEFAULT;
+      }
+      if (editDraftTitle) {
+        editDraftTitle.textContent = "编辑草稿";
+      }
+      if (editCancelButton) {
+        editCancelButton.textContent = "关闭";
+        editCancelButton.setAttribute("aria-label", "关闭编辑");
+      }
+      restoreEditDraftHome();
       operandChips.textContent = "";
       enterState("result");
       startResultPause();
-      const baseHint = activeBase ? `，基数 ${activeBase.display}` : "";
-      updateStateLabel(`计算完成${baseHint}；继续输入数字按回车或 = 即可沿用 ${operatorGlyphs[activeOperator]}`);
-      input.focus();
+      if (roster && editingSeq !== null && recordedRow) {
+        const next = nextEmptyRow();
+        updateStateLabel(`已更新 ${recordedRow.seq} ${rosterLabel(recordedRow)}：${displayValue}${next ? `；下一位 ${next.seq} ${rosterLabel(next)}` : "；名单已录满"}`);
+        focusRosterEdit(recordedRow.seq);
+      } else if (roster && recordedRow) {
+        const next = nextEmptyRow();
+        updateStateLabel(`已记录 ${recordedRow.seq} ${rosterLabel(recordedRow)}：${displayValue}${next ? `；下一位 ${next.seq} ${rosterLabel(next)}` : "；名单已录满"}`);
+        input.focus();
+      } else if (roster) {
+        updateStateLabel(`名单已录满（${roster.rows.length} 人）；结果 ${displayValue} 未写入，如需修改请点行内编辑`);
+        input.focus();
+      } else {
+        const baseHint = activeBase ? `，基数 ${activeBase.display}` : "";
+        updateStateLabel(`计算完成${baseHint}；继续输入数字按回车或 = 即可沿用 ${operatorGlyphs[activeOperator]}`);
+        input.focus();
+      }
       const reading = numberToChineseReading(displayValue);
       if (reading) {
         speakResult(reading);
@@ -2968,6 +4972,9 @@
 
     document.addEventListener("keydown", (event) => {
       if (event.ctrlKey || event.metaKey || event.altKey) {
+        return;
+      }
+      if (document.querySelector("dialog[open]")) {
         return;
       }
       if (settingsPanel.open || (event.target instanceof Element && event.target.closest('[data-testid="settings-panel"]'))) {
@@ -3091,9 +5098,87 @@
     resetButton.addEventListener("click", resetToSelect);
     editCancelButton.addEventListener("click", cancelEdit);
     input.addEventListener("focus", settlePendingEdit);
+    rosterImportButton.addEventListener("click", openImportDialog);
+    rosterExportButton.addEventListener("click", exportRoster);
+    rosterClearButton.addEventListener("click", clearRoster);
+    importSelectButton.addEventListener("click", () => rosterFileInput.click());
+    importPasteButton.addEventListener("click", () => {
+      setImportStage("paste");
+      importPasteText.focus();
+    });
+    importSampleButton.addEventListener("click", downloadSampleRoster);
+    importConfirmButton.addEventListener("click", confirmRosterImport);
+    importReselectButton.addEventListener("click", () => {
+      rosterFileInput.value = "";
+      rosterFileInput.click();
+    });
+    importPasteBack.addEventListener("click", () => {
+      setImportStage("start");
+      importSelectButton.focus();
+    });
+    importPasteParse.addEventListener("click", handlePasteParse);
+    importCancelButton.addEventListener("click", () => {
+      if (importDialog.open) {
+        importDialog.close();
+      }
+    });
+    importModeKeep.addEventListener("change", () => {
+      if (pendingImport && importModeKeep.checked) {
+        pendingImport.mode = "keep";
+        pendingImport.userClear = false;
+        renderPreview();
+      }
+    });
+    importModeClear.addEventListener("click", () => {
+      if (pendingImport && importModeClear.checked) {
+        pendingImport.mode = "clear";
+        pendingImport.userClear = true;
+        renderPreview();
+      }
+    });
+    importModeClear.addEventListener("change", () => {
+      if (pendingImport && importModeClear.checked) {
+        pendingImport.mode = "clear";
+        pendingImport.userClear = true;
+        renderPreview();
+      }
+    });
+    ["id", "name", "score", "seq"].forEach((role) => {
+      importColumnSelects[role].addEventListener("change", (event) => {
+        applyMappingChange(role, event.target.value);
+      });
+    });
+    importMap.addEventListener("focusin", refreshMapHighlight);
+    importMap.addEventListener("focusout", () => {
+      document.querySelectorAll(".import-chip.active").forEach((chip) => chip.classList.remove("active"));
+      document.querySelectorAll(".import-preview-row span.active").forEach((cell) => cell.classList.remove("active"));
+    });
+    rosterFileInput.addEventListener("change", () => {
+      handleRosterFile(rosterFileInput.files && rosterFileInput.files[0]);
+    });
+    rosterFileInput.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+    importDialog.addEventListener("close", () => {
+      resetImportDialog();
+      if (importOpener && typeof importOpener.focus === "function" && document.contains(importOpener)) {
+        importOpener.focus();
+      }
+      importOpener = null;
+      startAutoConfirm();
+    });
     populateAutoConfirmOptions();
     loadSettings();
+    restoreRoster();
     syncSettingsControls();
+    resetToSelect();
+    renderRoster();
+    if (roster) {
+      const restoredNext = nextEmptyRow();
+      updateStateLabel(restoredNext
+        ? `名单已恢复；下一位 ${restoredNext.seq} ${rosterLabel(restoredNext)}`
+        : "名单已恢复；名单已录满");
+    }
     syncKeypad();
     updateUndoHint();
     if (voiceSupported && (settings.voiceKeys || settings.voiceResult)) {

@@ -32,6 +32,17 @@ tests/
   scenarios/edit.mjs          edit-recompute, edit-multi, edit-invalid, edit-divzero
   scenarios/layout.mjs        320×568 and 390×844, result and edit states
   scenarios/determinism.mjs   two fresh contexts, same sequence, identical history
+  lib/roster.mjs               roster helpers (utf8/gbk buffers, import/paste, rows, download, csv parse)
+  scenarios/roster-import.mjs  encodings, delimiters, RFC 4180, headers, alignment, rejections, paste, sample
+  scenarios/roster-map.mjs     four-role mapping, mutual exclusion, live recompute, roles persistence
+  scenarios/roster-mode.mjs    keep/clear merge, counts, duplicates, reselect, cancel/Esc
+  scenarios/roster-fill.mjs    confirm reset, cancel/Esc, sequential fill, full roster, auto-confirm/keyboard guards
+  scenarios/roster-edit.mjs    in-place edit, floating draft, switch protection, persistence, no-roster append
+  scenarios/roster-export.mjs  BOM/CRLF, roles mapping, added columns, escaping, filenames, reimport
+  scenarios/roster-storage.mjs storage shape, reload recovery, clear, unavailable/bad-data degradation
+  scenarios/roster-dialog.mjs  voice queue cleanup on confirm; pause/auto-equals/base fill behavior
+  scenarios/roster-determinism.mjs two fresh contexts, same import+fill+edit, deep-compare rows/storage/CSV
+  scenarios/roster-layout.mjs  320/390 overflow, 44px targets, font sizes, focus, list semantics
   examples/verify-adapter.mjs  runnable example of a Kekkai instrument
   suite.mjs                   CLI + `runSuite({ artifact, only })`
 ```

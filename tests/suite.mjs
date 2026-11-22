@@ -19,6 +19,16 @@ import { scenarios as continuityScenarios } from "./scenarios/continuity.mjs";
 import { scenarios as editScenarios } from "./scenarios/edit.mjs";
 import { scenarios as layoutScenarios } from "./scenarios/layout.mjs";
 import { scenarios as determinismScenarios } from "./scenarios/determinism.mjs";
+import { scenarios as rosterImportScenarios } from "./scenarios/roster-import.mjs";
+import { scenarios as rosterMapScenarios } from "./scenarios/roster-map.mjs";
+import { scenarios as rosterModeScenarios } from "./scenarios/roster-mode.mjs";
+import { scenarios as rosterFillScenarios } from "./scenarios/roster-fill.mjs";
+import { scenarios as rosterEditScenarios } from "./scenarios/roster-edit.mjs";
+import { scenarios as rosterExportScenarios } from "./scenarios/roster-export.mjs";
+import { scenarios as rosterStorageScenarios } from "./scenarios/roster-storage.mjs";
+import { scenarios as rosterDialogScenarios } from "./scenarios/roster-dialog.mjs";
+import { scenarios as rosterDeterminismScenarios } from "./scenarios/roster-determinism.mjs";
+import { scenarios as rosterLayoutScenarios } from "./scenarios/roster-layout.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_ARTIFACT = path.resolve(HERE, "../index.html");
@@ -28,6 +38,16 @@ const SCENARIOS = [
   ...editScenarios,
   ...layoutScenarios,
   ...determinismScenarios,
+  ...rosterImportScenarios,
+  ...rosterMapScenarios,
+  ...rosterModeScenarios,
+  ...rosterFillScenarios,
+  ...rosterEditScenarios,
+  ...rosterExportScenarios,
+  ...rosterStorageScenarios,
+  ...rosterDialogScenarios,
+  ...rosterDeterminismScenarios,
+  ...rosterLayoutScenarios,
 ];
 
 export async function runSuite({ artifact = DEFAULT_ARTIFACT, only = [], listOnly = false } = {}) {
