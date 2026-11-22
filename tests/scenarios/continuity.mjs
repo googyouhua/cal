@@ -115,6 +115,7 @@ export const stickyOperator = {
       await page.click(`${S.keypad} [data-key="enter"]`);
       await page.click(S.equals);
       eq(checks, "sticky.switch-draft.result", await resultValue(page), "36");
+      await page.waitForTimeout(1200);
       eq(checks, "sticky.switch-draft.operator", await page.$eval(S.historyItem, (el) => el.getAttribute("data-operator")), "*");
 
       for (const value of ["5", "6"]) {
@@ -123,6 +124,7 @@ export const stickyOperator = {
       }
       await page.click(S.equals);
       eq(checks, "sticky.continue.result", await resultValue(page), "30");
+      await page.waitForTimeout(1200);
       eq(checks, "sticky.continue.history", await page.$$eval(S.historyItem, (els) => els.length), 2);
       eq(
         checks,

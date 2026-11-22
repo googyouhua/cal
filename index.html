@@ -1115,6 +1115,25 @@
     </div>
 
     <div class="settings-field">
+      <label class="settings-label" for="settings-result-pause">结果后暂停输入</label>
+      <input
+        class="settings-input"
+        id="settings-result-pause"
+        data-testid="settings-result-pause"
+        type="text"
+        inputmode="decimal"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="结果后暂停秒数"
+        value="1"
+        min="0"
+        max="10"
+        step="0.1"
+      >
+      <span class="settings-hint">结果出现后数字输入暂停 N 秒；0 为关闭。</span>
+    </div>
+
+    <div class="settings-field">
       <label class="settings-toggle-row" for="settings-base-toggle">
         <input class="settings-checkbox" id="settings-base-toggle" type="checkbox" data-testid="settings-base-toggle">
         <span>启用基数</span>
@@ -1198,6 +1217,7 @@
     const settingsPanel = document.querySelector('[data-testid="settings-panel"]');
     const autoConfirmSelect = document.querySelector('[data-testid="settings-auto-confirm"]');
     const autoEqualsInput = document.querySelector('[data-testid="settings-auto-equals"]');
+    const resultPauseInput = document.querySelector('[data-testid="settings-result-pause"]');
     const autoEqualsHint = document.querySelector('[data-testid="auto-equals-hint"]');
     const baseToggle = document.querySelector('[data-testid="settings-base-toggle"]');
     const baseValueInput = document.querySelector('[data-testid="settings-base-value"]');
@@ -1239,10 +1259,11 @@
     let inputStartedFromResult = false;
 
     const SETTINGS_KEY = "cal-phone.settings.v1";
-    const AUTO_CONFIRM_STEPS = [0, 0.2, 0.4, ...Array.from({ length: 20 }, (_, index) => (index + 1) / 2)];
+    const AUTO_CONFIRM_STEPS = [0, 0.1, 0.2, 0.4, ...Array.from({ length: 20 }, (_, index) => (index + 1) / 2)];
     const settings = {
       autoConfirm: 0,
       autoEquals: 0,
+      resultPause: 1,
       baseEnabled: false,
       baseText: "0",
       haptics: true,
@@ -1252,6 +1273,40 @@
     let autoConfirmTimer = null;
     let autoConfirmCountdownTimer = null;
     let autoConfirmDeadline = 0;
+    let resultPauseUntil = 0;
+
+    function resultPauseMs() {
+      const seconds = Number(settings.resultPause);
+      if (!Number.isFinite(seconds) || seconds <= 0) {
+        return 0;
+      }
+      return Math.round(Math.min(10, seconds) * 1000);
+    }
+
+    function resultPauseActive() {
+      return state === "result" && resultPauseUntil > 0 && Date.now() < resultPauseUntil;
+    }
+
+    function startResultPause() {
+      const ms = resultPauseMs();
+      resultPauseUntil = ms > 0 ? Date.now() + ms : 0;
+    }
+
+    function clearResultPause() {
+      resultPauseUntil = 0;
+    }
+
+    function parseResultPause(raw) {
+      const text = String(raw).trim();
+      if (text === "") {
+        return null;
+      }
+      const value = Number(text);
+      if (!Number.isFinite(value) || value < 0 || value > 10) {
+        return null;
+      }
+      return Math.round(value * 10) / 10;
+    }
 
     const VOICE_HINT_HTTP = '首次开启约需下载 <span class="nowrap">96MB</span> 离线语音资源。<span class="nowrap">手机静音</span>或媒体音量为 0 时不会出声；<span class="nowrap">模型仅限非商用</span>。';
     const VOICE_HINT_FILE = "语音播报需要 http(s) 网页地址；请改用网页地址打开（本地 file:// 下已禁用）。";
@@ -1942,11 +1997,15 @@
     }
 
     function appendCharacter(character) {
+      if (resultPauseActive()) {
+        return false;
+      }
       if (state === "result" || state === "error") {
         inputStartedFromResult = true;
         operands = [];
         clearExpression();
         clearResult();
+        clearResultPause();
       }
       if (state === "select" || state === "result" || state === "error") {
         enterState("input");
@@ -2115,6 +2174,7 @@
       }
 
       stopAutoConfirm();
+      clearResultPause();
       const snapshot = editSnapshot;
       pendingEdit = null;
       editSnapshot = null;
@@ -2175,6 +2235,12 @@
         if (Number.isInteger(autoEquals) && autoEquals >= 0 && autoEquals <= 999) {
           settings.autoEquals = autoEquals;
         }
+        if (parsed.resultPause !== undefined) {
+          const resultPause = parseResultPause(parsed.resultPause);
+          if (resultPause !== null) {
+            settings.resultPause = resultPause;
+          }
+        }
         settings.baseEnabled = parsed.baseEnabled === true;
         const storedBase = String(parsed.baseValue ?? "");
         if (storedBase.trim() !== "" && Number.isFinite(Number(storedBase))) {
@@ -2193,6 +2259,7 @@
         window.localStorage.setItem(SETTINGS_KEY, JSON.stringify({
           autoConfirm: settings.autoConfirm,
           autoEquals: settings.autoEquals,
+          resultPause: settings.resultPause,
           baseEnabled: settings.baseEnabled,
           baseValue: settings.baseText,
           haptics: settings.haptics,
@@ -2323,6 +2390,7 @@
     function syncSettingsControls() {
       autoConfirmSelect.value = String(settings.autoConfirm);
       autoEqualsInput.value = String(settings.autoEquals);
+      resultPauseInput.value = String(settings.resultPause);
       baseToggle.checked = settings.baseEnabled;
       baseValueInput.disabled = !settings.baseEnabled;
       baseValueInput.value = settings.baseText;
@@ -2522,6 +2590,7 @@
 
     function beginEdit(entry) {
       stopAutoConfirm();
+      clearResultPause();
       if (state !== "edit" || !editSnapshot) {
         editSnapshot = captureEditSnapshot();
       }
@@ -2588,6 +2657,7 @@
 
     function resetToSelect() {
       stopAutoConfirm();
+      clearResultPause();
       pendingEdit = null;
       editSnapshot = null;
       operator = null;
@@ -2638,6 +2708,7 @@
         input.value = "";
         clearExpression();
         clearResult();
+        clearResultPause();
       }
       resetButton.disabled = false;
       enterState("input");
@@ -2688,6 +2759,7 @@
           operands = [];
           clearExpression();
           clearResult();
+          clearResultPause();
           enterState("input");
           updateStateLabel(`已开始新的 ${operatorGlyphs[operator]} 计算，请继续输入`);
         }
@@ -2719,6 +2791,7 @@
 
     function showDivisionByZero(activeOperator) {
       stopAutoConfirm();
+      clearResultPause();
       pendingEdit = null;
       editSnapshot = null;
       operator = activeOperator;
@@ -2847,6 +2920,7 @@
       editDraftView.hidden = true;
       operandChips.textContent = "";
       enterState("result");
+      startResultPause();
       const baseHint = activeBase ? `，基数 ${activeBase.display}` : "";
       updateStateLabel(`计算完成${baseHint}；继续输入数字按回车或 = 即可沿用 ${operatorGlyphs[activeOperator]}`);
       input.focus();
@@ -2976,6 +3050,17 @@
       if (parseAutoEquals(autoEqualsInput.value) === null) {
         autoEqualsInput.value = String(settings.autoEquals);
       }
+    });
+    resultPauseInput.addEventListener("input", () => {
+      const value = parseResultPause(resultPauseInput.value);
+      if (value !== null) {
+        settings.resultPause = value;
+        saveSettings();
+        syncSettingsIndicator();
+      }
+    });
+    resultPauseInput.addEventListener("blur", () => {
+      resultPauseInput.value = String(settings.resultPause);
     });
     baseToggle.addEventListener("change", () => {
       settings.baseEnabled = baseToggle.checked;
