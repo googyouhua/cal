@@ -1,0 +1,15 @@
+{
+  "round": 1,
+  "model_profile": "astra-flash-3.8-v1",
+  "tree_sha256": "a6ef39391d880078b93bcbda970e004515b20b6a0f806f200ab0aa8a3ac1c4e9",
+  "tree_sha256_w": "e8fd12fb212710545c22de8770e090a4ec5aa0d255ef9f56a31434ad25163feb",
+  "verifier_sha256": "9d8882ae776fb7aad15ba5500a8b6c222ac5bc1976bf5bf00af3a78f2bdd1184",
+  "runner_sha256": "f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a",
+  "artifact_sha256": "620ab30da006d23def3b30456a669d8083fba868b7490dfee6645195d7eab0c9",
+  "fail_set": [],
+  "pass": true,
+  "era": 1,
+  "changed_paths": null,
+  "attempt_dir": "evidence/attempts/first-r1-20261121-123538-233",
+  "ts": "2026-11-21T12:51:58.024Z"
+}

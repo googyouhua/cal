@@ -1,0 +1,14 @@
+ROUND: 1
+ARTIFACT_SHA256: 620ab30da006d23def3b30456a669d8083fba868b7490dfee6645195d7eab0c9
+TREE_SHA256: a6ef39391d880078b93bcbda970e004515b20b6a0f806f200ab0aa8a3ac1c4e9
+VERIFIER_SHA256: 9d8882ae776fb7aad15ba5500a8b6c222ac5bc1976bf5bf00af3a78f2bdd1184
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 1
+ARTIFACT_SHA256: 620ab30da006d23def3b30456a669d8083fba868b7490dfee6645195d7eab0c9
+H1 PASS — ① log=["五"] played=["五"] count="1" count2="1"; ② log=["九","五"] played=["九","五"] count="2" count2="2"; ③ autoConfirm:0.2 log=["六"] played=["六"] count="1" count2="1"; ④ keyboard log=["七"] played=["七"]; ⑤ both-on keyTexts=["九","五"] hasResult=false count stable "2"→"2"
+H2 PASS — ① 0-9 texts=["零","一","二","三","四","五","六","七","八","九"] kinds all key; ② [5,.,.,7]=["五","点","七"]; ③ [5,退格,退格]=["五","退格"]; ④ [5,5]=["五","五"]; ⑤ ops=["加","减","乘","除"]; ⑥ [1,+,2,=] before=["一","加","二"] after=["一","加","二"] (= adds nothing); ⑦ [5,确认,退格,退格]=["五","退格"]; all kind="key" no "result"
+H3 PASS — ① [1,+,2,=] log=[{result 三}] result="3" no key; ② [9.5+9.2] result="18.7" last="十八点七" result-kind; ③ [2-5] result="-3" last="负三"; ④ [1/0] result="不能除以零" last="不能除以零"; ⑤ both-on keys=["一","加","二"] last={result 三}; all texts contain no "结果"
+H4 PASS — ① both-off count="0" log=[] played=[] result="3"; ② result-only kinds=["result"]; ③ keys-only quick span=106ms log=["一","二","三"] played=["一","二","三"]; ④ both-on quick span=172ms played keys=["一","加","一","九"] hasResult=false (log result "二" cancelled before play, correct queue behavior)
+H5 PASS — ① `tests/voice/run.mjs --json` exit=0 passed=75 failed=0 total=75; ② `tests/suite.mjs --json` exit=0 scenarios=18 checks=206 failed=0; ③ keys-only [1,+,2,=] result="3"; ④ enter text="确认"; ⑤ autoConfirm:0.2 [6] after 1s expr="6" log=["六"]
+HARD: PASS

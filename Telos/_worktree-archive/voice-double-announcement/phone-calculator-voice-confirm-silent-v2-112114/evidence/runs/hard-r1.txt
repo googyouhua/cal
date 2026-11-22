@@ -1,0 +1,15 @@
+ROUND: 1
+ARTIFACT_SHA256: a593d8b82bdb81eb394085da473d7e016f6497908795b66b3eea0d6cdf950368
+TREE_SHA256: b17eb07909165278f93bab05f75f91699730df3e11e2a3d45dabc935761773a6
+VERIFIER_SHA256: c1edc3735fa4e363f617956b20e2b451cb271b3e0554cb52cb56a8fb075caf01
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 1
+ARTIFACT_SHA256: a593d8b82bdb81eb394085da473d7e016f6497908795b66b3eea0d6cdf950368
+VERIFIER_SHA256: c1edc3735fa4e363f617956b20e2b451cb271b3e0554cb52cb56a8fb075caf01
+H1 PASS — H1-1 [try1={"log":["五"],"played":["五"],"count":"1","count2":"1"}] ; H1-2 [try1={"log":["九","五"],"played":["九","五"],"count":"2","count2":"2"}] ; H1-3 [try1={"log":["六"],"played":["六"],"count":"1","count2":"1"}] ; H1-4 [try1={"log":["七"],"played":["七"],"count":"1","count2":"1"}] ; H1-5 [try1={"keyTexts":["九","五"],"logKinds":["key","key"],"playedKinds":["key","key"],"count":"2","count2":"2"}]
+H2 PASS — H2-1 [try1={"log":["零","一","二","三","四","五","六","七","八","九"],"kinds":["key","key","key","key","key","key","key","key","key","key"],"count":"10"}] ; H2-2 [try1={"log":["五","点","七"],"kinds":["key","key","key"]}] ; H2-3 [try1={"log":["五","退格"],"kinds":["key","key"]}] ; H2-4 [try1={"log":["五","五"],"kinds":["key","key"]}] ; H2-5 [try1={"log":["加","减","乘","除"],"kinds":["key","key","key","key"]}] ; H2-6 [try1={"before":["一","加","二"],"after":["一","加","二"],"count":"3"}] ; H2-7 [try1={"log":["五","退格"],"kinds":["key","key"]}]
+H3 PASS — H3-1 [try1={"log":["三"],"kinds":["result"],"result":"3"}] ; H3-2 [try1={"log":["十八点七"],"kinds":["result"],"result":"18.7"}] ; H3-3 [try1={"log":["负三"],"kinds":["result"],"result":"-3"}] ; H3-4 [try1={"log":["不能除以零"],"kinds":["result"],"result":"不能除以零"}] ; H3-5 [try1={"log":["一","加","二","三"],"kinds":["key","key","key","result"]}] ; H3-6-noRESULT-word [log={"log":["三"]}]
+H4 PASS — H4-1 [try1={"count":"0","log":[]}] ; H4-2 [try1={"kinds":["result"],"log":["三"]}] ; H4-3 [try1={"spanMs":109,"played":["一","二","三"],"log":["一","二","三"]}] ; H4-4 [try1={"keyTexts":["一","加","一","九"],"hasResult":false,"playedKinds":["key","key","key","key"]}]
+H5 PASS — H5-1-voice [exit=0 passed=75 failed=0 ms=27416] ; H5-2-suite [exit=0 scenarios=18 checks=206 failed=0 ms=15753 rawKeys=artifact,results] ; H5-3 [try1={"result":"3"}] ; H5-4 [try1={"enterText":"确认"}] ; H5-5 [try1={"expression":"6"}]
+HARD: PASS

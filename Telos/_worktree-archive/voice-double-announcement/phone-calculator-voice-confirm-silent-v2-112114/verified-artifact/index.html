@@ -1,0 +1,3020 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>手机计算器</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --ink: #f8fafc;
+    --muted: #a5b4cf;
+    --panel: rgba(22, 32, 51, 0.92);
+    --panel-edge: rgba(148, 163, 184, 0.22);
+    --field: #0d1524;
+    --accent: #f59e0b;
+    --accent-ink: #241600;
+    --danger: #fecdd3;
+    --danger-bg: rgba(190, 24, 93, 0.22);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+  }
+
+  body {
+    min-width: 0;
+    overflow-x: hidden;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(245, 158, 11, 0.15), transparent 34%),
+      radial-gradient(circle at 90% 100%, rgba(56, 189, 248, 0.13), transparent 38%),
+      #080d17;
+    color: var(--ink);
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+
+  .app {
+    position: relative;
+    width: min(100%, 460px);
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: 6px 10px max(12px, env(safe-area-inset-bottom));
+  }
+
+  .app-header {
+    margin: 0 2px 6px;
+    padding-right: 52px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(20px, 6vw, 24px);
+    line-height: 1.12;
+    letter-spacing: 0.01em;
+  }
+
+  .subtitle {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .panel {
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid var(--panel-edge);
+    border-radius: 18px;
+    background: var(--panel);
+    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(12px);
+  }
+
+  .state-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 0;
+    min-height: 44px;
+    margin-bottom: 6px;
+  }
+
+  .state-label {
+    min-width: 0;
+    max-height: 2.7em;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  button {
+    min-width: 0;
+    min-height: 48px;
+    border: 1px solid transparent;
+    border-radius: 13px;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  button:focus-visible,
+  input:focus-visible {
+    outline: 3px solid #fbbf24;
+    outline-offset: 2px;
+  }
+
+  button:disabled,
+  input:disabled {
+    cursor: default;
+    opacity: 0.52;
+  }
+
+  .reset-button {
+    flex: 0 0 auto;
+    width: 96px;
+    min-height: 44px;
+    padding: 0 8px;
+    border-color: var(--panel-edge);
+    background: #18243a;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 650;
+  }
+
+  .op-picker {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .op-picker[hidden] {
+    display: none;
+  }
+
+  .op-button {
+    width: 100%;
+    min-height: 44px;
+    border-color: rgba(251, 191, 36, 0.25);
+    background: linear-gradient(180deg, #26344d, #1c293f);
+    color: #fde68a;
+    font-size: 22px;
+    font-weight: 750;
+    line-height: 1;
+  }
+
+  .op-button[aria-pressed="true"] {
+    border-color: #38bdf8;
+    background: linear-gradient(180deg, #23466a, #172d47);
+    color: #f8fafc;
+    box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.5);
+  }
+
+  .calc-input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 12px;
+    background: var(--field);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.25;
+    cursor: default;
+  }
+
+  .calc-input::placeholder {
+    color: #72819b;
+    font-size: 15px;
+  }
+
+  .hint {
+    display: none;
+  }
+
+  .display {
+    min-width: 0;
+    margin-top: 6px;
+    padding: 6px 8px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 13px;
+    background: rgba(7, 12, 22, 0.76);
+  }
+
+  .display-label {
+    display: none;
+  }
+
+  .expression {
+    min-height: 20px;
+    overflow-wrap: anywhere;
+    color: #dbeafe;
+    font-size: 15px;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
+  .expression:empty::before {
+    content: "算式会显示在这里";
+    color: #8291aa;
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .result {
+    min-height: 34px;
+    margin-top: 2px;
+    overflow-wrap: anywhere;
+    color: var(--accent);
+    font-size: clamp(26px, 8vw, 34px);
+    font-weight: 760;
+    line-height: 1.05;
+    word-break: break-word;
+  }
+
+  .result[data-error="true"] {
+    min-height: 34px;
+    padding: 5px 8px;
+    border: 1px solid rgba(251, 113, 133, 0.32);
+    border-radius: 9px;
+    background: var(--danger-bg);
+    color: var(--danger);
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .keypad {
+    min-width: 0;
+    margin-top: 6px;
+    padding: 6px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 14px;
+    background: rgba(7, 12, 22, 0.42);
+  }
+
+  .keypad-pad {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-areas:
+      "d7 d8 d9 back"
+      "d4 d5 d6 enter"
+      "d1 d2 d3 enter"
+      "d0 dot eq eq";
+    grid-auto-rows: minmax(48px, auto);
+    gap: 6px;
+    min-width: 0;
+    margin-top: 6px;
+  }
+
+  .key {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 4px;
+    border-color: rgba(148, 163, 184, 0.24);
+    background: linear-gradient(180deg, #202d44, #172236);
+    color: var(--ink);
+    font-size: 21px;
+    font-weight: 750;
+    line-height: 1;
+  }
+
+  .key[data-key="0"] { grid-area: d0; }
+  .key[data-key="1"] { grid-area: d1; }
+  .key[data-key="2"] { grid-area: d2; }
+  .key[data-key="3"] { grid-area: d3; }
+  .key[data-key="4"] { grid-area: d4; }
+  .key[data-key="5"] { grid-area: d5; }
+  .key[data-key="6"] { grid-area: d6; }
+  .key[data-key="7"] { grid-area: d7; }
+  .key[data-key="8"] { grid-area: d8; }
+  .key[data-key="9"] { grid-area: d9; }
+  .key[data-key="."] { grid-area: dot; }
+
+  .key[data-key="backspace"] {
+    grid-area: back;
+    color: #fecdd3;
+    font-size: 16px;
+  }
+
+  .key[data-key="enter"] {
+    grid-area: enter;
+    border-color: rgba(56, 189, 248, 0.3);
+    background: linear-gradient(180deg, #1e3a5f, #14263f);
+    color: #bae6fd;
+    font-size: 16px;
+  }
+
+  .key[data-key="equals"] {
+    grid-area: eq;
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: var(--accent-ink);
+    font-size: 28px;
+    font-weight: 800;
+  }
+
+  .edit-draft {
+    min-width: 0;
+    margin-top: 6px;
+    padding: 8px;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 16px;
+    background: rgba(245, 158, 11, 0.08);
+  }
+
+  .edit-draft[hidden] {
+    display: none;
+  }
+
+  .edit-draft-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: #fde68a;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .edit-operator {
+    display: inline-grid;
+    place-items: center;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0 8px;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    border-radius: 9px;
+    background: rgba(245, 158, 11, 0.16);
+    color: #fef3c7;
+    font-size: 20px;
+  }
+
+  .edit-cancel {
+    flex: 0 0 auto;
+    min-width: 64px;
+    min-height: 44px;
+    padding: 0 14px;
+    border-color: rgba(251, 113, 133, 0.32);
+    background: rgba(190, 24, 93, 0.2);
+    color: #fecdd3;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .operand-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+    margin-top: 10px;
+  }
+
+  .operand-chips:empty::after {
+    content: "暂无可计算数字";
+    color: #c7b68f;
+    font-size: 13px;
+    line-height: 44px;
+  }
+
+  .operand-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    max-width: 100%;
+    padding-left: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.26);
+    border-radius: 12px;
+    background: rgba(13, 21, 36, 0.92);
+  }
+
+  .operand-input {
+    width: 76px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px 10px;
+    border: 1px solid rgba(148, 163, 184, 0.42);
+    border-radius: 9px;
+    background: #111c2e;
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .operand-remove {
+    flex: 0 0 auto;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-color: rgba(251, 113, 133, 0.28);
+    background: rgba(190, 24, 93, 0.2);
+    color: #fecdd3;
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .history {
+    min-width: 0;
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid var(--panel-edge);
+    border-radius: 20px;
+    background: var(--panel);
+  }
+
+  .history-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 0;
+    margin-bottom: 10px;
+  }
+
+  .history-title {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.3;
+  }
+
+  .history-note {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .history-list {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .history-empty {
+    margin: 0;
+    color: #8291aa;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .history-item {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 14px;
+    background: rgba(7, 12, 22, 0.58);
+  }
+
+  .history-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 10px;
+    min-width: 0;
+  }
+
+  .history-expression {
+    flex: 1 1 130px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: #dbeafe;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .history-result {
+    flex: 0 0 auto;
+    overflow-wrap: anywhere;
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 750;
+    line-height: 1.3;
+  }
+
+  .history-edit {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 8px;
+    border-color: rgba(251, 191, 36, 0.24);
+    background: #1c293f;
+    color: #fde68a;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .settings-toggle {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    border: 1px solid var(--panel-edge);
+    border-radius: 13px;
+    background: #18243a;
+    color: #fde68a;
+    font-size: 22px;
+    line-height: 1;
+    z-index: 30;
+  }
+
+  .settings-toggle:active {
+    transform: translateY(1px);
+  }
+
+  .settings-indicator {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px #18243a;
+  }
+
+  .settings-summary {
+    position: absolute;
+    top: 16px;
+    right: 62px;
+    z-index: 29;
+    padding: 3px 8px;
+    border: 1px solid rgba(251, 191, 36, 0.34);
+    border-radius: 999px;
+    background: rgba(24, 36, 58, 0.94);
+    color: #fde68a;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+
+  .settings-summary[data-voice-availability]::before {
+    display: inline-block;
+    margin-right: 5px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .settings-summary[data-voice-availability="ready"]::before {
+    content: "✓";
+    color: #34d399;
+  }
+
+  .settings-summary[data-voice-availability="loading"]::before {
+    content: "…";
+    color: #fbbf24;
+  }
+
+  .settings-summary[data-voice-availability="error"]::before {
+    content: "!";
+    color: #f87171;
+  }
+
+  .status-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 106px;
+    height: 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .state-row:has(.auto-confirm-feedback:not([hidden])) .state-label,
+  .state-row:has(.undo-hint:not([hidden])) .state-label {
+    visibility: hidden;
+  }
+
+  .state-row:has(.auto-confirm-feedback:not([hidden])) .undo-hint {
+    display: none;
+  }
+
+  .auto-confirm-feedback {
+    display: grid;
+    gap: 3px;
+    width: 100%;
+    min-width: 0;
+    max-height: 44px;
+    padding: 3px 6px;
+    overflow: hidden;
+    border: 1px solid rgba(251, 191, 36, 0.28);
+    border-radius: 9px;
+    background: rgba(9, 15, 27, 0.96);
+  }
+
+  .auto-confirm-feedback[hidden] {
+    display: none;
+  }
+
+  .auto-confirm-progress {
+    position: relative;
+    height: 2px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: rgba(148, 163, 184, 0.28);
+  }
+
+  .auto-confirm-progress::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    transform-origin: left center;
+    transform: scaleX(1);
+  }
+
+  .auto-confirm-progress[data-active="true"]::before {
+    animation: auto-confirm-drain var(--auto-confirm-duration, 1s) linear forwards;
+  }
+
+  .auto-confirm-countdown {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: #fde68a;
+    font-size: 12px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.35;
+  }
+
+  .undo-hint {
+    width: 100%;
+    max-height: 44px;
+    margin: 0;
+    padding: 3px 6px;
+    overflow: hidden;
+    border: 1px solid rgba(251, 191, 36, 0.34);
+    border-radius: 9px;
+    background: rgba(28, 22, 8, 0.97);
+    color: #fef3c7;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  @keyframes auto-confirm-drain {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .auto-confirm-progress[data-active="true"]::before {
+      animation: none;
+    }
+  }
+
+  .base-marker {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    margin-bottom: 3px;
+    padding: 0 8px;
+    border: 1px solid rgba(245, 158, 11, 0.42);
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.14);
+    color: #fde68a;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .settings-panel {
+    position: fixed;
+    inset: auto;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    width: min(calc(100vw - 16px), 320px);
+    max-width: min(calc(100vw - 16px), 320px);
+    max-height: calc(100dvh - 64px);
+    overflow-y: auto;
+    padding: 14px;
+    border: 1px solid var(--panel-edge);
+    border-radius: 16px;
+    background: #101a2c;
+    color: var(--ink);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+    z-index: 50;
+  }
+
+  .settings-panel > * {
+    flex: 0 0 auto;
+  }
+
+  .settings-panel:not([open]) {
+    display: none;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .settings-title {
+    order: 0;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .settings-subtitle {
+    order: 1;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .voice-settings {
+    order: 2;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .settings-field:not(.voice-settings) {
+    order: 3;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .settings-done {
+    order: 4;
+  }
+
+  .settings-panel::backdrop {
+    background: rgba(3, 7, 15, 0.62);
+  }
+
+  .settings-title {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  .settings-subtitle {
+    margin: 4px 0 14px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .settings-field {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+    margin: 0 0 14px;
+  }
+
+  .settings-label {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 650;
+  }
+
+  .settings-select,
+  .settings-input {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid rgba(148, 163, 184, 0.34);
+    border-radius: 11px;
+    background: var(--field);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.25;
+  }
+
+  .settings-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  .settings-checkbox {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    margin: 0;
+    border: 1px solid rgba(148, 163, 184, 0.42);
+    border-radius: 11px;
+    background: var(--field);
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .settings-checkbox:checked {
+    border-color: var(--accent);
+    background: rgba(245, 158, 11, 0.22);
+  }
+
+  .settings-checkbox:checked::after {
+    content: "✓";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #fde68a;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .settings-hint {
+    color: #8291aa;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .settings-done {
+    width: 100%;
+    min-height: 44px;
+    border-color: rgba(251, 191, 36, 0.35);
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: var(--accent-ink);
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .voice-settings {
+    padding-top: 12px;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+  }
+
+  .voice-group-label {
+    color: #fde68a;
+    font-size: 14px;
+    font-weight: 750;
+  }
+
+  .voice-lead-hint {
+    padding: 7px 9px;
+    border: 1px solid rgba(251, 191, 36, 0.26);
+    border-radius: 10px;
+    background: rgba(251, 191, 36, 0.08);
+    color: #fde68a;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+
+  .voice-status {
+    min-width: 0;
+    padding: 8px 10px;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 10px;
+    background: rgba(9, 15, 27, 0.72);
+    color: #dbeafe;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .voice-status[data-state="loading"],
+  .voice-status[data-state="preparing"] {
+    border-color: rgba(251, 191, 36, 0.5);
+    background: rgba(251, 191, 36, 0.1);
+  }
+
+  .voice-status[data-state="ready"] {
+    border-color: rgba(52, 211, 153, 0.5);
+    background: rgba(16, 185, 129, 0.1);
+  }
+
+  .voice-status[data-state="error"] {
+    border-color: rgba(248, 113, 113, 0.55);
+    background: rgba(239, 68, 68, 0.1);
+    color: #fecaca;
+  }
+
+  .voice-status[hidden] {
+    display: none;
+  }
+
+  .voice-error-details {
+    margin-top: 6px;
+    color: #93a3b8;
+    font-size: 11px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+
+  .voice-error-details summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    cursor: pointer;
+  }
+
+  .voice-progress {
+    position: relative;
+    height: 14px;
+    min-height: 14px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.24);
+  }
+
+  .voice-progress[hidden] {
+    display: none;
+  }
+
+  .voice-progress > span {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    transition: width 120ms linear;
+  }
+
+  .voice-progress-label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #f8fafc;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 2px rgba(3, 7, 15, 0.9);
+  }
+
+  .nowrap {
+    white-space: nowrap;
+  }
+
+  .voice-progress[data-state="ready"] > span {
+    background: linear-gradient(90deg, #34d399, #10b981);
+  }
+
+  .voice-progress[data-state="error"] > span {
+    background: linear-gradient(90deg, #f87171, #ef4444);
+  }
+
+  .voice-retry {
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid rgba(251, 191, 36, 0.42);
+    border-radius: 11px;
+    background: #1c293f;
+    color: #fde68a;
+    font-size: 15px;
+    font-weight: 750;
+    cursor: pointer;
+  }
+
+  .voice-retry[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 350px) {
+    .app {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    .panel {
+      padding: 10px;
+    }
+
+    .op-picker {
+      gap: 7px;
+    }
+  }
+</style>
+</head>
+<body>
+<main class="app" data-state="select">
+  <span class="settings-summary" data-testid="settings-summary" hidden>已自定义</span>
+  <button class="settings-toggle" type="button" data-testid="settings-toggle" aria-label="打开统分设置" aria-haspopup="dialog" aria-expanded="false">
+    <span aria-hidden="true">⚙</span>
+    <span class="settings-indicator" data-testid="settings-indicator" hidden aria-hidden="true"></span>
+  </button>
+
+  <header class="app-header">
+    <h1>手机计算器</h1>
+    <p class="subtitle">选运算符，用屏幕数字键盘输入；= 后沿用运算符</p>
+  </header>
+
+  <section class="panel" aria-label="计算器">
+    <div class="state-row">
+      <span class="state-label" id="state-label" aria-live="polite">请选择运算类型</span>
+      <div class="status-overlay">
+        <div class="auto-confirm-feedback" data-testid="auto-confirm-feedback" data-active="false" hidden>
+          <div class="auto-confirm-progress" data-testid="auto-confirm-progress" data-active="false" aria-hidden="true"></div>
+          <div class="auto-confirm-countdown" data-testid="auto-confirm-countdown"></div>
+        </div>
+        <p class="undo-hint" data-testid="undo-hint" hidden>输错了？按“退格”可撤回上一笔。</p>
+      </div>
+      <button class="reset-button" type="button" data-testid="key-op" disabled>运算类型</button>
+    </div>
+
+    <input
+      class="calc-input"
+      id="calc-input"
+      data-testid="calc-input"
+      type="text"
+      inputmode="none"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder="用下方数字键盘输入"
+      aria-describedby="calc-hint"
+      aria-label="数字显示"
+      readonly
+    >
+    <p class="hint" id="calc-hint">用屏幕数字键盘输入；按“确认”收下数字，按 = 计算。</p>
+
+    <div class="display" aria-label="计算过程">
+      <div class="display-label">算式</div>
+      <div class="base-marker" data-testid="base-marker" hidden></div>
+      <div class="expression" data-testid="expression" aria-live="polite"></div>
+      <div class="display-label">结果</div>
+      <div class="result" data-testid="result" aria-live="polite"></div>
+    </div>
+
+    <section class="keypad" data-testid="keypad" aria-label="数字键盘">
+      <div class="op-picker" data-testid="op-picker" role="group" aria-label="选择运算类型">
+        <button class="op-button" type="button" data-op="+" aria-label="加法">+</button>
+        <button class="op-button" type="button" data-op="-" aria-label="减法">-</button>
+        <button class="op-button" type="button" data-op="*" aria-label="乘法">*</button>
+        <button class="op-button" type="button" data-op="/" aria-label="除法">/</button>
+      </div>
+
+      <div class="keypad-pad">
+        <button class="key" type="button" data-key="7" aria-label="数字 7">7</button>
+        <button class="key" type="button" data-key="8" aria-label="数字 8">8</button>
+        <button class="key" type="button" data-key="9" aria-label="数字 9">9</button>
+        <button class="key" type="button" data-key="backspace" aria-label="退格">退格</button>
+        <button class="key" type="button" data-key="4" aria-label="数字 4">4</button>
+        <button class="key" type="button" data-key="5" aria-label="数字 5">5</button>
+        <button class="key" type="button" data-key="6" aria-label="数字 6">6</button>
+        <button class="key" type="button" data-key="enter" data-testid="enter" aria-label="确认当前输入（回车）">确认</button>
+        <button class="key" type="button" data-key="1" aria-label="数字 1">1</button>
+        <button class="key" type="button" data-key="2" aria-label="数字 2">2</button>
+        <button class="key" type="button" data-key="3" aria-label="数字 3">3</button>
+        <button class="key" type="button" data-key="0" aria-label="数字 0">0</button>
+        <button class="key" type="button" data-key="." aria-label="小数点">.</button>
+        <button class="key" type="button" data-key="equals" data-testid="key-equals" aria-label="等于">=</button>
+      </div>
+    </section>
+
+    <section class="edit-draft" data-testid="edit-draft" aria-label="编辑草稿" hidden>
+      <div class="edit-draft-head">
+        <span>编辑草稿</span>
+        <span class="edit-operator" data-testid="edit-operator" aria-hidden="true">+</span>
+        <span class="base-marker" data-testid="edit-base-marker" hidden></span>
+        <span id="edit-hint">换运算符不会清空数字；按“确认”追加数字。</span>
+        <button class="edit-cancel" type="button" data-testid="edit-cancel" aria-label="关闭编辑">关闭</button>
+      </div>
+      <div class="operand-chips" data-testid="operand-chips"></div>
+    </section>
+  </section>
+
+  <section class="history" data-testid="history" aria-label="计算历史">
+    <div class="history-head">
+      <h2 class="history-title">计算历史</h2>
+      <span class="history-note">仅当前页面</span>
+    </div>
+    <div class="history-list" data-testid="history-list"></div>
+    <p class="history-empty" data-testid="history-empty">还没有计算记录。</p>
+  </section>
+
+  <dialog class="settings-panel" data-testid="settings-panel" aria-label="统分设置">
+    <h2 class="settings-title">统分设置</h2>
+    <p class="settings-subtitle">输入停顿后自动确认；启用基数后每笔成绩自动带上同一个基数。</p>
+
+    <div class="settings-field">
+      <label class="settings-label" for="settings-auto-confirm">自动确认停顿</label>
+      <select class="settings-select" id="settings-auto-confirm" data-testid="settings-auto-confirm" aria-label="自动确认秒数"></select>
+    </div>
+
+    <div class="settings-field">
+      <label class="settings-label" for="settings-auto-equals">自动按等号</label>
+      <input
+        class="settings-input"
+        id="settings-auto-equals"
+        data-testid="settings-auto-equals"
+        type="text"
+        inputmode="numeric"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="自动按等号笔数"
+        value="0"
+      >
+      <span class="settings-hint" data-testid="auto-equals-hint">输入满 N 笔后自动按 =；0 或留空为关闭。</span>
+    </div>
+
+    <div class="settings-field">
+      <label class="settings-toggle-row" for="settings-base-toggle">
+        <input class="settings-checkbox" id="settings-base-toggle" type="checkbox" data-testid="settings-base-toggle">
+        <span>启用基数</span>
+      </label>
+      <input
+        class="settings-input"
+        id="settings-base-value"
+        data-testid="settings-base-value"
+        type="text"
+        inputmode="decimal"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="基数数值"
+        value="0"
+        disabled
+      >
+      <span class="settings-hint">基数作为第一笔数字，可为 0、负数或小数，不计入除数。</span>
+    </div>
+
+    <div class="settings-field">
+      <label class="settings-toggle-row" for="settings-haptics">
+        <input class="settings-checkbox" id="settings-haptics" type="checkbox" data-testid="settings-haptics" checked>
+        <span>按键震动</span>
+      </label>
+      <span class="settings-hint">每次按下屏幕计算键时轻微震动一次；关闭后完全静默。</span>
+    </div>
+
+    <div class="settings-field voice-settings" data-testid="settings-voice-group">
+      <span class="voice-group-label">语音播报</span>
+      <div class="voice-status" data-testid="voice-status" hidden aria-live="polite">
+        <span data-testid="voice-status-text"></span>
+        <details class="voice-error-details" data-testid="voice-error-details" hidden>
+          <summary>技术详情</summary>
+          <span data-testid="voice-error-detail"></span>
+        </details>
+      </div>
+      <div class="voice-progress" data-testid="voice-progress" data-state="idle" hidden aria-hidden="true">
+        <span></span>
+        <em class="voice-progress-label" data-testid="voice-progress-label"></em>
+      </div>
+      <button class="voice-retry" type="button" data-testid="voice-retry" hidden>重试加载语音</button>
+      <p class="settings-hint voice-lead-hint" data-testid="voice-hint">首次开启约需下载 <span class="nowrap">96MB</span> 离线语音资源。<span class="nowrap">手机静音</span>或媒体音量为 0 时不会出声；<span class="nowrap">模型仅限非商用</span>。</p>
+      <label class="settings-toggle-row" for="settings-voice-keys">
+        <input class="settings-checkbox" id="settings-voice-keys" type="checkbox" data-testid="settings-voice-keys">
+        <span>按键播报</span>
+      </label>
+      <label class="settings-toggle-row" for="settings-voice-result">
+        <input class="settings-checkbox" id="settings-voice-result" type="checkbox" data-testid="settings-voice-result">
+        <span>结果播报</span>
+      </label>
+    </div>
+
+    <button class="settings-done" type="button" data-testid="settings-done">完成</button>
+  </dialog>
+</main>
+
+<script>
+  (() => {
+    "use strict";
+
+    const app = document.querySelector(".app");
+    const picker = document.querySelector('[data-testid="op-picker"]');
+    const input = document.querySelector('[data-testid="calc-input"]');
+    const expression = document.querySelector('[data-testid="expression"]');
+    const result = document.querySelector('[data-testid="result"]');
+    const equalsButton = document.querySelector('[data-testid="key-equals"]');
+    const resetButton = document.querySelector('[data-testid="key-op"]');
+    const keypad = document.querySelector('[data-testid="keypad"]');
+    const keyButtons = Array.from(keypad.querySelectorAll('[data-key]'));
+    const opButtons = Array.from(picker.querySelectorAll('[data-op]'));
+    const stateLabel = document.querySelector("#state-label");
+    const historyList = document.querySelector('[data-testid="history-list"]');
+    const historyEmpty = document.querySelector('[data-testid="history-empty"]');
+    const editDraftView = document.querySelector('[data-testid="edit-draft"]');
+    const editOperatorView = document.querySelector('[data-testid="edit-operator"]');
+    const operandChips = document.querySelector('[data-testid="operand-chips"]');
+    const editCancelButton = document.querySelector('[data-testid="edit-cancel"]');
+    const settingsToggle = document.querySelector('[data-testid="settings-toggle"]');
+    const settingsIndicator = document.querySelector('[data-testid="settings-indicator"]');
+    const settingsSummary = document.querySelector('[data-testid="settings-summary"]');
+    const settingsPanel = document.querySelector('[data-testid="settings-panel"]');
+    const autoConfirmSelect = document.querySelector('[data-testid="settings-auto-confirm"]');
+    const autoEqualsInput = document.querySelector('[data-testid="settings-auto-equals"]');
+    const autoEqualsHint = document.querySelector('[data-testid="auto-equals-hint"]');
+    const baseToggle = document.querySelector('[data-testid="settings-base-toggle"]');
+    const baseValueInput = document.querySelector('[data-testid="settings-base-value"]');
+    const hapticsToggle = document.querySelector('[data-testid="settings-haptics"]');
+    const voiceGroup = document.querySelector('[data-testid="settings-voice-group"]');
+    const voiceKeysToggle = document.querySelector('[data-testid="settings-voice-keys"]');
+    const voiceResultToggle = document.querySelector('[data-testid="settings-voice-result"]');
+    const voiceHint = document.querySelector('[data-testid="voice-hint"]');
+    const voiceStatus = document.querySelector('[data-testid="voice-status"]');
+    const voiceStatusText = document.querySelector('[data-testid="voice-status-text"]');
+    const voiceErrorDetails = document.querySelector('[data-testid="voice-error-details"]');
+    const voiceErrorDetail = document.querySelector('[data-testid="voice-error-detail"]');
+    const voiceProgress = document.querySelector('[data-testid="voice-progress"]');
+    const voiceProgressFill = voiceProgress.querySelector("span");
+    const voiceProgressLabel = document.querySelector('[data-testid="voice-progress-label"]');
+    const voiceRetry = document.querySelector('[data-testid="voice-retry"]');
+    const settingsDone = document.querySelector('[data-testid="settings-done"]');
+    const autoConfirmFeedback = document.querySelector('[data-testid="auto-confirm-feedback"]');
+    const autoConfirmProgress = document.querySelector('[data-testid="auto-confirm-progress"]');
+    const autoConfirmCountdown = document.querySelector('[data-testid="auto-confirm-countdown"]');
+    const undoHint = document.querySelector('[data-testid="undo-hint"]');
+    const baseMarkerView = document.querySelector('[data-testid="base-marker"]');
+    const editBaseMarkerView = document.querySelector('[data-testid="edit-base-marker"]');
+
+    const operatorGlyphs = {
+      "+": "+",
+      "-": "-",
+      "*": "*",
+      "/": "/"
+    };
+
+    let state = "select";
+    let operator = null;
+    let operands = [];
+    let history = [];
+    let editDraft = null;
+    let editSnapshot = null;
+    let pendingEdit = null;
+    let inputStartedFromResult = false;
+
+    const SETTINGS_KEY = "cal-phone.settings.v1";
+    const AUTO_CONFIRM_STEPS = [0, 0.2, 0.4, ...Array.from({ length: 20 }, (_, index) => (index + 1) / 2)];
+    const settings = {
+      autoConfirm: 0,
+      autoEquals: 0,
+      baseEnabled: false,
+      baseText: "0",
+      haptics: true,
+      voiceKeys: false,
+      voiceResult: false
+    };
+    let autoConfirmTimer = null;
+    let autoConfirmCountdownTimer = null;
+    let autoConfirmDeadline = 0;
+
+    const VOICE_HINT_HTTP = '首次开启约需下载 <span class="nowrap">96MB</span> 离线语音资源。<span class="nowrap">手机静音</span>或媒体音量为 0 时不会出声；<span class="nowrap">模型仅限非商用</span>。';
+    const VOICE_HINT_FILE = "语音播报需要 http(s) 网页地址；请改用网页地址打开（本地 file:// 下已禁用）。";
+    const voiceSupported = typeof window !== "undefined"
+      && window.location.protocol !== "file:"
+      && typeof WebAssembly !== "undefined"
+      && Boolean(window.AudioContext || window.webkitAudioContext);
+
+    const KEY_SPEECH = {
+      "0": "零",
+      "1": "一",
+      "2": "二",
+      "3": "三",
+      "4": "四",
+      "5": "五",
+      "6": "六",
+      "7": "七",
+      "8": "八",
+      "9": "九",
+      ".": "点",
+      "backspace": "退格",
+      "enter": "确认",
+      "+": "加",
+      "-": "减",
+      "*": "乘",
+      "/": "除"
+    };
+    const VOICE_PREWARM_WORDS = [
+      "零", "一", "二", "三", "四", "五", "六", "七", "八", "九",
+      "点", "退格", "确认", "加", "减", "乘", "除", "不能除以零"
+    ];
+    const VOICE_MODEL_FILES = [
+      { url: "voice/sherpa-tts/matcha-zh-baker.onnx", name: "model.onnx", size: 75624188 },
+      { url: "voice/sherpa-tts/hifigan_v2.onnx", name: "vocoder.onnx", size: 3749714 },
+      { url: "voice/sherpa-tts/lexicon.txt", name: "lexicon.txt", size: 1363705 },
+      { url: "voice/sherpa-tts/tokens.txt", name: "tokens.txt", size: 19591 }
+    ];
+
+    const voice = {
+      state: "idle",
+      progress: 0,
+      message: "",
+      error: "",
+      enginePromise: null,
+      tts: null,
+      audioContext: null,
+      source: null,
+      cache: new Map(),
+      queue: [],
+      running: false,
+      log: [],
+      played: [],
+      count: 0,
+      lastText: "",
+      lastKind: "",
+      lastMs: 0
+    };
+
+    function enterState(nextState) {
+      state = nextState;
+      app.dataset.state = nextState;
+      resetButton.disabled = nextState === "select";
+      syncKeypad();
+      updateBaseMarker();
+      updateUndoHint();
+    }
+
+    function syncOperatorAttribute() {
+      if (operator) {
+        app.dataset.operator = operator;
+        resetButton.textContent = `运算：${operatorGlyphs[operator]}`;
+        resetButton.setAttribute("aria-label", `当前运算 ${operatorGlyphs[operator]}，点击重选`);
+      } else {
+        delete app.dataset.operator;
+        resetButton.textContent = "运算类型";
+        resetButton.setAttribute("aria-label", "重选运算类型");
+      }
+      opButtons.forEach((button) => {
+        const selected = Boolean(operator) && button.getAttribute("data-op") === operator;
+        button.setAttribute("aria-pressed", selected ? "true" : "false");
+      });
+    }
+
+    function syncKeypad() {
+      keyButtons.forEach((button) => {
+        button.disabled = false;
+      });
+      opButtons.forEach((button) => {
+        button.disabled = false;
+      });
+    }
+
+    /**
+     * 数字 → 中文读法（浏览器语音播报用）。
+     * 来源：/ws/voice/src/numbers.js，原样移植；Matcha 模型把阿拉伯数字当 OOV，
+     * 结果必须先转成中文再合成。
+     */
+    const NUMBER_DIGITS = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+    const NUMBER_SMALL_UNITS = ["", "十", "百", "千"];
+    const NUMBER_GROUP_UNITS = ["", "万", "亿", "万亿", "亿亿"];
+
+    function readNumberGroup(digits) {
+      const text = digits.replace(/^0+/, "");
+      if (!text) {
+        return "";
+      }
+      let out = "";
+      let pendingZero = false;
+      for (let index = 0; index < text.length; index += 1) {
+        const digit = Number(text[index]);
+        const unit = NUMBER_SMALL_UNITS[text.length - 1 - index];
+        if (digit === 0) {
+          if (out) {
+            pendingZero = true;
+          }
+          continue;
+        }
+        if (pendingZero && out) {
+          out += "零";
+        }
+        pendingZero = false;
+        out += NUMBER_DIGITS[digit] + unit;
+      }
+      return out;
+    }
+
+    function readNumberInteger(digits) {
+      if (digits === "0") {
+        return "零";
+      }
+      if (digits.length > 20) {
+        return [...digits].map((digit) => NUMBER_DIGITS[Number(digit)]).join("");
+      }
+      const groups = [];
+      for (let end = digits.length; end > 0; end -= 4) {
+        groups.unshift(digits.slice(Math.max(0, end - 4), end));
+      }
+      let out = "";
+      let needZero = false;
+      const topUnit = groups.length - 1;
+      for (let index = 0; index < groups.length; index += 1) {
+        const group = groups[index];
+        if (Number(group) === 0) {
+          if (out) {
+            needZero = true;
+          }
+          continue;
+        }
+        if (out && (needZero || group[0] === "0")) {
+          out += "零";
+        }
+        out += readNumberGroup(group) + NUMBER_GROUP_UNITS[topUnit - index];
+        needZero = false;
+      }
+      if (out.startsWith("一十")) {
+        out = out.slice(1);
+      }
+      return out;
+    }
+
+    function numberToChineseReading(input) {
+      const raw = String(input ?? "").normalize("NFKC").trim();
+      if (!raw) {
+        return "";
+      }
+      const normalized = raw.replace(/[,\s]/g, "").replace(/^\+/, "");
+      const match = normalized.match(/^(-?)(\d*)(?:\.(\d*))?$/);
+      if (!match) {
+        return "";
+      }
+      const negative = match[1] === "-";
+      let integer = match[2] ?? "";
+      let decimal = match[3] ?? "";
+      if (!integer && !decimal) {
+        return "";
+      }
+      integer = integer.replace(/^0+(?=\d)/, "") || "0";
+      decimal = decimal.replace(/0+$/, "");
+      const isZero = integer === "0" && !decimal;
+      const reading = readNumberInteger(integer)
+        + (decimal ? `点${[...decimal].map((digit) => NUMBER_DIGITS[Number(digit)]).join("")}` : "");
+      return negative && !isZero ? `负${reading}` : reading;
+    }
+
+    function syncSpeechDataset() {
+      app.dataset.speechLog = JSON.stringify(voice.log);
+      app.dataset.speechPlayed = JSON.stringify(voice.played);
+      app.dataset.speechCount = String(voice.count);
+      app.dataset.speechLast = voice.lastText;
+      app.dataset.speechKind = voice.lastKind;
+      app.dataset.speechLastMs = String(voice.lastMs);
+    }
+
+    function voiceStatusMessage() {
+      if (voice.state === "loading" || voice.state === "preparing") {
+        return voice.message || "正在加载语音引擎…";
+      }
+      if (voice.state === "ready") {
+        return "语音已就绪";
+      }
+      if (voice.state === "error") {
+        return `语音加载失败：${friendlyVoiceError(voice.error)}`;
+      }
+      return "语音播报默认关闭";
+    }
+
+    function friendlyVoiceError(raw) {
+      const text = String(raw || "");
+      if (/下载|fetch|network|Failed to fetch|HTTP|404|403|500/i.test(text)) {
+        return "语音模型下载失败，请检查网络或语音资源安装后重试。";
+      }
+      if (/初始化|init|createOfflineTts|handle|不兼容/i.test(text)) {
+        return "语音引擎初始化失败，请检查语音资源后重试。";
+      }
+      if (/脚本|script|WASM|wasm|SherpaOnnx/i.test(text)) {
+        return "语音运行时加载失败，请检查语音资源后重试。";
+      }
+      if (/Audio|播放|音频/i.test(text)) {
+        return "当前浏览器无法播放语音，请检查媒体音量后重试。";
+      }
+      return "语音加载失败，请检查网络与语音资源后重试。";
+    }
+
+    function syncVoiceUi() {
+      const progress = Math.max(0, Math.min(100, Math.round(Number(voice.progress) || 0)));
+      app.dataset.voiceState = voice.state;
+      app.dataset.voiceProgress = String(progress);
+      const barProgress = voice.state === "ready" || voice.state === "error" ? 100 : progress;
+      voiceProgressFill.style.width = `${barProgress}%`;
+      voiceProgress.dataset.state = voice.state;
+      voiceProgressLabel.textContent = voice.state === "ready"
+        ? "已完成"
+        : voice.state === "error"
+          ? "已中断"
+          : voice.state === "loading" || voice.state === "preparing"
+            ? `${progress}%`
+            : "";
+      voiceProgress.setAttribute(
+        "aria-label",
+        voice.state === "ready"
+          ? "语音已就绪"
+          : voice.state === "error"
+            ? "语音加载已中断"
+            : `语音准备进度 ${progress}%`
+      );
+      voiceProgress.setAttribute("aria-valuenow", String(progress));
+      voiceStatus.dataset.state = voice.state;
+      voiceStatusText.textContent = voiceStatusMessage();
+      voiceErrorDetail.textContent = voice.error || "";
+      voiceErrorDetails.hidden = !(voice.state === "error" && voice.error);
+      const showStatus = voice.state !== "idle" || settings.voiceKeys || settings.voiceResult;
+      voiceStatus.hidden = !showStatus;
+      voiceProgress.hidden = voice.state === "idle";
+      voiceRetry.hidden = voice.state !== "error";
+      voiceKeysToggle.checked = settings.voiceKeys;
+      voiceResultToggle.checked = settings.voiceResult;
+      if (!voiceSupported) {
+        voiceKeysToggle.disabled = true;
+        voiceResultToggle.disabled = true;
+      }
+      syncSpeechDataset();
+      syncSettingsIndicator();
+    }
+
+    function setVoiceState(nextState, nextProgress, message, errorMessage) {
+      voice.state = nextState;
+      if (nextProgress !== undefined) {
+        voice.progress = nextProgress;
+      }
+      if (message !== undefined) {
+        voice.message = message;
+      }
+      if (nextState === "error") {
+        voice.error = errorMessage || message || "未知错误";
+      } else {
+        voice.error = "";
+      }
+      syncVoiceUi();
+    }
+
+    function appendSpeechLog(kind, text) {
+      voice.count += 1;
+      voice.lastText = text;
+      voice.lastKind = kind;
+      voice.log.push({ kind, text });
+      if (voice.log.length > 80) {
+        voice.log.splice(0, voice.log.length - 80);
+      }
+      syncSpeechDataset();
+    }
+
+    function cancelActiveSpeech(kind) {
+      const active = voice.activeTask;
+      if (active && active.kind === kind && !active.started) {
+        active.cancelled = true;
+      }
+    }
+
+    function dropQueuedSpeech(kind) {
+      voice.queue.forEach((task) => {
+        if (task.kind === kind) {
+          task.cancelled = true;
+        }
+      });
+      voice.queue = voice.queue.filter((task) => !task.cancelled);
+      cancelActiveSpeech(kind);
+    }
+
+    function dropPendingResults() {
+      voice.queue.forEach((task) => {
+        if (task.kind === "result") {
+          task.cancelled = true;
+        }
+      });
+      voice.queue = voice.queue.filter((task) => !task.cancelled);
+      cancelActiveSpeech("result");
+    }
+
+    function enqueueSpeech(kind, text) {
+      if (!voiceSupported) {
+        return;
+      }
+      appendSpeechLog(kind, text);
+      if (kind === "key") {
+        dropPendingResults();
+      }
+      voice.queue.push({ kind, text, cancelled: false, started: false });
+      void processSpeechQueue();
+    }
+
+    function speakKey(text) {
+      if (!voiceSupported || !settings.voiceKeys || !text) {
+        return;
+      }
+      enqueueSpeech("key", text);
+    }
+
+    function speakResult(text) {
+      if (!voiceSupported || !settings.voiceResult || !text) {
+        return;
+      }
+      enqueueSpeech("result", text);
+    }
+
+    function loadVoiceScriptOnce(id, src) {
+      if (document.getElementById(id)) {
+        return Promise.resolve();
+      }
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.id = id;
+        script.src = src;
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error(`语音脚本加载失败：${src}`));
+        document.head.append(script);
+      });
+    }
+
+    async function fetchVoiceBytes(url, expectedSize, onProgress) {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`模型下载失败（${response.status}）：${url}`);
+      }
+      const declared = Number(response.headers.get("Content-Length")) || expectedSize || 0;
+      if (!response.body || typeof response.body.getReader !== "function") {
+        const data = new Uint8Array(await response.arrayBuffer());
+        onProgress(data.byteLength, Math.max(declared, data.byteLength));
+        return data;
+      }
+      const reader = response.body.getReader();
+      const chunks = [];
+      let loaded = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+        chunks.push(value);
+        loaded += value.byteLength;
+        onProgress(loaded, declared || loaded);
+      }
+      const data = new Uint8Array(loaded);
+      let offset = 0;
+      chunks.forEach((chunk) => {
+        data.set(chunk, offset);
+        offset += chunk.byteLength;
+      });
+      onProgress(data.byteLength, Math.max(declared, data.byteLength));
+      return data;
+    }
+
+    function mountVoiceFiles(module) {
+      const fs = module.FS || {};
+      const directory = "/voice-model";
+      if (typeof fs.mkdirTree === "function") {
+        fs.mkdirTree(directory);
+      } else if (typeof module.FS_createPath === "function") {
+        try {
+          module.FS_createPath("/", directory.slice(1), true, true);
+        } catch (error) {
+          /* 目录已存在时忽略。 */
+        }
+      }
+      if (typeof module.FS_createDataFile !== "function" && typeof fs.writeFile !== "function") {
+        throw new Error("sherpa-onnx 运行时缺少文件系统接口");
+      }
+    }
+
+    function writeVoiceFile(module, name, data) {
+      if (typeof module.FS_createDataFile === "function") {
+        module.FS_createDataFile("/voice-model", name, data, true, true);
+      } else {
+        module.FS.writeFile(`/voice-model/${name}`, data);
+      }
+    }
+
+    function synthesizeSpeech(text) {
+      const cached = voice.cache.get(text);
+      if (cached) {
+        return cached;
+      }
+      if (!voice.tts) {
+        throw new Error("语音引擎尚未就绪");
+      }
+      const result = voice.tts.generate({ text, sid: 0, speed: 1 });
+      const sourceSamples = result && result.samples;
+      if (!sourceSamples || !sourceSamples.length) {
+        throw new Error("语音合成结果为空");
+      }
+      const samples = sourceSamples instanceof Float32Array
+        ? sourceSamples
+        : Float32Array.from(sourceSamples);
+      let peak = 0;
+      for (let index = 0; index < samples.length; index += 1) {
+        peak = Math.max(peak, Math.abs(samples[index]));
+      }
+      if (peak === 0) {
+        throw new Error("语音合成结果是静音");
+      }
+      if (peak < 0.95) {
+        const gain = 0.9 / peak;
+        for (let index = 0; index < samples.length; index += 1) {
+          samples[index] *= gain;
+        }
+      }
+      const sampleRate = Number(result.sampleRate || voice.tts.sampleRate) || 22050;
+      const audio = {
+        samples,
+        sampleRate,
+        durationMs: Math.round((samples.length / sampleRate) * 1000)
+      };
+      voice.cache.set(text, audio);
+      if (voice.cache.size > 20) {
+        voice.cache.delete(voice.cache.keys().next().value);
+      }
+      return audio;
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => window.setTimeout(resolve, Math.max(0, ms)));
+    }
+
+    async function playVoiceSamples(audio) {
+      const Context = window.AudioContext || window.webkitAudioContext;
+      if (!Context) {
+        await sleep(audio.durationMs);
+        return;
+      }
+      try {
+        voice.audioContext ??= new Context();
+        const context = voice.audioContext;
+        if (context.state === "suspended") {
+          await context.resume();
+        }
+        const buffer = context.createBuffer(1, audio.samples.length, audio.sampleRate);
+        buffer.getChannelData(0).set(audio.samples);
+        const source = context.createBufferSource();
+        source.buffer = buffer;
+        source.connect(context.destination);
+        voice.source = source;
+        await new Promise((resolve) => {
+          let settled = false;
+          const finish = () => {
+            if (settled) {
+              return;
+            }
+            settled = true;
+            window.clearTimeout(fallback);
+            resolve();
+          };
+          const fallback = window.setTimeout(finish, audio.durationMs + 150);
+          source.onended = finish;
+          source.start();
+        });
+        if (voice.source === source) {
+          voice.source = null;
+        }
+      } catch (error) {
+        await sleep(audio.durationMs);
+      }
+    }
+
+    async function processSpeechQueue() {
+      if (voice.running) {
+        return;
+      }
+      voice.running = true;
+      try {
+        while (voice.queue.length > 0) {
+          const task = voice.queue.shift();
+          if (task.cancelled || !voiceSupported) {
+            continue;
+          }
+          if (!voice.tts) {
+            if (voice.state === "error") {
+              continue;
+            }
+            const engine = await ensureVoiceEngine();
+            if (!engine) {
+              continue;
+            }
+          }
+          if (task.cancelled) {
+            continue;
+          }
+          voice.activeTask = task;
+          let audio;
+          try {
+            audio = synthesizeSpeech(task.text);
+          } catch (error) {
+            voice.activeTask = null;
+            continue;
+          }
+          if (task.cancelled) {
+            voice.activeTask = null;
+            continue;
+          }
+          task.started = true;
+          const started = Date.now();
+          voice.played.push({ kind: task.kind, text: task.text });
+          syncSpeechDataset();
+          await playVoiceSamples(audio);
+          voice.lastMs = Date.now() - started;
+          voice.activeTask = null;
+          syncSpeechDataset();
+        }
+      } finally {
+        voice.running = false;
+        if (voice.queue.length > 0) {
+          void processSpeechQueue();
+        }
+      }
+    }
+
+    async function prepareVoiceWords() {
+      const total = VOICE_PREWARM_WORDS.length;
+      for (let index = 0; index < total; index += 1) {
+        setVoiceState(
+          "preparing",
+          82 + Math.round((index / total) * 17),
+          `正在准备按键语音 ${index}/${total}`
+        );
+        try {
+          synthesizeSpeech(VOICE_PREWARM_WORDS[index]);
+        } catch (error) {
+          /* 单句失败只记日志，回退到按需合成。 */
+        }
+        await sleep(0);
+      }
+      setVoiceState("preparing", 99, `正在准备按键语音 ${total}/${total}`);
+    }
+
+    function ensureVoiceEngine(force = false) {
+      if (!voiceSupported) {
+        return Promise.resolve(null);
+      }
+      if (voice.tts && !force) {
+        return Promise.resolve(voice.tts);
+      }
+      if (voice.enginePromise && !force) {
+        return voice.enginePromise;
+      }
+      if (force) {
+        voice.tts = null;
+        voice.enginePromise = null;
+        voice.cache.clear();
+      }
+      setVoiceState("loading", 0, "正在加载语音引擎…");
+      voice.enginePromise = (async () => {
+        if (typeof window.SherpaOnnx !== "function" || typeof window.createOfflineTts !== "function") {
+          await loadVoiceScriptOnce("cal-phone-sherpa-wasm", "voice/sherpa-onnx-wasm-web.js");
+          await loadVoiceScriptOnce("cal-phone-sherpa-tts", "voice/sherpa-onnx-tts.js");
+        }
+        const factory = window.SherpaOnnx;
+        const createOfflineTts = window.createOfflineTts;
+        if (typeof factory !== "function") {
+          throw new Error("SherpaOnnx 工厂未就绪");
+        }
+        if (typeof createOfflineTts !== "function") {
+          throw new Error("sherpa-onnx TTS 封装未就绪");
+        }
+        const wasmUrl = new URL("voice/sherpa-onnx-wasm-web.wasm", document.baseURI).href;
+        const module = await factory({
+          locateFile: (path) => path.endsWith(".wasm") ? wasmUrl : path
+        });
+        mountVoiceFiles(module);
+
+        for (let index = 0; index < VOICE_MODEL_FILES.length; index += 1) {
+          const file = VOICE_MODEL_FILES[index];
+          const data = await fetchVoiceBytes(file.url, file.size, (loaded, total) => {
+            const fraction = total > 0 ? loaded / total : 0;
+            const percent = Math.min(80, Math.max(1, Math.round(((index + fraction) / VOICE_MODEL_FILES.length) * 80)));
+            setVoiceState("loading", percent, `正在下载语音模型 ${percent}%（约 96MB，仅首次）`);
+          });
+          writeVoiceFile(module, file.name, data);
+        }
+
+        setVoiceState("preparing", 82, "正在初始化语音引擎…");
+        const tts = createOfflineTts(module, {
+          offlineTtsModelConfig: {
+            offlineTtsMatchaModelConfig: {
+              acousticModel: "/voice-model/model.onnx",
+              vocoder: "/voice-model/vocoder.onnx",
+              lexicon: "/voice-model/lexicon.txt",
+              tokens: "/voice-model/tokens.txt",
+              dataDir: "",
+              noiseScale: 0.667,
+              lengthScale: 1.0
+            },
+            numThreads: 1,
+            debug: 0,
+            provider: "cpu"
+          },
+          ruleFsts: "",
+          ruleFars: "",
+          maxNumSentences: 1
+        });
+        if (!tts || !tts.handle) {
+          throw new Error("sherpa-onnx TTS 初始化失败（模型可能不兼容）");
+        }
+        voice.tts = tts;
+        await prepareVoiceWords();
+        setVoiceState("ready", 100, "语音已就绪");
+        return tts;
+      })().catch((error) => {
+        voice.tts = null;
+        voice.enginePromise = null;
+        const message = error && error.message ? error.message : String(error);
+        setVoiceState("error", 0, `语音加载失败：${message}`, message);
+        return null;
+      });
+      return voice.enginePromise;
+    }
+
+    function updateVoiceSupport() {
+      if (!voiceSupported) {
+        voiceHint.textContent = VOICE_HINT_FILE;
+        voiceKeysToggle.disabled = true;
+        voiceResultToggle.disabled = true;
+      } else {
+        voiceHint.innerHTML = VOICE_HINT_HTTP;
+      }
+    }
+
+    function handleVoiceToggle() {
+      settings.voiceKeys = voiceKeysToggle.checked;
+      settings.voiceResult = voiceResultToggle.checked;
+      saveSettings();
+      syncSettingsIndicator();
+      syncVoiceUi();
+      if (!voiceSupported) {
+        return;
+      }
+      if (settings.voiceKeys || settings.voiceResult) {
+        void ensureVoiceEngine();
+      } else {
+        dropQueuedSpeech("key");
+        dropQueuedSpeech("result");
+      }
+    }
+
+    function retryVoiceEngine() {
+      if (!voiceSupported) {
+        return;
+      }
+      void ensureVoiceEngine(true);
+    }
+
+    function appendCharacter(character) {
+      if (state === "result" || state === "error") {
+        inputStartedFromResult = true;
+        operands = [];
+        clearExpression();
+        clearResult();
+      }
+      if (state === "select" || state === "result" || state === "error") {
+        enterState("input");
+        updateStateLabel(operator
+          ? `已开始新的 ${operatorGlyphs[operator]} 计算，请继续输入`
+          : "请输入数字，或先选择运算类型");
+      }
+      if (character === "." && input.value.includes(".")) {
+        return false;
+      }
+      input.value += character;
+      startAutoConfirm();
+      updateUndoHint();
+      if (KEY_SPEECH[character]) {
+        speakKey(KEY_SPEECH[character]);
+      }
+      return true;
+    }
+
+    function deleteLastCharacter() {
+      if (input.value !== "") {
+        input.value = input.value.slice(0, -1);
+        startAutoConfirm();
+        updateUndoHint();
+        speakKey("退格");
+        return true;
+      }
+
+      if (state === "edit" && editDraft) {
+        if (editDraft.operands.length > 0) {
+          const removed = editDraft.operands.pop();
+          renderEditDraft();
+          renderExpression();
+          updateUndoHint();
+          updateStateLabel(`已撤回 ${removed.display}`);
+          speakKey("退格");
+          return true;
+        }
+        return false;
+      }
+
+      if (state === "input" && operands.length > 0) {
+        const removed = operands.pop();
+        renderExpression();
+        updateUndoHint();
+        updateStateLabel(`已撤回 ${removed.display}`);
+        speakKey("退格");
+        return true;
+      }
+      return false;
+    }
+
+    function clearResult() {
+      result.textContent = "";
+      result.removeAttribute("data-value");
+      result.removeAttribute("data-error");
+    }
+
+    function clearExpression() {
+      expression.textContent = "";
+    }
+
+    function cloneOperand(operand) {
+      return { value: operand.value, display: operand.display };
+    }
+
+    function expressionText(activeOperator, activeOperands, activeBase = null) {
+      const values = [];
+      if (activeBase) {
+        values.push(activeBase.display);
+      }
+      activeOperands.forEach((operand) => values.push(operand.display));
+      if (values.length === 0) {
+        return "";
+      }
+      return activeOperator ? values.join(` ${operatorGlyphs[activeOperator]} `) : values.join(" ");
+    }
+
+    function liveExpressionText(activeOperator, activeOperands, activeBase = null) {
+      const base = expressionText(activeOperator, activeOperands, activeBase);
+      if (!activeOperator || !base || activeOperands.length === 0) {
+        return base;
+      }
+
+      return `${base} ${operatorGlyphs[activeOperator]}`;
+    }
+
+    function renderExpression() {
+      if (state === "edit" && editDraft) {
+        expression.textContent = liveExpressionText(editDraft.operator, editDraft.operands, editDraft.base);
+        updateBaseMarker();
+        return;
+      }
+
+      const activeBase = operator ? effectiveBase() : null;
+      if (operands.length === 0 && !activeBase) {
+        clearExpression();
+        updateBaseMarker();
+        return;
+      }
+
+      expression.textContent = liveExpressionText(operator, operands, activeBase);
+      updateBaseMarker();
+    }
+
+    function captureEditSnapshot() {
+      return {
+        state,
+        operator,
+        operands: operands.map(cloneOperand),
+        expressionText: expression.textContent || "",
+        resultText: result.textContent || "",
+        resultValue: result.getAttribute("data-value"),
+        resultError: result.getAttribute("data-error"),
+        label: stateLabel.textContent
+      };
+    }
+
+    function settlePendingEdit() {
+      if (!pendingEdit) {
+        return;
+      }
+
+      const pending = pendingEdit;
+      pendingEdit = null;
+      if (pending.chip) {
+        pending.chip.removeAttribute("data-pending");
+      }
+      if (!pending.entered && pending.input && pending.input.isConnected) {
+        pending.input.value = pending.original;
+        if (editDraft && editDraft.operands[pending.index]) {
+          editDraft.operands[pending.index] = {
+            value: Number(pending.original),
+            display: pending.original
+          };
+        }
+        if (pending.chip) {
+          pending.chip.setAttribute("data-value", pending.original);
+        }
+      }
+    }
+
+    function beginPendingEdit(operandInput, chip, index) {
+      if (state !== "edit" || !editDraft || !editDraft.operands[index]) {
+        return;
+      }
+      if (pendingEdit && pendingEdit.input === operandInput) {
+        return;
+      }
+
+      settlePendingEdit();
+      pendingEdit = {
+        index,
+        original: operandInput.value,
+        entered: false,
+        input: operandInput,
+        chip
+      };
+      operandInput.value = "";
+      chip.setAttribute("data-pending", "true");
+    }
+
+    function cancelEdit() {
+      if (state !== "edit" || !editSnapshot) {
+        return;
+      }
+
+      stopAutoConfirm();
+      const snapshot = editSnapshot;
+      pendingEdit = null;
+      editSnapshot = null;
+      editDraft = null;
+      editDraftView.hidden = true;
+      operandChips.textContent = "";
+      operator = snapshot.operator;
+      operands = snapshot.operands.map(cloneOperand);
+      syncOperatorAttribute();
+      expression.textContent = snapshot.expressionText;
+      result.textContent = snapshot.resultText;
+      if (snapshot.resultValue === null) {
+        result.removeAttribute("data-value");
+      } else {
+        result.setAttribute("data-value", snapshot.resultValue);
+      }
+      if (snapshot.resultError === null) {
+        result.removeAttribute("data-error");
+      } else {
+        result.setAttribute("data-error", snapshot.resultError);
+      }
+      input.value = "";
+      resetButton.disabled = snapshot.state === "select";
+      enterState(snapshot.state);
+      updateStateLabel(snapshot.label);
+      input.focus();
+    }
+
+    function updateStateLabel(label) {
+      stateLabel.textContent = label;
+    }
+
+    function populateAutoConfirmOptions() {
+      autoConfirmSelect.textContent = "";
+      AUTO_CONFIRM_STEPS.forEach((value) => {
+        const option = document.createElement("option");
+        option.value = String(value);
+        option.textContent = value === 0 ? "关闭" : `${value} 秒`;
+        autoConfirmSelect.append(option);
+      });
+    }
+
+    function loadSettings() {
+      try {
+        const raw = window.localStorage.getItem(SETTINGS_KEY);
+        if (!raw) {
+          return;
+        }
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object") {
+          return;
+        }
+        const autoConfirm = Number(parsed.autoConfirm);
+        if (AUTO_CONFIRM_STEPS.includes(autoConfirm)) {
+          settings.autoConfirm = autoConfirm;
+        }
+        const autoEquals = Number(parsed.autoEquals);
+        if (Number.isInteger(autoEquals) && autoEquals >= 0 && autoEquals <= 999) {
+          settings.autoEquals = autoEquals;
+        }
+        settings.baseEnabled = parsed.baseEnabled === true;
+        const storedBase = String(parsed.baseValue ?? "");
+        if (storedBase.trim() !== "" && Number.isFinite(Number(storedBase))) {
+          settings.baseText = storedBase;
+        }
+        settings.haptics = parsed.haptics !== false;
+        settings.voiceKeys = parsed.voiceKeys === true;
+        settings.voiceResult = parsed.voiceResult === true;
+      } catch (error) {
+        /* localStorage may be disabled; keep the in-memory defaults. */
+      }
+    }
+
+    function saveSettings() {
+      try {
+        window.localStorage.setItem(SETTINGS_KEY, JSON.stringify({
+          autoConfirm: settings.autoConfirm,
+          autoEquals: settings.autoEquals,
+          baseEnabled: settings.baseEnabled,
+          baseValue: settings.baseText,
+          haptics: settings.haptics,
+          voiceKeys: settings.voiceKeys,
+          voiceResult: settings.voiceResult
+        }));
+      } catch (error) {
+        /* localStorage may be disabled; the page keeps working in memory. */
+      }
+    }
+
+    function vibrateKeyFeedback() {
+      if (settings.haptics !== true) {
+        return;
+      }
+      try {
+        if (typeof navigator === "undefined" || typeof navigator.vibrate !== "function") {
+          return;
+        }
+        navigator.vibrate(10);
+      } catch (error) {
+        /* Vibration unavailable; calculation continues unaffected. */
+      }
+    }
+
+    function effectiveBase() {
+      if (!settings.baseEnabled) {
+        return null;
+      }
+      const raw = String(settings.baseText);
+      if (raw.trim() === "" || !Number.isFinite(Number(raw))) {
+        return null;
+      }
+      return { value: Number(raw), display: raw };
+    }
+
+    function updateBaseMarker() {
+      const base = effectiveBase();
+      const showBase = state !== "edit" && Boolean(operator) && Boolean(base);
+      baseMarkerView.hidden = !showBase;
+      if (showBase) {
+        baseMarkerView.textContent = `基数 ${base.display}`;
+      }
+
+      const showEditBase = state === "edit" && Boolean(editDraft) && Boolean(editDraft.base);
+      editBaseMarkerView.hidden = !showEditBase;
+      if (showEditBase) {
+        editBaseMarkerView.textContent = `基数 ${editDraft.base.display}`;
+      }
+    }
+
+    function syncSettingsIndicator() {
+      const customized = settings.autoConfirm > 0
+        || settings.autoEquals > 0
+        || settings.baseEnabled
+        || settings.voiceKeys
+        || settings.voiceResult;
+      const preparing = voice.state === "loading" || voice.state === "preparing";
+      const failed = voice.state === "error";
+      let summaryText = "已自定义";
+      let showSummary = customized;
+      if (preparing) {
+        summaryText = `语音准备中 ${Math.max(0, Math.min(100, Math.round(voice.progress)))}%`;
+        showSummary = true;
+      } else if (failed) {
+        summaryText = "语音不可用";
+        showSummary = true;
+      }
+      const voiceEnabled = settings.voiceKeys || settings.voiceResult;
+      const availability = !voiceEnabled
+        ? ""
+        : voice.state === "ready"
+          ? "ready"
+          : voice.state === "error"
+            ? "error"
+            : preparing
+              ? "loading"
+              : "";
+      if (availability) {
+        settingsSummary.dataset.voiceAvailability = availability;
+      } else {
+        delete settingsSummary.dataset.voiceAvailability;
+      }
+      const availabilityLabel = availability === "ready"
+        ? "语音已就绪"
+        : availability === "error"
+          ? "语音不可用"
+          : availability === "loading"
+            ? "语音准备中"
+            : "";
+      settingsSummary.textContent = summaryText;
+      settingsSummary.title = availabilityLabel ? `已自定义；${availabilityLabel}` : "已自定义";
+      settingsSummary.setAttribute("aria-label", settingsSummary.title);
+      settingsIndicator.hidden = !customized;
+      settingsSummary.hidden = !showSummary;
+      settingsToggle.setAttribute("aria-label", customized ? "打开统分设置（已自定义）" : "打开统分设置");
+      settingsToggle.title = customized ? "已自定义：自动确认、自动按等号、基数或语音播报已启用" : "打开统分设置";
+    }
+
+    function parseAutoEquals(raw) {
+      const text = String(raw).trim();
+      if (text === "") {
+        return 0;
+      }
+      if (!/^\d+$/.test(text)) {
+        return null;
+      }
+      const value = Number(text);
+      return Number.isInteger(value) && value >= 0 && value <= 999 ? value : null;
+    }
+
+    function updateUndoHint() {
+      const inDraft = state === "edit" && Boolean(editDraft) && editDraft.operands.length > 0;
+      const inInput = state === "input" && operands.length > 0;
+      undoHint.hidden = !(inDraft || inInput);
+      if (!inDraft && !inInput) {
+        return;
+      }
+
+      const activeOperands = inDraft ? editDraft.operands : operands;
+      const target = inDraft ? "草稿最后一笔" : "上一笔";
+      const lastValue = activeOperands[activeOperands.length - 1].display;
+      undoHint.textContent = input.value.trim() === ""
+        ? `撤回${target} ${lastValue}：按“退格”。`
+        : `撤回${target} ${lastValue}：先清空当前输入，再按“退格”。`;
+    }
+
+    function syncSettingsControls() {
+      autoConfirmSelect.value = String(settings.autoConfirm);
+      autoEqualsInput.value = String(settings.autoEquals);
+      baseToggle.checked = settings.baseEnabled;
+      baseValueInput.disabled = !settings.baseEnabled;
+      baseValueInput.value = settings.baseText;
+      hapticsToggle.checked = settings.haptics !== false;
+      voiceKeysToggle.checked = settings.voiceKeys;
+      voiceResultToggle.checked = settings.voiceResult;
+      updateVoiceSupport();
+      syncVoiceUi();
+      syncSettingsIndicator();
+      updateBaseMarker();
+    }
+
+    function autoConfirmAllowed() {
+      if (!(settings.autoConfirm > 0)) {
+        return false;
+      }
+      if (settingsPanel.open) {
+        return false;
+      }
+      if (input.value === "" || input.value.endsWith(".")) {
+        return false;
+      }
+      return Number.isFinite(Number(input.value));
+    }
+
+    function stopAutoConfirm() {
+      if (autoConfirmTimer !== null) {
+        window.clearTimeout(autoConfirmTimer);
+        autoConfirmTimer = null;
+      }
+      if (autoConfirmCountdownTimer !== null) {
+        window.clearInterval(autoConfirmCountdownTimer);
+        autoConfirmCountdownTimer = null;
+      }
+      autoConfirmDeadline = 0;
+      autoConfirmProgress.setAttribute("data-active", "false");
+      autoConfirmFeedback.setAttribute("data-active", "false");
+      autoConfirmFeedback.hidden = true;
+      autoConfirmCountdown.textContent = "";
+    }
+
+    function syncAutoConfirmCountdown() {
+      if (!autoConfirmDeadline) {
+        return;
+      }
+      const remaining = Math.max(0, autoConfirmDeadline - Date.now());
+      const seconds = (Math.ceil(remaining / 100) / 10).toFixed(1);
+      autoConfirmCountdown.textContent = `正在计时：剩余 ${seconds} 秒，将确认 ${input.value.trim()}`;
+    }
+
+    function startAutoConfirm() {
+      stopAutoConfirm();
+      if (!autoConfirmAllowed()) {
+        return;
+      }
+      const seconds = settings.autoConfirm;
+      autoConfirmProgress.style.setProperty("--auto-confirm-duration", `${seconds}s`);
+      autoConfirmDeadline = Date.now() + Math.round(seconds * 1000);
+      autoConfirmFeedback.hidden = false;
+      autoConfirmFeedback.setAttribute("data-active", "true");
+      autoConfirmProgress.setAttribute("data-active", "false");
+      void autoConfirmProgress.offsetWidth;
+      autoConfirmProgress.setAttribute("data-active", "true");
+      syncAutoConfirmCountdown();
+      autoConfirmCountdownTimer = window.setInterval(syncAutoConfirmCountdown, 100);
+      autoConfirmTimer = window.setTimeout(() => {
+        autoConfirmTimer = null;
+        if (autoConfirmAllowed()) {
+          commitInput();
+        }
+        stopAutoConfirm();
+      }, Math.round(seconds * 1000));
+    }
+
+    function placeSettingsPanel() {
+      const rect = settingsToggle.getBoundingClientRect();
+      const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+      const viewportHeight = document.documentElement.clientHeight || window.innerHeight;
+      const compact = viewportHeight <= 640;
+      settingsPanel.style.top = `${compact ? 8 : Math.round(rect.bottom + 6)}px`;
+      settingsPanel.style.maxHeight = compact ? `${Math.max(320, viewportHeight - 16)}px` : "";
+      settingsPanel.style.right = `${Math.max(8, Math.round(viewportWidth - rect.right))}px`;
+      settingsPanel.style.left = "auto";
+      settingsPanel.style.bottom = "auto";
+    }
+
+    function openSettings() {
+      stopAutoConfirm();
+      settingsToggle.setAttribute("aria-expanded", "true");
+      syncSettingsControls();
+      if (typeof settingsPanel.showModal === "function") {
+        if (!settingsPanel.open) {
+          settingsPanel.showModal();
+        }
+      } else {
+        settingsPanel.setAttribute("open", "");
+      }
+      placeSettingsPanel();
+      if (!settingsPanel.contains(document.activeElement)) {
+        const preferVoice = voice.state !== "idle" || settings.voiceKeys || settings.voiceResult;
+        if (preferVoice && !voiceKeysToggle.disabled) {
+          voiceKeysToggle.focus();
+        } else {
+          autoConfirmSelect.focus();
+        }
+      }
+      settingsPanel.scrollTop = 0;
+    }
+
+    function closeSettings() {
+      if (typeof settingsPanel.close === "function" && settingsPanel.open) {
+        settingsPanel.close();
+        return;
+      }
+      settingsPanel.removeAttribute("open");
+      settingsToggle.setAttribute("aria-expanded", "false");
+      settingsToggle.focus();
+      syncSettingsControls();
+      startAutoConfirm();
+    }
+
+    function renderEditDraft() {
+      if (!editDraft) {
+        editDraftView.hidden = true;
+        operandChips.textContent = "";
+        return;
+      }
+
+      settlePendingEdit();
+
+      editDraftView.hidden = false;
+      editDraftView.setAttribute("data-operator", editDraft.operator);
+      editOperatorView.textContent = operatorGlyphs[editDraft.operator];
+      operandChips.textContent = "";
+
+      editDraft.operands.forEach((operand, index) => {
+        const chip = document.createElement("div");
+        chip.className = "operand-chip";
+        chip.setAttribute("data-testid", "operand-chip");
+        chip.setAttribute("data-value", operand.display);
+
+        const value = document.createElement("input");
+        value.type = "text";
+        value.inputMode = "decimal";
+        value.autocomplete = "off";
+        value.spellcheck = false;
+        value.className = "operand-input";
+        value.setAttribute("data-testid", "operand-input");
+        value.setAttribute("aria-label", `编辑数字 ${operand.display}`);
+        value.value = operand.display;
+        value.addEventListener("focus", () => beginPendingEdit(value, chip, index));
+        value.addEventListener("click", () => beginPendingEdit(value, chip, index));
+        value.addEventListener("focusout", () => {
+          if (pendingEdit && pendingEdit.input === value) {
+            settlePendingEdit();
+          }
+        });
+        value.addEventListener("input", () => {
+          if (state !== "edit" || !editDraft || !editDraft.operands[index]) {
+            return;
+          }
+
+          if (pendingEdit && pendingEdit.input === value) {
+            pendingEdit.entered = true;
+          }
+
+          editDraft.operands[index] = {
+            value: Number(value.value),
+            display: value.value
+          };
+          chip.setAttribute("data-value", value.value);
+          renderExpression();
+        });
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "operand-remove";
+        remove.setAttribute("data-testid", "operand-remove");
+        remove.setAttribute("aria-label", `删除数字 ${operand.display}`);
+        remove.textContent = "×";
+        remove.addEventListener("click", () => {
+          if (state !== "edit" || !editDraft) {
+            return;
+          }
+
+          settlePendingEdit();
+          editDraft.operands.splice(index, 1);
+          renderEditDraft();
+          renderExpression();
+          input.focus();
+        });
+
+        chip.append(value, remove);
+        operandChips.append(chip);
+      });
+    }
+
+    function beginEdit(entry) {
+      stopAutoConfirm();
+      if (state !== "edit" || !editSnapshot) {
+        editSnapshot = captureEditSnapshot();
+      }
+      pendingEdit = null;
+      operator = entry.operator;
+      syncOperatorAttribute();
+      editDraft = {
+        operator: entry.operator,
+        operands: entry.operands.map(cloneOperand),
+        base: entry.base ? { value: entry.base.value, display: entry.base.display } : null
+      };
+      input.value = "";
+      resetButton.disabled = false;
+      clearResult();
+      renderEditDraft();
+      enterState("edit");
+      renderExpression();
+      updateStateLabel(`正在编辑 ${operatorGlyphs[entry.operator]} 记录`);
+      input.focus();
+    }
+
+    function renderHistoryItem(entry) {
+      const item = document.createElement("article");
+      item.className = "history-item";
+      item.setAttribute("data-testid", "history-item");
+      item.setAttribute("data-operator", entry.operator);
+      item.setAttribute("data-operands", JSON.stringify(entry.operands.map((operand) => operand.display)));
+      if (entry.base) {
+        item.setAttribute("data-base", entry.base.display);
+      }
+
+      const line = document.createElement("div");
+      line.className = "history-line";
+
+      const historyExpression = document.createElement("span");
+      historyExpression.className = "history-expression";
+      historyExpression.setAttribute("data-testid", "history-expression");
+      historyExpression.textContent = entry.expression;
+
+      const historyResult = document.createElement("span");
+      historyResult.className = "history-result";
+      historyResult.setAttribute("data-testid", "history-result");
+      historyResult.setAttribute("data-value", formatValue(entry.result));
+      historyResult.textContent = formatValue(entry.result);
+
+      line.append(historyExpression, historyResult);
+
+      const editButton = document.createElement("button");
+      editButton.type = "button";
+      editButton.className = "history-edit";
+      editButton.setAttribute("data-testid", "history-edit");
+      editButton.textContent = "编辑";
+      editButton.addEventListener("click", () => beginEdit(entry));
+
+      item.append(line, editButton);
+      return item;
+    }
+
+    function appendHistory(entry) {
+      history.unshift(entry);
+      historyEmpty.hidden = true;
+      historyList.prepend(renderHistoryItem(entry));
+    }
+
+    function resetToSelect() {
+      stopAutoConfirm();
+      pendingEdit = null;
+      editSnapshot = null;
+      operator = null;
+      inputStartedFromResult = false;
+      syncOperatorAttribute();
+      operands = [];
+      editDraft = null;
+      editDraftView.hidden = true;
+      operandChips.textContent = "";
+      input.value = "";
+      resetButton.disabled = true;
+      clearExpression();
+      clearResult();
+      enterState("select");
+      updateStateLabel("请选择运算类型");
+    }
+
+    function chooseOperator(nextOperator) {
+      settlePendingEdit();
+      if (KEY_SPEECH[nextOperator]) {
+        speakKey(KEY_SPEECH[nextOperator]);
+      }
+      if (state === "edit" && editDraft) {
+        editDraft.operator = nextOperator;
+        renderEditDraft();
+        renderExpression();
+        updateStateLabel(`正在编辑 ${operatorGlyphs[nextOperator]} 记录`);
+        input.focus();
+        startAutoConfirm();
+        return;
+      }
+
+      const pendingRaw = input.value.trim();
+      if (
+        pendingRaw !== ""
+        && Number.isFinite(Number(pendingRaw))
+        && (operator === null || inputStartedFromResult)
+      ) {
+        commitInput({ allowAutoEquals: false, announceCommit: false });
+        inputStartedFromResult = false;
+      }
+
+      const preserveOperands = state === "input";
+      operator = nextOperator;
+      syncOperatorAttribute();
+      if (!preserveOperands) {
+        operands = [];
+        input.value = "";
+        clearExpression();
+        clearResult();
+      }
+      resetButton.disabled = false;
+      enterState("input");
+      renderExpression();
+      const base = effectiveBase();
+      const baseHint = base ? `，基数 ${base.display}` : "";
+      updateStateLabel(preserveOperands
+        ? `已更换为 ${operatorGlyphs[nextOperator]}${baseHint}，已输入的数字会保留`
+        : `已选择 ${operatorGlyphs[nextOperator]}${baseHint}，请输入数字`);
+      input.focus();
+      startAutoConfirm();
+    }
+
+    function commitInput({ allowAutoEquals = true, announceCommit = true } = {}) {
+      if (state !== "select" && state !== "input" && state !== "result" && state !== "error" && state !== "edit") {
+        return false;
+      }
+
+      const rawValue = input.value.trim();
+      if (rawValue === "") {
+        return false;
+      }
+
+      const numericValue = Number(rawValue);
+      if (!Number.isFinite(numericValue)) {
+        return false;
+      }
+
+      if (state === "select") {
+        enterState("input");
+        updateStateLabel("请输入数字，或先选择运算类型");
+      }
+
+      if (state === "edit" && editDraft) {
+        editDraft.operands.push({ value: numericValue, display: rawValue });
+        renderEditDraft();
+        if (editSnapshot && editSnapshot.resultValue !== null) {
+          result.textContent = editSnapshot.resultText;
+          result.setAttribute("data-value", editSnapshot.resultValue);
+          if (editSnapshot.resultError === null) {
+            result.removeAttribute("data-error");
+          } else {
+            result.setAttribute("data-error", editSnapshot.resultError);
+          }
+        }
+      } else {
+        if (state === "result" || state === "error") {
+          operands = [];
+          clearExpression();
+          clearResult();
+          enterState("input");
+          updateStateLabel(`已开始新的 ${operatorGlyphs[operator]} 计算，请继续输入`);
+        }
+        operands.push({ value: numericValue, display: rawValue });
+      }
+      input.value = "";
+      renderExpression();
+      stopAutoConfirm();
+      inputStartedFromResult = false;
+      updateStateLabel(state === "edit"
+        ? `已加入 ${rawValue}，可继续编辑或按 = 重算`
+        : `已确认 ${rawValue}，可继续输入或按 = 计算`);
+      updateUndoHint();
+      if (allowAutoEquals && settings.autoEquals > 0 && operator && state === "input" && operands.length >= settings.autoEquals) {
+        calculate();
+      }
+      return true;
+    }
+
+    function formatValue(value) {
+      return String(Object.is(value, -0) ? 0 : value);
+    }
+
+    function showDivisionByZero(activeOperator) {
+      stopAutoConfirm();
+      pendingEdit = null;
+      editSnapshot = null;
+      operator = activeOperator;
+      syncOperatorAttribute();
+      operands = [];
+      editDraft = null;
+      editDraftView.hidden = true;
+      operandChips.textContent = "";
+      clearExpression();
+      result.textContent = "不能除以零";
+      result.removeAttribute("data-value");
+      result.setAttribute("data-error", "true");
+      input.value = "";
+      resetButton.disabled = false;
+      inputStartedFromResult = false;
+      enterState("error");
+      updateStateLabel("不能除以零；直接输入数字可开始新的计算，或更换运算符");
+      input.focus();
+      speakResult("不能除以零");
+    }
+
+    function readOperandInputValues() {
+      return Array.from(operandChips.querySelectorAll('[data-testid="operand-input"]'))
+        .map((element) => element.value);
+    }
+
+    function invalidOperandValue(rawValue) {
+      return rawValue.trim() === "" || !Number.isFinite(Number(rawValue));
+    }
+
+    function calculate() {
+      if (state !== "input" && state !== "result" && state !== "error" && state !== "edit") {
+        return;
+      }
+
+      stopAutoConfirm();
+      settlePendingEdit();
+
+      const wasEditing = state === "edit" && editDraft !== null;
+      let activeOperator;
+      let activeOperands;
+      let activeBase;
+
+      if (wasEditing) {
+        const editedValues = readOperandInputValues();
+        if (editedValues.length === 0 || editedValues.some(invalidOperandValue)) {
+          return;
+        }
+
+        editDraft.operands = editedValues.map((rawValue) => ({
+          value: Number(rawValue),
+          display: rawValue
+        }));
+        commitInput({ allowAutoEquals: false, announceCommit: false });
+
+        const currentValues = readOperandInputValues();
+        if (currentValues.length === 0 || currentValues.some(invalidOperandValue)) {
+          return;
+        }
+
+        activeOperator = editDraft.operator;
+        activeOperands = currentValues.map((rawValue) => ({
+          value: Number(rawValue),
+          display: rawValue
+        }));
+        activeBase = editDraft.base ? { value: editDraft.base.value, display: editDraft.base.display } : null;
+      } else {
+        commitInput({ allowAutoEquals: false, announceCommit: false });
+        activeOperator = operator;
+        activeOperands = operands;
+        activeBase = effectiveBase();
+      }
+
+      if (!activeOperator || activeOperands.length === 0) {
+        return;
+      }
+
+      let accumulator = activeBase ? activeBase.value : activeOperands[0].value;
+      for (let index = activeBase ? 0 : 1; index < activeOperands.length; index += 1) {
+        const nextValue = activeOperands[index].value;
+        if (activeOperator === "/" && nextValue === 0) {
+          showDivisionByZero(activeOperator);
+          return;
+        }
+
+        switch (activeOperator) {
+          case "+":
+            accumulator += nextValue;
+            break;
+          case "-":
+            accumulator -= nextValue;
+            break;
+          case "*":
+            accumulator *= nextValue;
+            break;
+          case "/":
+            accumulator /= nextValue;
+            break;
+          default:
+            return;
+        }
+      }
+
+      const displayValue = formatValue(accumulator);
+      const entry = {
+        operator: activeOperator,
+        operands: activeOperands.map(cloneOperand),
+        base: activeBase,
+        expression: expressionText(activeOperator, activeOperands, activeBase),
+        result: accumulator
+      };
+      operator = activeOperator;
+      syncOperatorAttribute();
+      operands = [];
+      expression.textContent = entry.expression;
+      appendHistory(entry);
+      result.textContent = displayValue;
+      result.setAttribute("data-value", displayValue);
+      result.removeAttribute("data-error");
+      input.value = "";
+      resetButton.disabled = false;
+      editDraft = null;
+      editSnapshot = null;
+      pendingEdit = null;
+      inputStartedFromResult = false;
+      editDraftView.hidden = true;
+      operandChips.textContent = "";
+      enterState("result");
+      const baseHint = activeBase ? `，基数 ${activeBase.display}` : "";
+      updateStateLabel(`计算完成${baseHint}；继续输入数字按回车或 = 即可沿用 ${operatorGlyphs[activeOperator]}`);
+      input.focus();
+      const reading = numberToChineseReading(displayValue);
+      if (reading) {
+        speakResult(reading);
+      }
+    }
+
+    picker.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-op]");
+      if (!button || button.disabled) {
+        return;
+      }
+
+      const nextOperator = button.getAttribute("data-op");
+      if (Object.prototype.hasOwnProperty.call(operatorGlyphs, nextOperator)) {
+        vibrateKeyFeedback();
+        chooseOperator(nextOperator);
+      }
+    });
+
+    keypad.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-key]");
+      if (!button || button.disabled) {
+        return;
+      }
+
+      const key = button.getAttribute("data-key");
+      if (
+        key !== "backspace"
+        && key !== "enter"
+        && key !== "equals"
+        && key !== "."
+        && !/^[0-9]$/.test(key)
+      ) {
+        return;
+      }
+      vibrateKeyFeedback();
+      if (/^[0-9]$/.test(key) || key === ".") {
+        appendCharacter(key);
+      } else if (key === "backspace") {
+        deleteLastCharacter();
+      } else if (key === "enter") {
+        stopAutoConfirm();
+        commitInput();
+      } else if (key === "equals") {
+        calculate();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.ctrlKey || event.metaKey || event.altKey) {
+        return;
+      }
+      if (settingsPanel.open || (event.target instanceof Element && event.target.closest('[data-testid="settings-panel"]'))) {
+        return;
+      }
+      if (event.target instanceof Element && event.target.closest('[data-testid="operand-input"]')) {
+        return;
+      }
+
+      const key = event.key;
+      if (/^[0-9]$/.test(key) || key === ".") {
+        appendCharacter(key);
+      } else if (key === "Backspace") {
+        deleteLastCharacter();
+      } else if (key === "Enter") {
+        stopAutoConfirm();
+        commitInput();
+      } else if (key === "=") {
+        calculate();
+      } else {
+        return;
+      }
+      event.preventDefault();
+    });
+
+    settingsToggle.addEventListener("click", openSettings);
+    settingsDone.addEventListener("click", closeSettings);
+    settingsPanel.addEventListener("close", () => {
+      settingsToggle.setAttribute("aria-expanded", "false");
+      if (baseValueInput.value.trim() === "" || !Number.isFinite(Number(baseValueInput.value))) {
+        baseValueInput.value = settings.baseText;
+      }
+      syncSettingsControls();
+      settingsToggle.focus();
+      startAutoConfirm();
+    });
+    settingsPanel.addEventListener("click", (event) => {
+      if (event.target !== settingsPanel) {
+        return;
+      }
+      const rect = settingsPanel.getBoundingClientRect();
+      if (
+        event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom
+      ) {
+        closeSettings();
+      }
+    });
+    window.addEventListener("resize", () => {
+      if (settingsPanel.open) {
+        placeSettingsPanel();
+      }
+    });
+
+    autoConfirmSelect.addEventListener("change", () => {
+      const value = Number(autoConfirmSelect.value);
+      if (AUTO_CONFIRM_STEPS.includes(value)) {
+        settings.autoConfirm = value;
+        saveSettings();
+        syncSettingsIndicator();
+      }
+    });
+    autoEqualsInput.addEventListener("input", () => {
+      const value = parseAutoEquals(autoEqualsInput.value);
+      if (value !== null) {
+        settings.autoEquals = value;
+        saveSettings();
+        syncSettingsIndicator();
+      }
+    });
+    autoEqualsInput.addEventListener("blur", () => {
+      if (parseAutoEquals(autoEqualsInput.value) === null) {
+        autoEqualsInput.value = String(settings.autoEquals);
+      }
+    });
+    baseToggle.addEventListener("change", () => {
+      settings.baseEnabled = baseToggle.checked;
+      if (settings.baseEnabled && (settings.baseText.trim() === "" || !Number.isFinite(Number(settings.baseText)))) {
+        settings.baseText = "0";
+      }
+      saveSettings();
+      syncSettingsControls();
+      renderExpression();
+    });
+    baseValueInput.addEventListener("input", () => {
+      const raw = baseValueInput.value;
+      if (raw.trim() !== "" && Number.isFinite(Number(raw))) {
+        settings.baseText = raw;
+        saveSettings();
+        syncSettingsIndicator();
+        renderExpression();
+      }
+    });
+    baseValueInput.addEventListener("blur", () => {
+      if (baseValueInput.value.trim() === "" || !Number.isFinite(Number(baseValueInput.value))) {
+        baseValueInput.value = settings.baseText;
+      }
+    });
+    hapticsToggle.addEventListener("change", () => {
+      settings.haptics = hapticsToggle.checked;
+      saveSettings();
+      syncSettingsIndicator();
+    });
+    voiceKeysToggle.addEventListener("change", handleVoiceToggle);
+    voiceResultToggle.addEventListener("change", handleVoiceToggle);
+    voiceRetry.addEventListener("click", retryVoiceEngine);
+
+    resetButton.addEventListener("click", resetToSelect);
+    editCancelButton.addEventListener("click", cancelEdit);
+    input.addEventListener("focus", settlePendingEdit);
+    populateAutoConfirmOptions();
+    loadSettings();
+    syncSettingsControls();
+    syncKeypad();
+    updateUndoHint();
+    if (voiceSupported && (settings.voiceKeys || settings.voiceResult)) {
+      void ensureVoiceEngine();
+    }
+  })();
+</script>
+</body>
+</html>

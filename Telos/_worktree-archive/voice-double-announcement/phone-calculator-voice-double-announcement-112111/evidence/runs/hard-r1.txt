@@ -1,0 +1,21 @@
+ROUND: 1
+ARTIFACT_SHA256: 620ab30da006d23def3b30456a669d8083fba868b7490dfee6645195d7eab0c9
+TREE_SHA256: a6ef39391d880078b93bcbda970e004515b20b6a0f806f200ab0aa8a3ac1c4e9
+VERIFIER_SHA256: 9d8882ae776fb7aad15ba5500a8b6c222ac5bc1976bf5bf00af3a78f2bdd1184
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 1
+ARTIFACT_SHA256: 620ab30da006d23def3b30456a669d8083fba868b7490dfee6645195d7eab0c9
+VERIFIER_SHA256: 9d8882ae776fb7aad15ba5500a8b6c222ac5bc1976bf5bf00af3a78f2bdd1184
+H1 PASS — s1:ok[try1:{pass=true log=["五"] played=["五"] countA=1 countB=1}] s2:ok[try1:{pass=true log=["九","五"] played=["九","五"] countA=2 countB=2}] s3:ok[try1:{pass=true log=["六"] played=["六"] countA=1 countB=1}] s4:ok[try1:{pass=true log=["七"] played=["七"] countA=1 countB=1}] s5:ok[try1:{pass=true log=[{"kind":"key","text":"九"},{"kind":"key","text":"五"}] played=["九","五"] countA=2 countB=2}]
+H2 PASS — s1:ok[try1:{pass=true log=["零","一","二","三","四","五","六","七","八","九"] count=10}] s2:ok[try1:{pass=true log=["五","点","七"] played=["五","点","七"]}] s3:ok[try1:{pass=true log=["五","退格"] played=["五","退格"]}] s4:ok[try1:{pass=true log=["五","五"] played=["五","五"]}] s5:ok[try1:{pass=true log=["加","减","乘","除"] played=["加","减","乘","除"]}] s6:ok[try1:{pass=true before=["一","加","二"] after=["一","加","二"] count=3}] s7:ok[try1:{pass=true log=["五","退格"] played=["五","退格"]}]
+H3 PASS — s1:ok[try1:{pass=true result=3 log=[{"kind":"result","text":"三"}] played=["三"]}] s2:ok[try1:{pass=true result=18.7 last={"kind":"result","text":"十八点七"} log=[{"kind":"result","text":"十八点七"}]}] s3:ok[try1:{pass=true result=-3 last={"kind":"result","text":"负三"} log=[{"kind":"result","text":"负三"}]}] s4:ok[try1:{pass=true result=不能除以零 last={"kind":"result","text":"不能除以零"} log=[{"kind":"result","text":"不能除以零"}]}] s5:ok[try1:{pass=true result=3 keys=["一","加","二"] last={"kind":"result","text":"三"} log=[{"kind":"key","text":"一"},{"kind":"key","text":"加"},{"kind":"key","text":"二"},{"kind":"result","text":"三"}]}]
+H4 PASS — s1:ok[try1:{pass=true result=3 voiceState=idle count="0" logLen=0 playedLen=0}] s2:ok[try1:{pass=true result=3 kinds=["result"] log=[{"kind":"result","text":"三"}]}] s3:ok[try1:{pass=true span=112ms played=["一","二","三"]}] s4:ok[try1:{pass=true played=[{"kind":"key","text":"一"},{"kind":"key","text":"加"},{"kind":"key","text":"一"},{"kind":"key","text":"九"}] log=[{"kind":"key","text":"一"},{"kind":"key","text":"加"},{"kind":"key","text":"一"},{"kind":"result","text":"二"},{"kind":"key","text":"九"}]}]
+H5 PASS — s1:ok[exit=0 passed=75 failed=0 total=75  stderr=42ms)
+[voice] result: 10/10 passed (1469ms)
+[voice] independence: 9/9 passed (799ms)
+[voice] queue: 10/10 passed (5222ms)
+[voice] layout: 16/16 passed (915ms)
+[voice] regression: 5/5 passed (16143ms)
+] s2:ok[exit=0 scenarios=18 checks=206 failed=0 badIds=[] ] s3:ok[try1:{pass=true result=3}] s4:ok[try1:{pass=true enter="确认" logShape=true}] s5:ok[try1:{pass=true expression="6"}]
+HARD: PASS

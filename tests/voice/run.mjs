@@ -491,8 +491,8 @@ async function testKeys(browser, server) {
     await clickSequence(page, ["9", "5", ".", ".", "backspace", "enter", "enter", "backspace", "backspace", "+", "-", "*", "/", "="]);
     await sleep(150);
     const speech = await readSpeech(page);
-    eq(checks, "keys.sequence", speech.texts, ["九", "五", "点", "退格", "九十五", "退格", "加", "减", "乘", "除"]);
-    eq(checks, "keys.count", speech.count, "10");
+    eq(checks, "keys.sequence", speech.texts, ["九", "五", "点", "退格", "退格", "加", "减", "乘", "除"]);
+    eq(checks, "keys.count", speech.count, "9");
     eq(checks, "keys.last", [speech.last, speech.kind], ["除", "key"]);
     eq(checks, "keys.repeat-dot-suppressed", speech.texts.filter((text) => text === "点").length, 1);
     eq(checks, "keys.empty-confirm-suppressed", speech.texts.filter((text) => text === "确认").length, 0);
@@ -504,7 +504,7 @@ async function testKeys(browser, server) {
     for (const key of ["7", "Backspace", "8", "Enter"]) await keyboardApp.page.keyboard.press(key);
     await sleep(150);
     const keyboardSpeech = await readSpeech(keyboardApp.page);
-    eq(checks, "keys.physical-keyboard", keyboardSpeech.texts, ["七", "退格", "八", "八"]);
+    eq(checks, "keys.physical-keyboard", keyboardSpeech.texts, ["七", "退格", "八"]);
     clean(checks, "keys.keyboard-clean", keyboardApp.pageErrors, keyboardApp.consoleErrors);
 
     autoApp = await openHttp(browser, server, { storage: { autoConfirm: 0.2, voiceKeys: true, voiceResult: false } });
@@ -512,7 +512,7 @@ async function testKeys(browser, server) {
     await autoApp.page.click('[data-key="6"]');
     await sleep(550);
     const autoSpeech = await readSpeech(autoApp.page);
-    eq(checks, "keys.auto-confirm", autoSpeech.texts, ["六", "六"]);
+    eq(checks, "keys.auto-confirm", autoSpeech.texts, ["六"]);
     clean(checks, "keys.auto-clean", autoApp.pageErrors, autoApp.consoleErrors);
   } finally {
     await app.close();
