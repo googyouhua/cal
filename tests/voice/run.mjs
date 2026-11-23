@@ -260,7 +260,14 @@ async function openPage(browser, target, {
     window.AudioContext = FakeAudioContext;
     window.webkitAudioContext = FakeAudioContext;
   }, {
-    stored: storage === undefined ? null : JSON.stringify(storage),
+    // 结果后暂停输入 (resultPause, default 1 s) is a scoring feature with its own
+    // coverage in tests/suite.mjs > settings-pause. These scenarios speak about
+    // speech, and several of them type a digit right after "=" to prove a result
+    // is dropped when the teacher keeps going; the pause would swallow that
+    // digit and make the assertion vacuous. Disable it wherever a caller seeds
+    // settings, and leave the default alone for the unseeded contexts that assert
+    // the pristine settings state.
+    stored: storage === undefined ? null : JSON.stringify({ resultPause: 0, ...storage }),
     includeFake: fake,
     fail: fakeFail,
     duration: durationMs,
