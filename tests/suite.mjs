@@ -29,6 +29,19 @@ import { scenarios as rosterStorageScenarios } from "./scenarios/roster-storage.
 import { scenarios as rosterDialogScenarios } from "./scenarios/roster-dialog.mjs";
 import { scenarios as rosterDeterminismScenarios } from "./scenarios/roster-determinism.mjs";
 import { scenarios as rosterLayoutScenarios } from "./scenarios/roster-layout.mjs";
+import { scenarios as settingsPauseScenarios } from "./scenarios/settings-pause.mjs";
+import { scenarios as settingsStorageCorruptScenarios } from "./scenarios/settings-storage-corrupt.mjs";
+import { scenarios as settingsStorageRoundTripScenarios } from "./scenarios/settings-storage-round-trip.mjs";
+import { scenarios as settingsStorageDeniedScenarios } from "./scenarios/settings-storage-denied.mjs";
+import { scenarios as settingsHapticsScenarios } from "./scenarios/settings-haptics.mjs";
+import { scenarios as numberNegativeScenarios } from "./scenarios/number-negative.mjs";
+import { scenarios as numberFloatDisplayScenarios } from "./scenarios/number-float-display.mjs";
+import { scenarios as numberLiteralPreservedScenarios } from "./scenarios/number-literal-preserved.mjs";
+import { scenarios as numberDecimalSumScenarios } from "./scenarios/number-decimal-sum.mjs";
+import { scenarios as keyboardDialogScenarios } from "./scenarios/keyboard-dialog.mjs";
+import { scenarios as keyboardResultStateScenarios } from "./scenarios/keyboard-result-state.mjs";
+import { scenarios as keyboardEditDraftScenarios } from "./scenarios/keyboard-edit-draft.mjs";
+import { scenarios as keyboardOperandInputScenarios } from "./scenarios/keyboard-operand-input.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_ARTIFACT = path.resolve(HERE, "../index.html");
@@ -48,6 +61,19 @@ const SCENARIOS = [
   ...rosterDialogScenarios,
   ...rosterDeterminismScenarios,
   ...rosterLayoutScenarios,
+  ...settingsPauseScenarios,
+  ...settingsStorageCorruptScenarios,
+  ...settingsStorageRoundTripScenarios,
+  ...settingsStorageDeniedScenarios,
+  ...settingsHapticsScenarios,
+  ...numberNegativeScenarios,
+  ...numberFloatDisplayScenarios,
+  ...numberLiteralPreservedScenarios,
+  ...numberDecimalSumScenarios,
+  ...keyboardDialogScenarios,
+  ...keyboardResultStateScenarios,
+  ...keyboardEditDraftScenarios,
+  ...keyboardOperandInputScenarios,
 ];
 
 export async function runSuite({ artifact = DEFAULT_ARTIFACT, only = [], listOnly = false } = {}) {

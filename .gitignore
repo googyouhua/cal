@@ -4,3 +4,6 @@ node_modules/
 voice/
 !tests/voice/
 core.*
+
+# TEA run artifacts (generated, not tracked)
+_bmad-output/

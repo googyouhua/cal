@@ -43,6 +43,21 @@ tests/
   scenarios/roster-dialog.mjs  voice queue cleanup on confirm; pause/auto-equals/base fill behavior
   scenarios/roster-determinism.mjs two fresh contexts, same import+fill+edit, deep-compare rows/storage/CSV
   scenarios/roster-layout.mjs  320/390 overflow, 44px targets, font sizes, focus, list semantics
+  scenarios/roster-compact.mjs compact roster rows, headcount, min-width guarantees
+  lib/settings.mjs             calc-settings helpers: one-shot seeding, panel open/close, stored shape, stored values
+  scenarios/settings-pause.mjs 结果后暂停输入: digit blocking, timer expiry by polling, operator passthrough, panel clamp/persist
+  scenarios/settings-storage-corrupt.mjs     corrupt JSON and out-of-range values fall back per field
+  scenarios/settings-storage-round-trip.mjs  panel write, stored shape, reload, persisted pause still gates input
+  scenarios/settings-storage-denied.mjs      localStorage throwing: visible warning, in-memory scoring
+  scenarios/settings-haptics.mjs 按键震动: on/off counts, on-screen keys only, panel toggle persistence
+  scenarios/number-negative.mjs          negative result, negative base
+  scenarios/number-float-display.mjs     float64 formatting: 0.1+0.2, 1/3, 20-digit operand
+  scenarios/number-literal-preserved.mjs leading zeros and a bare dot stay literal in expression and history
+  scenarios/number-decimal-sum.mjs       9.5 + 9.2 + 9 does not drift
+  scenarios/keyboard-dialog.mjs          modal dialog swallows physical keys; Esc returns focus to the gear
+  scenarios/keyboard-result-state.mjs    a digit after a result starts a new calculation
+  scenarios/keyboard-edit-draft.mjs      keyboard entry appends an operand to the edit draft; Esc characterization
+  scenarios/keyboard-operand-input.mjs   a focused operand input keeps its own keystrokes
   examples/verify-adapter.mjs  runnable example of a Kekkai instrument
   suite.mjs                   CLI + `runSuite({ artifact, only })`
 ```

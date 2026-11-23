@@ -31,7 +31,7 @@ node .agents/skills/verify-calculator/scripts/drive.mjs --scenario <场景>
 | `auto-equals` | AEQ-02 … AEQ-14 | auto-equals |
 | `mobile-layout` | LAY-01 … LAY-08 | mobile-layout |
 
-仓库自带的 `tests/suite.mjs`（18 场景、206 检查）是独立回归基线；本目录的驱动额外负责设置持久化、截图与 ARIA 证据。改动计算/历史/编辑语义时两者都要跑。
+仓库自带的 `tests/suite.mjs`（43 场景、673 检查）是独立回归基线；本目录的驱动额外负责设置持久化、截图与 ARIA 证据。改动计算/历史/编辑语义时两者都要跑。
 
 ---
 
@@ -173,6 +173,65 @@ node .agents/skills/verify-calculator/scripts/drive.mjs --scenario <场景>
 
 ---
 
+## PAUSE · 结果后暂停输入（suite 新增）
+
+设置项 `resultPause`，默认 `1` 秒，取值 0–10、一位小数，`0` 为关闭。只拦数字与小数点，不拦运算符。
+
+| ID | P | 前置/入口 | 步骤 | 预期结果 | 断言前缀 | 场景 |
+| --- | --- | --- | --- | --- | --- | --- |
+| PAUSE-01 | P1 | 默认设置，算完 `5 + 6 =` | 立即点 `9` | 显示区仍空；算式 `5 + 6`、结果 `11`、状态 `result`（输入被静默丢弃） | `settings-pause.default.blocked-*` | settings-pause |
+| PAUSE-02 | P1 | 上一条状态 | 点 `退格` | 算式/结果/状态都不变 | `settings-pause.default.backspace-*` | settings-pause |
+| PAUSE-03 | P1 | 上一条状态 | 点 `-`，再点 `8` | 运算符照常生效：状态转 `input`、结果清空；`8` 进入显示区 | `settings-pause.default.operator-*` | settings-pause |
+| PAUSE-04 | P1 | `resultPause=0` | 算完后立即点 `9` | 立即进入 `input`，显示区 `9`，算式/结果清空 | `settings-pause.zero.*` | settings-pause |
+| PAUSE-05 | P1 | `resultPause=0.5` | 算完后轮询点击 `9` | 首次点击被拒；至少第 2 次轮询后接受（证明暂停按时间结束而非立即失效） | `settings-pause.restore.polls`、`restore.*` | settings-pause |
+| PAUSE-06 | P1 | 设置面板 | 输入 `12` 后失焦 | 字段回到原值，存储值不变（越界不接受） | `settings-pause.panel.reject-*`、`revert-*` | settings-pause |
+| PAUSE-07 | P1 | 设置面板 | 输入 `2.5`，关闭面板并刷新 | 字段与 `localStorage.resultPause` 均为 `2.5` | `settings-pause.panel.accepted/persisted/*-after-reload` | settings-pause |
+
+## NUM · 数值边界（suite 新增，4 个场景）
+
+| ID | P | 前置/入口 | 步骤 | 预期结果 | 断言前缀 | 场景 |
+| --- | --- | --- | --- | --- | --- | --- |
+| NUM-01 | P1 | `resultPause=0` | 计算 `5 - 12` | 算式 `5 - 12`；结果文本与 `data-value` 均为 `-7`；历史 1 条 `-7` | `number-negative.result.*` | number-negative |
+| NUM-02 | P1 | 基数 `-5` | 计算 `+ 3 + 2 =` | 算式 `-5 + 3 + 2`；结果 `0`；标记 `基数 -5`；历史 `data-base="-5"` | `number-negative.base.*` | number-negative |
+| NUM-03 | P2 | `resultPause=0` | 计算 `0.1 + 0.2` | 结果 `0.30000000000000004`（float64，不四舍五入）；历史同值 | `number-float-display.sum.*` | number-float-display |
+| NUM-04 | P2 | 同上 | 计算 `1 / 3` | `0.3333333333333333` | `number-float-display.third.*` | number-float-display |
+| NUM-05 | P2 | 同上 | 选 `+`，输入 20 位 `12345678901234567890` 后 `=` | 算式保留 20 位字面量；结果 `12345678901234567000`（float64） | `number-float-display.long.*` | number-float-display |
+| NUM-06 | P2 | 同上 | 输入 `007` 回车、`.5` 回车、`=` | 算式保留字面量 `007 + .5`；结果 `7.5`；历史 operands 为 `["007",".5"]` | `number-literal-preserved.*` | number-literal-preserved |
+| NUM-07 | P1 | 同上 | 计算 `9.5 + 9.2 + 9` | `27.7`（十进制和不漂移） | `number-decimal-sum.*` | number-decimal-sum |
+
+## STORE · 计算器设置存储健壮性（suite 新增，3 个场景）
+
+键 `cal-phone.settings.v1`；形状含 `autoConfirm/autoEquals/resultPause/baseEnabled/baseValue/haptics/voiceKeys/voiceResult`。
+
+| ID | P | 前置/入口 | 步骤 | 预期结果 | 断言前缀 | 场景 |
+| --- | --- | --- | --- | --- | --- | --- |
+| STORE-01 | P1 | 键值写成 `{not json` | 加载页面并打开设置 | 页面进入 `select`、无 pageerror；面板为默认值（0/0/1/未勾选/震动勾选） | `settings-storage-corrupt.*` | settings-storage-corrupt |
+| STORE-02 | P1 | 写入越界值 | 加载并打开设置 | `autoConfirm 999→0`、`autoEquals -3→0`、`resultPause 99→1`；`baseEnabled:true` 保留；`baseValue:"abc"→"0"`；`haptics:"no"→勾选` | `settings-storage-corrupt.range-*` | settings-storage-corrupt |
+| STORE-03 | P1 | 面板改暂停 `2.5`、关震动 | 读存储并刷新 | 存储含 8 个键且仅此一键；刷新后面板保持，且暂停行为仍生效 | `settings-storage-round-trip.*` | settings-storage-round-trip |
+| STORE-04 | P1 | `localStorage` 读写抛错 | 加载并计算 `2 + 3 =` | 显示"本机存储不可用"警告；结果 `5`；无 pageerror | `settings-storage-denied.*` | settings-storage-denied |
+
+## KEYF · 物理键盘与焦点（suite 新增，4 个场景）
+
+| ID | P | 前置/入口 | 步骤 | 预期结果 | 断言前缀 | 场景 |
+| --- | --- | --- | --- | --- | --- | --- |
+| KEYF-01 | P1 | 打开设置面板 | 按 `7` | 显示区仍空、状态与算式不变（模态吞掉物理键） | `keyboard-dialog.*` | keyboard-dialog |
+| KEYF-02 | P1 | 设置面板打开 | 按 `Esc` | 面板关闭；焦点回到齿轮；`aria-expanded=false` | `keyboard-dialog.focus-returned/aria-expanded` | keyboard-dialog |
+| KEYF-03 | P1 | 结果态 | 按 `5` | 开始新计算：状态 `input`、显示区 `5`、算式清空；`运算类型` 回到 `select` | `keyboard-result-state.*` | keyboard-result-state |
+| KEYF-04 | P1 | 编辑草稿 | 按 `7` 再按 `Enter` | 显示区先收 `7`；确认后草稿多一个操作数（3 个，`["2","3","7"]`）、算式 `2 + 3 + 7 +`、提示"已加入 7，可继续编辑或按 = 重算" | `keyboard-edit-draft.*` | keyboard-edit-draft |
+| KEYF-05 | P1 | 编辑草稿 | 聚焦第 1 个操作数输入框后按 `5` | 字符进入该输入框；显示区不变；chip `data-value=5` | `keyboard-operand-input.*` | keyboard-operand-input |
+| KEYF-06 | P2 | 编辑草稿 | 按 `Esc` | 草稿保持打开（当前行为；与设置面板不一致，待产品决定） | `keyboard-edit-draft.escape-*` | keyboard-edit-draft |
+
+## HAP · 按键震动（suite 新增）
+
+| ID | P | 前置/入口 | 步骤 | 预期结果 | 断言前缀 | 场景 |
+| --- | --- | --- | --- | --- | --- | --- |
+| HAP-01 | P2 | 默认开启 | 依次按 `1 2 退格 + 3 确认 =` | `navigator.vibrate` 被调用 7 次，参数均为 `10` | `settings-haptics.on.*` | settings-haptics |
+| HAP-02 | P2 | 默认开启 | 用物理键盘输入 `5`、`Enter` | 震动 0 次；计算照常 | `settings-haptics.keyboard.*` | settings-haptics |
+| HAP-03 | P2 | `haptics=false` | 重放同一按键序列 | 震动 0 次，结果 `4` 不变 | `settings-haptics.off.*` | settings-haptics |
+| HAP-04 | P2 | 面板取消勾选 | 读存储并刷新 | 存储 `haptics=false`；刷新后仍静音且输入正常 | `settings-haptics.toggle.*` | settings-haptics |
+
+---
+
 ## 明确不在范围内
 
 以下内容**没有**用例，因为它们不是该应用的行为契约：
@@ -181,7 +240,7 @@ node .agents/skills/verify-calculator/scripts/drive.mjs --scenario <场景>
 - 跨浏览器一致性：当前只在 Chromium（Playwright）验证；Safari/Firefox 差异未覆盖。
 - 任意精度小数：使用 JavaScript float64，`1 / 3` 的展示就是 `0.3333333333333333`，不做四舍五入断言。
 - 外部账号、网络、存储：应用无这些依赖，无需前置数据。
-- 设置损坏的 `localStorage` 迁移：只在 `try/catch` 层面保证不崩溃，不构造损坏数据。
+- 存储结构版本迁移：坏 JSON 与越界值已由 `settings-storage`、`roster-storage` 覆盖；但没有"旧版本数据迁移到新结构"的用例，当前不存在版本升级逻辑。
 - 动画逐帧效果：只断言 `data-active` 与几何尺寸，不比对进度条像素宽度。
 
 ## 变更检查清单

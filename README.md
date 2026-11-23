@@ -38,7 +38,7 @@ kekkai lint "Telos/<gate>" --post          # Kekkai 证据与终态一致性
 node .agents/skills/verify-calculator/scripts/doctor.mjs        # doctor=ok
 node .agents/skills/verify-calculator/scripts/drive.mjs --list  # 12 个场景
 node .agents/skills/verify-calculator/scripts/drive.mjs --scenario auto-equals
-cd tests && node suite.mjs                 # 18 场景 / 206 检查的独立回归基线
+cd tests && node suite.mjs                 # 43 场景 / 673 检查的独立回归基线
 ```
 
 语音播报有常驻仓库的独立套件（本地 HTTP + Playwright + 假引擎，不依赖 `voice/` 或公网）：
