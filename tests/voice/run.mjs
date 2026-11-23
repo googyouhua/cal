@@ -831,8 +831,8 @@ function testRegression() {
   const results = Array.isArray(parsed?.results) ? parsed.results : [];
   const scenarioChecks = results.flatMap((result) => (Array.isArray(result.checks) ? result.checks : []));
   eq(checks, "regression.suite-exit", run.status, 0, String(run.stderr || "").slice(0, 500));
-  eq(checks, "regression.scenarios", results.length, 29);
-  eq(checks, "regression.checks", scenarioChecks.length, 507);
+  eq(checks, "regression.scenarios", results.length, 43);
+  eq(checks, "regression.checks", scenarioChecks.length, 673);
   eq(
     checks,
     "regression.every-scenario-pass",
