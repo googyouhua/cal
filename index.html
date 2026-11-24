@@ -1110,15 +1110,18 @@
 
   .roster-list {
     display: grid;
-    gap: 8px;
+    gap: 6px;
     min-width: 0;
   }
 
   .roster-row {
     min-width: 0;
-    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px 8px;
+    padding: 4px 8px;
     border: 1px solid rgba(148, 163, 184, 0.18);
-    border-radius: 14px;
+    border-radius: 10px;
     background: rgba(7, 12, 22, 0.58);
   }
 
@@ -1126,6 +1129,10 @@
     border-color: rgba(251, 191, 36, 0.55);
     background: rgba(245, 158, 11, 0.1);
     box-shadow: inset 3px 0 0 var(--accent);
+  }
+
+  .roster-row[data-skipped="true"] {
+    opacity: 0.62;
   }
 
   .roster-row.editing {
@@ -1149,34 +1156,28 @@
 
   .roster-top,
   .roster-bottom {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px 10px;
-    min-width: 0;
-  }
-
-  .roster-bottom {
-    margin-top: 6px;
+    display: contents;
   }
 
   .roster-seq {
     flex: 0 0 auto;
-    min-width: 24px;
+    min-width: 20px;
     color: #fde68a;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 800;
-    line-height: 1.4;
+    line-height: 1.2;
   }
 
   .roster-identity {
     display: flex;
-    flex: 1 1 150px;
-    flex-wrap: wrap;
-    gap: 2px 9px;
+    flex: 1 1 90px;
+    flex-wrap: nowrap;
+    align-items: baseline;
+    gap: 2px 6px;
     min-width: 0;
-    font-size: 14px;
-    line-height: 1.4;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.25;
   }
 
   .roster-name,
@@ -1199,44 +1200,56 @@
 
   .roster-next-badge {
     flex: 0 0 auto;
-    padding: 3px 8px;
+    padding: 1px 6px;
     border: 1px solid rgba(251, 191, 36, 0.45);
     border-radius: 999px;
     background: rgba(245, 158, 11, 0.16);
     color: #fef3c7;
     font-size: 12px;
     font-weight: 750;
-    line-height: 1.35;
+    line-height: 1.3;
+    white-space: nowrap;
   }
 
   .roster-edit-badge {
     flex: 0 0 auto;
-    padding: 3px 8px;
+    padding: 1px 6px;
     border: 1px solid rgba(56, 189, 248, 0.6);
     border-radius: 999px;
     background: rgba(14, 116, 144, 0.28);
     color: #e0f2fe;
     font-size: 12px;
     font-weight: 800;
-    line-height: 1.35;
+    line-height: 1.3;
+    white-space: nowrap;
   }
 
   .roster-expression {
-    flex: 1 1 130px;
+    flex: 1 1 60px;
     min-width: 0;
-    overflow-wrap: anywhere;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     color: #dbeafe;
-    font-size: 13px;
-    line-height: 1.45;
+    font-size: 12.5px;
+    line-height: 1.3;
+  }
+
+  .roster-expression:empty {
+    display: none;
   }
 
   .roster-score {
     flex: 0 0 auto;
+    min-width: 0;
+    max-width: 40%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     color: var(--accent);
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 800;
-    line-height: 1.3;
-    overflow-wrap: anywhere;
+    line-height: 1.2;
   }
 
   .roster-score.empty {
@@ -1246,15 +1259,16 @@
 
   .roster-edit {
     flex: 0 0 auto;
-    min-width: 62px;
-    min-height: 44px;
-    padding: 0 12px;
+    min-width: 44px;
+    min-height: 28px;
+    padding: 2px 8px;
     border: 1px solid rgba(251, 191, 36, 0.28);
-    border-radius: 11px;
+    border-radius: 8px;
     background: #1c293f;
     color: #fde68a;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 700;
+    line-height: 1.3;
     cursor: pointer;
   }
 
@@ -1489,9 +1503,9 @@
 
   .import-mode {
     display: grid;
-    gap: 8px;
+    gap: 4px;
     margin: 0;
-    padding: 10px;
+    padding: 6px;
     border: 1px solid rgba(148, 163, 184, 0.3);
     border-radius: 11px;
     min-width: 0;
@@ -1506,21 +1520,21 @@
 
   .import-mode-option {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
-    min-height: 44px;
-    padding: 8px;
+    min-height: 30px;
+    padding: 4px 8px;
     border-radius: 9px;
     color: var(--ink);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 1.45;
+    line-height: 1.35;
     cursor: pointer;
   }
 
   .import-mode-option input {
-    width: 44px;
-    height: 44px;
+    width: 28px;
+    height: 28px;
     flex: 0 0 auto;
     margin: 0;
     accent-color: #f59e0b;
@@ -1955,6 +1969,7 @@
     let pendingEdit = null;
     let editRosterSeq = null;
     let roster = null;
+    let skippedSeqs = new Set();
     let pendingImport = null;
     let importOpener = null;
     let storageUnavailable = false;
@@ -2089,17 +2104,84 @@
       return row.name || row.id || `第 ${row.seq} 位`;
     }
 
-    function nextEmptyRow() {
+    function nextUnskippedRow(afterSeq) {
       if (!roster) {
         return null;
       }
       let next = null;
+      let first = null;
       for (const row of roster.rows) {
-        if (row.entry === null && (next === null || row.seq < next.seq)) {
-          next = row;
+        if (row.entry === null && !skippedSeqs.has(row.seq)) {
+          if (first === null || row.seq < first.seq) {
+            first = row;
+          }
+          if (row.seq > afterSeq && (next === null || row.seq < next.seq)) {
+            next = row;
+          }
         }
       }
-      return next;
+      return next === null ? first : next;
+    }
+
+    function firstUnfilledRow(afterSeq) {
+      if (!roster) {
+        return null;
+      }
+      let next = null;
+      let first = null;
+      for (const row of roster.rows) {
+        if (row.entry === null) {
+          if (first === null || row.seq < first.seq) {
+            first = row;
+          }
+          if (row.seq > afterSeq && (next === null || row.seq < next.seq)) {
+            next = row;
+          }
+        }
+      }
+      return next === null ? first : next;
+    }
+
+    function nextEmptyRow() {
+      return nextUnskippedRow(-Infinity) || firstUnfilledRow(-Infinity);
+    }
+
+    function maybeSkipRoster() {
+      if (!roster) {
+        return false;
+      }
+      if (editRosterSeq !== null) {
+        return false;
+      }
+      if (state !== "select" && state !== "input" && state !== "result" && state !== "error") {
+        return false;
+      }
+      if (input.value.trim() !== "") {
+        return false;
+      }
+      if (operands.length !== 0) {
+        return false;
+      }
+      const current = nextEmptyRow();
+      if (!current) {
+        updateStateLabel("名单已录满；按 = 只计算结果，不再写入名单");
+        input.focus();
+        return true;
+      }
+      skippedSeqs.add(current.seq);
+      let next = nextUnskippedRow(current.seq);
+      if (!next) {
+        skippedSeqs.clear();
+        next = firstUnfilledRow(current.seq);
+      }
+      renderRoster();
+      if (next) {
+        updateStateLabel(`已跳过 ${current.seq} ${rosterLabel(current)}；下一位 ${next.seq} ${rosterLabel(next)}`);
+      } else {
+        updateStateLabel(`已跳过 ${current.seq} ${rosterLabel(current)}；名单已录满`);
+      }
+      input.focus();
+      return true;
     }
 
     function showStorageUnavailable() {
@@ -2352,6 +2434,10 @@
         item.setAttribute("data-id", row.id);
         if (next && next.seq === row.seq) {
           item.setAttribute("data-next", "true");
+        }
+        if (skippedSeqs.has(row.seq) && row.entry === null) {
+          item.setAttribute("data-skipped", "true");
+          item.setAttribute("title", "已跳过（本次会话内跳过，不计成绩）");
         }
         if (editRosterSeq !== null && editRosterSeq === row.seq) {
           item.classList.add("editing");
@@ -3093,6 +3179,7 @@
       }
       const keptCount = built.rows.filter((row) => row.entry !== null).length;
       roster = built;
+      skippedSeqs.clear();
       pendingImport = null;
       history = [];
       historyList.textContent = "";
@@ -3127,6 +3214,7 @@
       }
       roster = null;
       pendingImport = null;
+      skippedSeqs.clear();
       editRosterSeq = null;
       history = [];
       historyList.textContent = "";
@@ -4774,6 +4862,9 @@
     }
 
     function calculate() {
+      if (maybeSkipRoster()) {
+        return;
+      }
       if (state !== "input" && state !== "result" && state !== "error" && state !== "edit") {
         return;
       }

@@ -101,25 +101,26 @@ export const rosterFill = {
       eq(checks, "roster-fill.divzero.next", await page.locator('[data-testid="roster-next"]').getAttribute("data-seq"), "1");
       await page.click(S.equals);
       eq(checks, "roster-fill.empty.filled", (await rosterRows(page)).filter((row) => row.filled === "true").length, 0);
-      eq(checks, "roster-fill.empty.next", await page.locator('[data-testid="roster-next"]').getAttribute("data-seq"), "1");
+      eq(checks, "roster-fill.empty.next", await page.locator('[data-testid="roster-next"]').getAttribute("data-seq"), "2");
+      check(checks, "roster-fill.empty.skip-label", (await page.locator("#state-label").textContent()).includes("跳过"), await page.locator("#state-label").textContent());
 
       await compute(page, "+", ["10", "20"]);
       await page.waitForFunction(() => document.querySelectorAll('[data-testid="roster-row"][data-filled="true"]').length === 1);
       eq(checks, "roster-fill.first.rows", (await rosterRows(page)).map((row) => [row.filled, row.score]), [
+        ["false", "—"],
         ["true", "30"],
         ["false", "—"],
-        ["false", "—"],
       ]);
-      eq(checks, "roster-fill.first.next", await page.locator('[data-testid="roster-next"]').getAttribute("data-seq"), "2");
+      eq(checks, "roster-fill.first.next", await page.locator('[data-testid="roster-next"]').getAttribute("data-seq"), "3");
 
       await compute(page, "+", ["3", "4"]);
       await page.waitForFunction(() => document.querySelectorAll('[data-testid="roster-row"][data-filled="true"]').length === 2);
       eq(checks, "roster-fill.second.rows", (await rosterRows(page)).map((row) => [row.filled, row.score, row.expression]), [
+        ["false", "—", ""],
         ["true", "30", "10 + 20"],
         ["true", "7", "3 + 4"],
-        ["false", "—", ""],
       ]);
-      check(checks, "roster-fill.second.label", (await page.locator("#state-label").textContent()).includes("已记录 2 李四"), await page.locator("#state-label").textContent());
+      check(checks, "roster-fill.second.label", (await page.locator("#state-label").textContent()).includes("已记录 3 王五"), await page.locator("#state-label").textContent());
 
       await compute(page, "+", ["5", "6"]);
       await page.waitForFunction(() => document.querySelectorAll('[data-testid="roster-row"][data-filled="true"]').length === 3);
@@ -128,7 +129,7 @@ export const rosterFill = {
 
       await compute(page, "+", ["1", "1"]);
       eq(checks, "roster-fill.full.result", await resultValue(page), "2");
-      eq(checks, "roster-fill.full.scores", (await rosterRows(page)).map((row) => row.score), ["30", "7", "11"]);
+      eq(checks, "roster-fill.full.scores", (await rosterRows(page)).map((row) => row.score), ["11", "30", "7"]);
       eq(checks, "roster-fill.full.count", await page.locator('[data-testid="roster-row"]').count(), 3);
       check(checks, "roster-fill.full.label", (await page.locator("#state-label").textContent()).includes("名单已录满"), await page.locator("#state-label").textContent());
       clean(checks, "roster-fill.clean", app.pageErrors, app.consoleErrors);

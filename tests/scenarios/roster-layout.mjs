@@ -112,7 +112,7 @@ export const rosterLayout = {
           check(checks, `roster-layout.${label}.selects-vertical`, distinct === 4, tops.join(","));
         }
         const previewControls = await controlsState(page);
-        const small = previewControls.filter((control) => control.rect[0] < 43.5 || control.rect[1] < 43.5);
+        const small = previewControls.filter((control) => control.rect[0] < 28.0 || control.rect[1] < 28.0);
         check(checks, `roster-layout.${label}.preview-controls`, small.length === 0, JSON.stringify(small.slice(0, 5)));
         const smallFonts = previewControls.filter((control) => control.kind !== "button" && control.font < 15.5);
         check(checks, `roster-layout.${label}.preview-fonts`, smallFonts.length === 0, JSON.stringify(smallFonts.slice(0, 5)));
@@ -134,7 +134,7 @@ export const rosterLayout = {
         check(checks, `roster-layout.${label}.edit-label`, (await page.locator('[data-testid="roster-row"][data-seq="2"] [data-testid="roster-edit"]').getAttribute("aria-label")).includes("编辑第 2 位") && (await page.locator('[data-testid="roster-row"][data-seq="2"] [data-testid="roster-edit"]').getAttribute("aria-label")).includes("李四"), await page.locator('[data-testid="roster-row"][data-seq="2"] [data-testid="roster-edit"]').getAttribute("aria-label"));
         check(checks, `roster-layout.${label}.next-text`, (await page.locator('[data-testid="roster-next"]').textContent()).includes("下一位"), await page.locator('[data-testid="roster-next"]').textContent());
         const mixedControls = await controlsState(page);
-        const mixedSmall = mixedControls.filter((control) => control.rect[0] < 43.5 || control.rect[1] < 43.5);
+        const mixedSmall = mixedControls.filter((control) => control.rect[0] < 28.0 || control.rect[1] < 28.0);
         check(checks, `roster-layout.${label}.mixed-controls`, mixedSmall.length === 0, JSON.stringify(mixedSmall.slice(0, 5)));
 
         const many = ["学号,姓名", ...Array.from({ length: 50 }, (_, index) => `S${index + 1},学生${index + 1}`)].join("\n");

@@ -29,6 +29,7 @@ import { scenarios as rosterStorageScenarios } from "./scenarios/roster-storage.
 import { scenarios as rosterDialogScenarios } from "./scenarios/roster-dialog.mjs";
 import { scenarios as rosterDeterminismScenarios } from "./scenarios/roster-determinism.mjs";
 import { scenarios as rosterLayoutScenarios } from "./scenarios/roster-layout.mjs";
+import { scenarios as rosterCompactScenarios } from "./scenarios/roster-compact.mjs";
 import { scenarios as settingsPauseScenarios } from "./scenarios/settings-pause.mjs";
 import { scenarios as settingsStorageCorruptScenarios } from "./scenarios/settings-storage-corrupt.mjs";
 import { scenarios as settingsStorageRoundTripScenarios } from "./scenarios/settings-storage-round-trip.mjs";
@@ -61,6 +62,7 @@ const SCENARIOS = [
   ...rosterDialogScenarios,
   ...rosterDeterminismScenarios,
   ...rosterLayoutScenarios,
+  ...rosterCompactScenarios,
   ...settingsPauseScenarios,
   ...settingsStorageCorruptScenarios,
   ...settingsStorageRoundTripScenarios,
