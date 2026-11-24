@@ -1,0 +1,29 @@
+{
+  "archived_at": "2026-11-24T00:43:12.935Z",
+  "source_worktree": "/ws/cal_phone",
+  "source_branch": "score-tally-settings",
+  "source_head": "00b0d5873a37280e1b29198e481e56099dddbc01",
+  "gate_slug": "roster-import-v2-112203",
+  "gate_status": "in-loop",
+  "gate_repo": "/ws/cal_phone",
+  "gate_artifact": "/ws/cal_phone/index.html",
+  "stop": "STOP: rounds=0 reason=blocked by=instrument",
+  "declared": null,
+  "artifact": {
+    "path": "/ws/cal_phone/index.html",
+    "sha256": "9aa1325b354d7695842884040c92200175fa2ecc6f121b3008cf28a305dfdb21",
+    "declared_sha256": null,
+    "matches_declared": false,
+    "stale": false,
+    "copy": null,
+    "main_path": "/ws/cal_phone/index.html",
+    "main_sha256": "9aa1325b354d7695842884040c92200175fa2ecc6f121b3008cf28a305dfdb21",
+    "matches_main": true
+  },
+  "tree": {
+    "source_sha256_at_archive": "daa6ee5def365212fa9b6786004cac974f53268373e81bfdc17f4e2e85360f56",
+    "main_sha256_at_archive": "5518a6cc6f407615668126d5a6b0afd41bf1e6ccf7ec30ea6ed5f66d4801f489",
+    "note": "TREE_SHA256 is content-based and includes every non-gate file; adding tooling/docs later changes it. The declared value comes from the gate run and is the authoritative one for that run."
+  },
+  "note": "Archived evidence belongs to the source worktree/checkout. It is not an active gate and does not attest later edits in the main worktree."
+}
