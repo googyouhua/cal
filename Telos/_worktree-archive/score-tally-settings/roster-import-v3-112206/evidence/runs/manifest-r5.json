@@ -1,0 +1,56 @@
+{
+  "round": 5,
+  "artifact_sha256": "ac960c9bfe65e214dd630f3832e68acb442b94ca6bdffccfe6ebb4dfc2e1d9d3",
+  "verifier_sha256": "0aec99f78d9e52bace2179b2af194795aa3448b44a23af975994b786eaddc1f4",
+  "metrics_sha256": "b2ab80f7d818b62bb2f0acdad211f4afbe8f94b768c0949e725f59a392b18e00",
+  "shots": [
+    {
+      "file": "S1.png",
+      "sha256": "c0eca99675edb962b793d29b408cbbb5d58e89e255a981c33013aaa57a43fad0",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "S2.png",
+      "sha256": "25bc040a5616c4f2bd4fcc3ec73a44e48a6de55a72b961c242d65cabd7c3d305",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "S3.png",
+      "sha256": "cbb17162e1e59df44ef15caf0ebdbd3ebbfff10490bc801dcf74ce3532ca3b0f",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "S4.png",
+      "sha256": "967a04a6144068f95e227c55534c04374a3b96b25e8747421348864a3861ed66",
+      "width": 320,
+      "height": 568
+    }
+  ],
+  "adhoc": [
+    {
+      "file": "adhoc-r5-1.txt",
+      "sha256": "b90ac3bb686707870ac07db8e2da76f196324e5f364eb585bb7c32d8191995b7",
+      "command": [
+        "node",
+        "/tmp/adhoc_r5_evidence.mjs"
+      ],
+      "exit": 0,
+      "ts": "2026-11-22T10:24:36.076Z"
+    },
+    {
+      "file": "adhoc-r5-2.txt",
+      "sha256": "10eae19b1b426baa3965d66735e2665544e647d6c5424030089debbf8133c333",
+      "command": [
+        "node",
+        "/tmp/adhoc_r5_s2state.mjs"
+      ],
+      "exit": 0,
+      "ts": "2026-11-22T10:24:42.117Z"
+    }
+  ],
+  "tree_sha256": "597a48103add482628d3567deea4e29b1733ca0594397675c2c33c4e47ad51c0",
+  "runner_sha256": "f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a"
+}

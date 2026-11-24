@@ -1,0 +1,20 @@
+ROUND: 1
+ARTIFACT_SHA256: 98b4cad4d750f1ef50b054d322bb1b0c8085331cc83adbb133cc648ef38738d4
+TREE_SHA256: 13808ef80b941709a2c2890df22d9b11a7f030f69c4a14bdac70e1b4506544ff
+VERIFIER_SHA256: 0aec99f78d9e52bace2179b2af194795aa3448b44a23af975994b786eaddc1f4
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 1
+ARTIFACT_SHA256: 98b4cad4d750f1ef50b054d322bb1b0c8085331cc83adbb133cc648ef38738d4
+H1 PASS — suite roster-import 48/48: A(BOM/CRLF,3人) P1 count=3 rows=[1|张三|20230101|false,2|李四|20230102|false,3|王五|20230103|false]; paste Q1 count=3; GBK-Tab Q2 count=2; 0字节拒绝 errlen=21 rows=0 ls=null; 全部pageerror=0
+H2 PASS — suite roster-map 26/26: 自定义表头默认select=["4","","",""] map=id-index=4; 学号→考号/姓名→学生/成绩→总分/序号→No.逐次count稳定; 碰撞不静默改; 双空confirm.disabled+map-note; 确认存储roles+导出CSV一致, 重导再导出一致
+H3 PASS — suite roster-mode 24/24: A2录1条后B2预览 K/D/A=1/1/2且默认保留; 保留后20230101/20230102成绩在, 20230104旧成绩丢弃, 20230105空, 顺序按B2; 清空全空; 重复学号/无交集仅清空且confirm文本=清空并开始录入; 取消/Esc旧名单+成绩逐字段不变
+H4 PASS — suite roster-dialog 4/4: 结果态(=50/=24)开导入预览→取消/Esc状态/输入/算式/结果逐项不变且无roster; autoConfirm=0.2下开导入1200ms无计算无名单且输入仍为1倒计时重现; dialog开时物理键5/Enter/=被屏蔽; voice回归中speech-played长度不再增长且pageerror=0
+H5 PASS — suite roster-fill 44/44 + roster-compute 13/13: 5/0=与空=后名单data-filled全false; +10/20/+3/4/+5/6逐次filled数递增score/expression/roster-next正确; autoEquals=2回填seq1; base=100下+10=score=110存储一致; resultPause=1/0两态=后按键行为与名单正确
+H6 PASS — suite roster-edit 35/35 + edit-*全绿: 满录后第2行operand 1→7改后三行score正确行数不变, reload第2行一致; 5人录2条编辑第1行roster-next[data-seq]正确; 编辑中点第3行被保护, cancel后可切; 50行末行编辑draft定位/position/偏移/maxHeight合规, done/cancel焦点正确
+H7 PASS — suite roster-storage 42/42: 录2条后localStorage JSON逐字段正确, reload名单/成绩/next/state全恢复; 清除后键删除roster消失history=0且reload仍无; get/set抛错时内存生效+storage-warning精确可见pageerror=0; 5种坏数据(坏JSON/版本/缺roles/非法role/非法entry)无roster+data-warning精确+原值逐字未变
+H8 PASS — suite roster-export 19/19 + P2实测: 导出头efbbbf(CRLF,去BOM后≥4行) 文件名A-成绩-20261122.csv(日期=验收日,前缀=原文件名) bytes=132; 缺序号/缺成绩/同义/自定义全映射/未映射/引号6态补列写回转义正确; 导出前后快照+存储+计算态不变; 导出文件重导3人姓名学号一致且全data-filled=false
+H9 PASS — suite roster-layout 41/41 + layout 26/26: 390×844与320(CDP)6态(入口/粘贴/预览/3行混合/50行/编辑)documentElement/body横向溢出=0; input/button字体≥最小值; select 320下纵排; roster语义tag/role, 第3行edit aria-label, roster-next文本正确; dialog open/:modal/activeElement与Esc关闭正确
+H10 PASS — 五sha全对(core 2b35…/continuity d53f…/edit f611…/layout c96e…/determinism 64bc…); voice/run.mjs仅改2行期望值(18→29,206→507); 全套29场景507检查全PASS; --list 29项roster-前缀11个覆盖import/fill/edit/export/storage; --only 11场景301检查全PASS; voice两次63/66失败集同为{result.crash,queue.quick-no-result,queue.quick-keys}≤3, regression.scenarios=29/checks=507均PASS
+H11 PASS — 161599字节含</html>, 外链0(script/link/img/source/@import全0,url仅blob/相对wasm); 全套件pageErrors+consoleErrors=0, 探针P1/P2/P3/Q1/Q2/Q3零错误; 双context(导入A+映射+录2条+改第1行)行data-seq/name/id/filled+score/expression+存储+导出CSV深度一致; determinism 6/6+roster-determinism 5/5
+HARD: PASS

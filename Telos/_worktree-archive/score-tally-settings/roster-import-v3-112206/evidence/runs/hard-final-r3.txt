@@ -1,0 +1,20 @@
+ROUND: 3
+ARTIFACT_SHA256: 38fb8878cf5f9ba2827950d71a93e92c1f10679d35253ee521ecc5737c6c1ff2
+TREE_SHA256: cda16dc242404f91f6b67880a51699dc8f35fe92375c06d9fefcf9e3c4907b43
+VERIFIER_SHA256: 0aec99f78d9e52bace2179b2af194795aa3448b44a23af975994b786eaddc1f4
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 3
+ARTIFACT_SHA256: 38fb8878cf5f9ba2827950d71a93e92c1f10679d35253ee521ecc5737c6c1ff2
+H1 PASS — suite roster-import 48/48 pass; import-dialog open probe ok; reject/sample paths covered by suite clean checks pageerrors=0
+H2 PASS — suite roster-map 26/26 pass; roles remap/conflict/empty-confirm rules verified by scenario checks
+H3 PASS — suite roster-mode 24/24 pass; keep/clear default K/D/A, dup-id force-clear, reselect/cancel paths verified
+H4 PASS — suite roster-dialog 4/4 pass + roster-compute 13/13 pass; import-during-result/cancel/Esc/keyboard-guard covered, pageerrors=0
+H5 PASS — suite roster-fill 44/44 pass + roster-compute 13/13 pass; mult/div-zero/empty-equals fill-next/summary/state verified
+H6 PASS — suite roster-edit 35/35 pass; edit-recompute/reload/next-seq/switch-guard/50-row overlay paths verified
+H7 PASS — suite roster-storage 42/42 pass; v1 round-trip/reload/clear/blocked-storage/corrupt-data warnings verified, pageerrors=0
+H8 PASS — suite roster-export 19/19 pass; BOM/CRLF/filename-date/quote-escape/remap/reimport-unfilled verified, state unchanged
+H9 PASS — suite roster-layout 41/41 pass; 390x844+320x568 overflow/font/role/aria/dialog-modal verified
+H10 PASS — frozen sha 5/5 match; suite 29/29 scenarios 507/507 checks pass; roster- ids 11 cover import/fill/edit/export/storage; voice 2 runs min-fails=3 {result.crash,queue.quick-no-result,queue.quick-keys}; regression.scenarios=29 PASS regression.checks=507 PASS; voice/run.mjs diff only 2 allowed lines
+H11 PASS — self-contained 4/4 + determinism 6/6 + roster-determinism 5/5 pass; static bytes=164384 hasCloseHtml=true external=0 url-paren=3 local-only; suite clean pageerrors=0
+HARD: PASS

@@ -1,0 +1,15 @@
+ROUND: 2
+ARTIFACT_SHA256: 1940f5f8faaf65bfcb053d44e8bee66bb1dcfaf5157d5c9818b08b6f5facb975
+TREE_SHA256: a2886af8b155972a4e727922c7a7c82d855e0a061a17984a82d9bca0fe501bdb
+VERIFIER_SHA256: 0aec99f78d9e52bace2179b2af194795aa3448b44a23af975994b786eaddc1f4
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+COMMAND: ["node","/tmp/adhoc_trunc.mjs"]
+CWD: /ws/cal_phone
+EXIT: 0
+
+[stdout]
+S2.selects=[{"id":"import-id-column","text":"第 1 列：编号","clientW":162,"scrollW":162},{"id":"import-name-column","text":"第 2 列：学生","clientW":162,"scrollW":162},{"id":"import-score-column","text":"第 4 列：总分","clientW":162,"scrollW":162},{"id":"import-seq-column","text":"无","clientW":162,"scrollW":162}]
+S2.selects.truncated=false
+
+[stderr]

@@ -1,0 +1,15 @@
+{
+  "round": 3,
+  "model_profile": "muse-spark-1.3-v1",
+  "tree_sha256": "4c10b8c5153f940f557a54199401dd613fec27c0a33b866ceda55793ab3258b3",
+  "tree_sha256_w": "d0f60fe4977ccc4bf2cfb08647acf95d925bc887ecab34683b8da33d9d3c4c7d",
+  "verifier_sha256": "88af35b19523b91ab540c34393e54465c8072a0dba2dd3e59b2ee885f185ceec",
+  "runner_sha256": "f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a",
+  "artifact_sha256": "9aa1325b354d7695842884040c92200175fa2ecc6f121b3008cf28a305dfdb21",
+  "fail_set": [],
+  "pass": true,
+  "era": 1,
+  "changed_paths": [],
+  "attempt_dir": "evidence/attempts/replay-r3-20261123-100850-822",
+  "ts": "2026-11-23T10:11:12.582Z"
+}

@@ -1,0 +1,21 @@
+ROUND: 7
+ARTIFACT_SHA256: ed2e034f537aeaa4a4fe98a3f2d333469447df9e13f03e1b58092a9c1bd1f400
+TREE_SHA256: af7cd82dc5733574d580a2d4a4532369e87a358960a85011d01ea7a97a0c5ffc
+VERIFIER_SHA256: 0aec99f78d9e52bace2179b2af194795aa3448b44a23af975994b786eaddc1f4
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 7
+ARTIFACT_SHA256: ed2e034f537aeaa4a4fe98a3f2d333469447df9e13f03e1b58092a9c1bd1f400
+VERIFIER_SHA256: 0aec99f78d9e52bace2179b2af194795aa3448b44a23af975994b786eaddc1f4
+H1 PASS — roster-import 48/48 checks pass; bom.rows=[["1","张三","20230101","false"],["2","李四","20230102","false"],["3","王五","20230103","false"]]; bom.map=["1","2","3","0"]; sample.bom=[239,187,191]; rejects=empty,blank,noheader,binary storage=null
+H2 PASS — roster-map 26/26 checks pass; full.dataset=["1","2","3","0"]; conflict.excluded既有; both-none disabled既有; reload.roles=["seq","id","name","score","extra"]
+H3 PASS — roster-mode 24/24 checks pass; counts(K/D/A)=["3","1","1","2"]; keep.rows=[["1","20230103","王五改","—"],["2","20230102","李四","10"],["3","20230105","钱七","—"]]; dup/zero只留清空既有; cancel恢复既有
+H4 PASS — roster-dialog+roster-compute 17/17 checks pass; voice.dropped=1; guard.rows=0; keyboard state/input/expr/result不变既有
+H5 PASS — roster-fill+roster-compute 57/57 checks pass; second.rows=[["true","30","10 + 20"],["true","7","3 + 4"],["false","—",""]]; full.scores=["30","7","11"]; auto.score="30"; base.score="110"
+H6 PASS — roster-edit 35/35 checks pass; after.scores=["50","8","10"]; reload.scores=["50","8","10"]; blocked/cancel/partial既有
+H7 PASS — roster-storage 42/42 checks pass; version=1; reload.scores=["50","10","—"]; denied.warning精确; bad-json/version/noroles/badrole/badentry原键未动既有
+H8 PASS — roster-export 19/19 checks pass; name="高一3班-成绩-20261122.csv"; bom=[239,187,191]; reimport empty-scores既有
+H9 PASS — roster-layout 41/41 checks pass; wide+narrow entry/dialog/paste/preview/mixed/fifty-overflow<=1既有; 320 selects纵向既有; controls>=43.5既有
+H10 PASS — frozen5=true; voice计数29/507=true; list roster=11关键词全覆盖=true; only[11]全pass=true; 全量29场景507checks全pass=true; voice失败{result.crash,queue.quick-no-result,queue.quick-keys}基线内≤3且regression双计数PASS=true
+H11 PASS — roster-determinism 5/5 checks pass; 自包含外部引用=0; </html>=true字节=165627; 全套件clean类59/59pass; 双context行列存储导出深度一致既有
+HARD: PASS

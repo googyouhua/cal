@@ -1,0 +1,20 @@
+ROUND: 4
+ARTIFACT_SHA256: 34c843af2acf7521b75ee5729f81a0da30519f3b1a455e6545eb63d7ebade014
+TREE_SHA256: d3d93c60c818467d0766b3a4886b2f17a7ae0ba23e323b5e546395fb18a9b7b8
+VERIFIER_SHA256: 0aec99f78d9e52bace2179b2af194795aa3448b44a23af975994b786eaddc1f4
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 4
+ARTIFACT_SHA256: 34c843af2acf7521b75ee5729f81a0da30519f3b1a455e6545eb63d7ebade014
+H1 PASS — roster-import 48/48 PASS, full suite 29/29 scenarios 507/507 checks PASS
+H2 PASS — roster-map 26/26 PASS, full suite 29/29 scenarios 507/507 checks PASS
+H3 PASS — roster-mode 24/24 PASS, full suite 29/29 scenarios 507/507 checks PASS
+H4 PASS — roster-dialog 4/4 PASS + roster-compute 13/13 PASS, clean pageerrors=0 consoleErrors=0
+H5 PASS — roster-fill 44/44 PASS + roster-compute 13/13 PASS, full suite 507/507 PASS
+H6 PASS — roster-edit 35/35 PASS, full suite 29/29 scenarios 507/507 checks PASS
+H7 PASS — roster-storage 42/42 PASS, full suite 29/29 scenarios 507/507 checks PASS
+H8 PASS — roster-export 19/19 PASS, full suite 29/29 scenarios 507/507 checks PASS
+H9 PASS — roster-layout 41/41 PASS + layout 26/26 PASS, full suite 507/507 PASS
+H10 PASS — 5 frozen sha match, suite 29/29 507/507 PASS, only5 5/5 PASS, voice best 63/66 fails=3 result.crash queue.quick-no-result queue.quick-keys regression 5/5 scenarios=29 checks=507 every-pass PASS
+H11 PASS — self-contained 4/4 PASS determinism 6/6 PASS roster-determinism 5/5 PASS externalRefs=0 closeHtml=true bytes=164531
+HARD: PASS

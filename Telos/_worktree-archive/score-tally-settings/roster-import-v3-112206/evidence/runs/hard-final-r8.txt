@@ -1,0 +1,20 @@
+ROUND: 8
+ARTIFACT_SHA256: ed2e034f537aeaa4a4fe98a3f2d333469447df9e13f03e1b58092a9c1bd1f400
+TREE_SHA256: af7cd82dc5733574d580a2d4a4532369e87a358960a85011d01ea7a97a0c5ffc
+VERIFIER_SHA256: 0aec99f78d9e52bace2179b2af194795aa3448b44a23af975994b786eaddc1f4
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 8
+ARTIFACT_SHA256: ed2e034f537aeaa4a4fe98a3f2d333469447df9e13f03e1b58092a9c1bd1f400
+H1 PASS — roster-import场景48checks全过；实测0字节拒绝data-error=true且rows=0且storage=null；样例下载EFBBBF开头去BOM后4行
+H2 PASS — roster-map场景26checks全过；四下拉默认值等于别名最左列、无别名为空、互斥保持、学号姓名皆无时确认禁用、确认后roles持久化且刷新重导一致
+H3 PASS — roster-mode场景24checks全过；旧4人录2条后K=2/D=0/A=1且默认保留，改名行保留、新行为空、清空全空，重复学号/无学号列/零可保留时只留清空，取消与Esc后旧名单与2条成绩逐字段不变
+H4 PASS — roster-dialog场景4checks与roster-compute场景13checks全过；取消与Esc后2条历史逐字段一致且无名单，autoConfirm=0.2计时中打开等待1200ms无确认无计算，键盘数字与Enter与=被守卫，假引擎队列确认后speech-played不再增长且零pageerror
+H5 PASS — roster-fill场景44checks全过；实测除零=与空=不回填，+10+20=后seq1 score=30且next=2，录满后+1+1=被拒绝，autoEquals=2自动等号、base=100回填110、resultPause=1暂停与0不暂停均符合
+H6 PASS — roster-edit场景35checks全过；3人录满编辑第2行改操作数1为7后保存正确且行数不变，reload后第2行一致，5人录2条编辑第1行后next仍指向第3行，编辑第2行时点第3行被保护，50人末行浮动草稿定位正确
+H7 PASS — roster-storage场景42checks全过；存储对象version/headers/roles/rows逐字段正确，reload后名单成绩next与state一致，清除后键删除且reload仍无名单，storage抛错时内存生效且警告精确可见，5种坏数据均无名单零pageerror且原文逐字未变
+H8 PASS — roster-export场景19checks全过；实测导出文件名classA-成绩-20261122.csv与当日日期一致，BOM与CRLF与表头与三行内容正确，缺列补列、同义列写回、引号转义正确，导出前后快照与存储与计算器状态不变，重导后3人姓名学号一致且全未填
+H9 PASS — roster-layout场景41checks全过；实测CDP真320下overflow横向de=0且body=0，dialog open且modal，可见键字号合规，四个select在320下纵向，roster语义与aria-label与roster-next文本正确
+H10 PASS — 五场景文件sha256与冻结值逐字节一致；voice内全量回归suite-exit=0且29场景507checks且every-scenario-pass=true；roster-前缀11个id覆盖import与fill与edit与export与storage且逐个--only全过；voice/run.mjs仅2行期望值更新，其余字节不变；voice实测63/66失败集合恰为result.crash与queue.quick-no-result与queue.quick-keys三基线id且regression五项全过
+H11 PASS — 目标文件含</html>且165627字节，script-src与link-href与img-src与source-src与@import中外链计0，url(3处均为相对路径与Blob代码；双全新context同导入同映射同录入同编辑后rows与storage与CSV三者全等，pageErrors与consoleErrors计0
+HARD: PASS

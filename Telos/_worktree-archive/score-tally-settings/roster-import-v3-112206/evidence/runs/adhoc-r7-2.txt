@@ -1,0 +1,21 @@
+ROUND: 7
+ARTIFACT_SHA256: ed2e034f537aeaa4a4fe98a3f2d333469447df9e13f03e1b58092a9c1bd1f400
+TREE_SHA256: af7cd82dc5733574d580a2d4a4532369e87a358960a85011d01ea7a97a0c5ffc
+VERIFIER_SHA256: 0aec99f78d9e52bace2179b2af194795aa3448b44a23af975994b786eaddc1f4
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+COMMAND: ["node","/tmp/adhoc_r7_s2.mjs"]
+CWD: /ws/cal_phone
+EXIT: 0
+
+[stdout]
+S7.mode=keep
+S7.confirm=保留成绩并开始录入
+S7.confirmVisible=false
+S7.btnBottom=855
+S7.dlgBottom=834
+S7.warnDanger=false
+S7.btnDanger=false
+S7.warn=命中1人保留；旧成绩丢弃1条；新增2人。
+
+[stderr]

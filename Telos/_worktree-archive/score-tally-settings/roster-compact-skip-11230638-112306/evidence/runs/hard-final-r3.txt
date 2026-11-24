@@ -1,0 +1,14 @@
+ROUND: 3
+ARTIFACT_SHA256: 9aa1325b354d7695842884040c92200175fa2ecc6f121b3008cf28a305dfdb21
+TREE_SHA256: 4c10b8c5153f940f557a54199401dd613fec27c0a33b866ceda55793ab3258b3
+VERIFIER_SHA256: 88af35b19523b91ab540c34393e54465c8072a0dba2dd3e59b2ee885f185ceec
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 3
+ARTIFACT_SHA256: 9aa1325b354d7695842884040c92200175fa2ecc6f121b3008cf28a305dfdb21
+H1 PASS — 390:hs=38,29.6,28 filled≤46 empty≤38 noOver=true inside=true area=true font=13,15 over=0/0 | 320cdp:hs=38,29.6,28 font=13,15 noOver=true inside=true area=true over=0/0 | 50empty scrollHeight=2390≤2800 | 5ppl2rec=[true:38,38 false:29.6,28,28]
+H2 PASS — 390+320cdp:keepLh=36≤42 radio=28x28 fsH=107≤120 keepT=保留同学号成绩（命中1人） keep先checked→clear中心点击后checked confirm=清空并开始录入 | dup:keep隐藏 clear选中 warn=无法按学号保留：学号20230102重复；只能清空重录
+H3 PASS — skip next=2,3,1 label含跳过 存储/result/expr/state/input全不变 | 物理==next=2 | 跳过后+10 20写seq2 seq1仍空 next=3 | 录1后跳过next=3 | 满员next=null label=名单已录满 存储不变 | 输入5正常回填不跳过 | 行内编辑=保存草稿draftHidden=true不跳过 | +-op/enter回填seq2=10 | 无名单空=存储null无副作用 | 跳过后reload next回1
+H4 PASS — frozen5全match | suite n=30 checks=538 hasCompact全pass | roster-layout diff仅43.5→28.0两行 检查名无缺失 | voice diff仅regression.scenarios/checks两期望值 | voice 63/66 fails={result.crash,queue.quick-no-result,queue.quick-keys}⊆允许集 regression.scenarios/checks PASS
+H5 PASS — </html> bytes=168247 ext-http=0 | pageerrors=0 consoleErrors=0(suite全clean+自测页) | 双context rows/next/存储JSON逐字一致 rows=[1:true:张三:50 2:false 3:false] next=3 | 跳过前后存储原文一致 | S1=390x844#98d56d38:98KB S2=390x844#9dcc66cd:98KB S3=320x568#4ea0fa6a:57KB S4=390x844#bda2ac4a:67KB 四图非空互异 S1行5/录2/next3 S2四下拉count3 mode=keep命中2人 S3 next3 label=已跳过2李四 S4行50/录3 scrollH2420
+HARD: PASS

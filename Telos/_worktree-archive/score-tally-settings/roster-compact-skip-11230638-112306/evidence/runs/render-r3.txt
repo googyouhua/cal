@@ -1,0 +1,83 @@
+ROUND: 3
+ARTIFACT_SHA256: 9aa1325b354d7695842884040c92200175fa2ecc6f121b3008cf28a305dfdb21
+TREE_SHA256: 4c10b8c5153f940f557a54199401dd613fec27c0a33b866ceda55793ab3258b3
+VERIFIER_SHA256: 88af35b19523b91ab540c34393e54465c8072a0dba2dd3e59b2ee885f185ceec
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 3
+ARTIFACT_SHA256: 9aa1325b354d7695842884040c92200175fa2ecc6f121b3008cf28a305dfdb21
+VERIFIER_SHA256: 88af35b19523b91ab540c34393e54465c8072a0dba2dd3e59b2ee885f185ceec
+S1.key=S1
+S1.width=390
+S1.height=844
+S1.sha256=ce4abb1a8615d75c60728f848a03fb8caa67d9f6dcf45885ba666a69a9107c15
+S1.bytes=92579
+S1.summary=true
+S1.rows=5
+S1.filled=2
+S1.next=3
+S1.label=已记录 2 李四：10；下一位 3 王五
+S1.overDoc=0
+S1.overBody=0
+S1.scrollH=880
+S1.autoconfirm=0
+S1.dialog=false
+S1.mode=
+S1.state=s1-5p-2rec
+S2.key=S2
+S2.width=390
+S2.height=844
+S2.sha256=8cb3f149a49be5c6693db6b1751a26ee27a23999a527739bb0d3ea033400845b
+S2.bytes=98207
+S2.summary=true
+S2.rows=4
+S2.filled=2
+S2.next=3
+S2.label=已记录 2 李四：10；下一位 3 王五
+S2.overDoc=0
+S2.overBody=0
+S2.scrollH=846
+S2.autoconfirm=0
+S2.dialog=true
+S2.mode=keep
+S2.state=s2-custom-map
+S2.keep=2
+S2.drop=0
+S2.added=1
+S2.selects=4
+S2.cols=4
+S2.preview=3
+S3.key=S3
+S3.width=320
+S3.height=568
+S3.sha256=c45f82c24a274b3cb358551e20a523dc659cf8b532b1287143c40d1902599fdd
+S3.bytes=57474
+S3.summary=true
+S3.rows=5
+S3.filled=1
+S3.next=3
+S3.label=已跳过 2 李四；下一位 3 王五
+S3.overDoc=0
+S3.overBody=0
+S3.scrollH=933
+S3.autoconfirm=0
+S3.dialog=false
+S3.mode=
+S3.state=s3-skip2
+S4.key=S4
+S4.width=390
+S4.height=844
+S4.sha256=34ce7fed008abe1b65ca79dc34e86d88d55ad9f946f84f76973c0f99c4a8eef2
+S4.bytes=65721
+S4.summary=true
+S4.rows=50
+S4.filled=3
+S4.next=4
+S4.label=已记录 3 学生3：6；下一位 4 学生4
+S4.overDoc=0
+S4.overBody=0
+S4.scrollH=2420
+S4.autoconfirm=0
+S4.dialog=false
+S4.mode=
+S4.state=s4-50p-3rec

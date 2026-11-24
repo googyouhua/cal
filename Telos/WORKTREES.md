@@ -46,6 +46,8 @@ kekkai status /ws/cal_phone-worktrees/keypad/Telos/phone-calculator-keypad-11151
 <!-- archives:start -->
 | 时间 | 分支 | gate | STOP | artifact | TREE | 归档目录 |
 |---|---|---|---|---|---|---|
+| 2026-11-24T00:46:06.126Z | score-tally-settings | roster-compact-skip-11230638-112306 | STOP: rounds=3 reason=converged P0=0 | `9aa1325b354d` | `4c10b8c5153f` | `score-tally-settings/roster-compact-skip-11230638-112306` |
+| 2026-11-24T00:46:05.913Z | score-tally-settings | roster-import-v3-112206 | STOP: rounds=8 reason=converged P0=0 | `ed2e034f537a` | `af7cd82dc573` | `score-tally-settings/roster-import-v3-112206` |
 | 2026-11-24T00:43:12.935Z | score-tally-settings | roster-import-v2-112203 | STOP: rounds=0 reason=blocked by=instrument | `9aa1325b354d` | `—` | `score-tally-settings/roster-import-v2-112203` |
 | 2026-11-22T01:51:32.040Z | roster-import | roster-import-111913 | — | `d482b3500291` | `1e6115483ab4` | `roster-import/roster-import-111913` |
 | 2026-11-22T01:30:10.916Z | result-pause | phone-calculator-result-pause-3-112200 | STOP: rounds=1 reason=converged | `a275e40bf0e8` | `2ed177bb9eab` | `result-pause/phone-calculator-result-pause-3-112200` |

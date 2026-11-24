@@ -1,0 +1,23 @@
+ROUND: 5
+ARTIFACT_SHA256: ac960c9bfe65e214dd630f3832e68acb442b94ca6bdffccfe6ebb4dfc2e1d9d3
+TREE_SHA256: 597a48103add482628d3567deea4e29b1733ca0594397675c2c33c4e47ad51c0
+VERIFIER_SHA256: 0aec99f78d9e52bace2179b2af194795aa3448b44a23af975994b786eaddc1f4
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+COMMAND: ["node","/tmp/adhoc_r5_evidence.mjs"]
+CWD: /ws/cal_phone
+EXIT: 0
+
+[stdout]
+S2.mode=keep
+S2.keepChecked=true
+S2.clearChecked=false
+S2.keepLabel=保留同学号成绩（1 条）
+S2.clearLabel=清空重录（2 条）
+S2.counts=1,1,2
+S2.mapDataset=1,2,3,0
+S4.draftTitle=正在编辑_2_李四
+S4.editOperatorTag=SPAN
+S4.editOperatorIsButton=false
+
+[stderr]

@@ -1,0 +1,20 @@
+ROUND: 2
+ARTIFACT_SHA256: 1940f5f8faaf65bfcb053d44e8bee66bb1dcfaf5157d5c9818b08b6f5facb975
+TREE_SHA256: a2886af8b155972a4e727922c7a7c82d855e0a061a17984a82d9bca0fe501bdb
+VERIFIER_SHA256: 0aec99f78d9e52bace2179b2af194795aa3448b44a23af975994b786eaddc1f4
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 2
+ARTIFACT_SHA256: 1940f5f8faaf65bfcb053d44e8bee66bb1dcfaf5157d5c9818b08b6f5facb975
+H1 PASS — roster-import 48/48; probe A.csv BOM/CRLF→3行 seq/name/id/filled正确, 拒绝组零行且localStorage null, 样例BOM EFBBBF, pageerror=0
+H2 PASS — roster-map 26/26; 默认四下拉value与data-id/name/score/seq-index一致, 重映射/置空/确认导出刷新一致
+H3 PASS — roster-mode 24/24; K/D/A与默认保留正确, 保留/清空/重复学号/无交集/改映射/重选/取消各路径正确
+H4 PASS — roster-dialog 4/4 + roster-compute 13/13; 历史阈值/取消Esc/自动确认守卫/键盘守卫/语音不增长无pageerror
+H5 PASS — roster-fill 44/44; 三次回填score/expression/next/摘要正确, 自动等号/基数/暂停路径正确
+H6 PASS — roster-edit 35/35; 重算三行/reload持久/部分名单next/切换保护/50人草稿定位焦点正确
+H7 PASS — roster-storage 42/42; 存储逐字段/reload/清除/storage抛错文案/五类坏数据警告正确, pageerror=0
+H8 PASS — roster-export 19/19; BOM/CRLF/表头三行/日期前缀正确, 缺列补列转义保留, 快照存储状态不变, 回导一致
+H9 PASS — roster-layout 41/41; 390与320六态零横向溢出, 字号/纵向select/role/aria/focus与modal正确
+H10 PASS — suite 29场景507检查全PASS; 五文件sha256与基线一致; --list 11个roster-id覆盖五关键词; voice跑2次取优失败集={result.crash,queue.quick-no-result,queue.quick-keys}共3个, regression.scenarios=29与checks=507均PASS
+H11 PASS — 自包含0外部引用(bytes=162293,有</html>); roster-determinism 5/5; 双context行/存储/导出CSV深度一致; 全页pageerror/consoleError=0
+HARD: PASS

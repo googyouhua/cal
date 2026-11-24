@@ -1,0 +1,23 @@
+ROUND: 5
+ARTIFACT_SHA256: ac960c9bfe65e214dd630f3832e68acb442b94ca6bdffccfe6ebb4dfc2e1d9d3
+TREE_SHA256: 597a48103add482628d3567deea4e29b1733ca0594397675c2c33c4e47ad51c0
+VERIFIER_SHA256: 0aec99f78d9e52bace2179b2af194795aa3448b44a23af975994b786eaddc1f4
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+COMMAND: ["node","/tmp/adhoc_r5_s2state.mjs"]
+CWD: /ws/cal_phone
+EXIT: 0
+
+[stdout]
+R5S2.mode=clear
+R5S2.keepChecked=false
+R5S2.clearChecked=true
+R5S2.mapDataset=0,1,3,
+R5S2.count=3
+R5S2.keepCount=1
+R5S2.dropCount=1
+R5S2.newCount=2
+R5S2.keepLabel=保留同学号成绩（1 条）
+R5S2.clearLabel=清空重录（2 条）
+
+[stderr]

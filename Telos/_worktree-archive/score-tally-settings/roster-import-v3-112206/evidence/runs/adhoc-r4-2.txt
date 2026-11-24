@@ -1,0 +1,17 @@
+ROUND: 4
+ARTIFACT_SHA256: 34c843af2acf7521b75ee5729f81a0da30519f3b1a455e6545eb63d7ebade014
+TREE_SHA256: d3d93c60c818467d0766b3a4886b2f17a7ae0ba23e323b5e546395fb18a9b7b8
+VERIFIER_SHA256: 0aec99f78d9e52bace2179b2af194795aa3448b44a23af975994b786eaddc1f4
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+COMMAND: ["node","/tmp/adhoc_r4_evidence2.mjs"]
+CWD: /ws/cal_phone
+EXIT: 0
+
+[stdout]
+S2.chips=学号,姓名,不导入：班级,成绩
+S2.chipRoles=id:0,name:1,extra:2,score:3
+S2.previewRoles=seq,id,name,score
+S2.previewRows=3
+
+[stderr]

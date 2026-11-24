@@ -1,0 +1,5281 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>手机计算器</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --ink: #f8fafc;
+    --muted: #a5b4cf;
+    --panel: rgba(22, 32, 51, 0.92);
+    --panel-edge: rgba(148, 163, 184, 0.22);
+    --field: #0d1524;
+    --accent: #f59e0b;
+    --accent-ink: #241600;
+    --danger: #fecdd3;
+    --danger-bg: rgba(190, 24, 93, 0.22);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+  }
+
+  body {
+    min-width: 0;
+    overflow-x: hidden;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(245, 158, 11, 0.15), transparent 34%),
+      radial-gradient(circle at 90% 100%, rgba(56, 189, 248, 0.13), transparent 38%),
+      #080d17;
+    color: var(--ink);
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+
+  .app {
+    position: relative;
+    width: min(100%, 460px);
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: 6px 10px max(12px, env(safe-area-inset-bottom));
+  }
+
+  .app-header {
+    margin: 0 2px 6px;
+    padding-right: 52px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(20px, 6vw, 24px);
+    line-height: 1.12;
+    letter-spacing: 0.01em;
+  }
+
+  .subtitle {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .panel {
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid var(--panel-edge);
+    border-radius: 18px;
+    background: var(--panel);
+    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(12px);
+  }
+
+  .state-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 0;
+    min-height: 44px;
+    margin-bottom: 6px;
+  }
+
+  .state-label {
+    min-width: 0;
+    max-height: 2.7em;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  button {
+    min-width: 0;
+    min-height: 48px;
+    border: 1px solid transparent;
+    border-radius: 13px;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  button:focus-visible,
+  input:focus-visible {
+    outline: 3px solid #fbbf24;
+    outline-offset: 2px;
+  }
+
+  button:disabled,
+  input:disabled {
+    cursor: default;
+    opacity: 0.52;
+  }
+
+  .reset-button {
+    flex: 0 0 auto;
+    width: 96px;
+    min-height: 44px;
+    padding: 0 8px;
+    border-color: var(--panel-edge);
+    background: #18243a;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 650;
+  }
+
+  .op-picker {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .op-picker[hidden] {
+    display: none;
+  }
+
+  .op-button {
+    width: 100%;
+    min-height: 44px;
+    border-color: rgba(251, 191, 36, 0.25);
+    background: linear-gradient(180deg, #26344d, #1c293f);
+    color: #fde68a;
+    font-size: 22px;
+    font-weight: 750;
+    line-height: 1;
+  }
+
+  .op-button[aria-pressed="true"] {
+    border-color: #38bdf8;
+    background: linear-gradient(180deg, #23466a, #172d47);
+    color: #f8fafc;
+    box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.5);
+  }
+
+  .calc-input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 12px;
+    background: var(--field);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.25;
+    cursor: default;
+  }
+
+  .calc-input::placeholder {
+    color: #72819b;
+    font-size: 15px;
+  }
+
+  .hint {
+    display: none;
+  }
+
+  .display {
+    min-width: 0;
+    margin-top: 6px;
+    padding: 6px 8px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 13px;
+    background: rgba(7, 12, 22, 0.76);
+  }
+
+  .display-label {
+    display: none;
+  }
+
+  .expression {
+    min-height: 20px;
+    overflow-wrap: anywhere;
+    color: #dbeafe;
+    font-size: 15px;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
+  .expression:empty::before {
+    content: "算式会显示在这里";
+    color: #8291aa;
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .result {
+    min-height: 34px;
+    margin-top: 2px;
+    overflow-wrap: anywhere;
+    color: var(--accent);
+    font-size: clamp(26px, 8vw, 34px);
+    font-weight: 760;
+    line-height: 1.05;
+    word-break: break-word;
+  }
+
+  .result[data-error="true"] {
+    min-height: 34px;
+    padding: 5px 8px;
+    border: 1px solid rgba(251, 113, 133, 0.32);
+    border-radius: 9px;
+    background: var(--danger-bg);
+    color: var(--danger);
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .keypad {
+    min-width: 0;
+    margin-top: 6px;
+    padding: 6px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 14px;
+    background: rgba(7, 12, 22, 0.42);
+  }
+
+  .keypad-pad {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-areas:
+      "d7 d8 d9 back"
+      "d4 d5 d6 enter"
+      "d1 d2 d3 enter"
+      "d0 dot eq eq";
+    grid-auto-rows: minmax(48px, auto);
+    gap: 6px;
+    min-width: 0;
+    margin-top: 6px;
+  }
+
+  .key {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 4px;
+    border-color: rgba(148, 163, 184, 0.24);
+    background: linear-gradient(180deg, #202d44, #172236);
+    color: var(--ink);
+    font-size: 21px;
+    font-weight: 750;
+    line-height: 1;
+  }
+
+  .key[data-key="0"] { grid-area: d0; }
+  .key[data-key="1"] { grid-area: d1; }
+  .key[data-key="2"] { grid-area: d2; }
+  .key[data-key="3"] { grid-area: d3; }
+  .key[data-key="4"] { grid-area: d4; }
+  .key[data-key="5"] { grid-area: d5; }
+  .key[data-key="6"] { grid-area: d6; }
+  .key[data-key="7"] { grid-area: d7; }
+  .key[data-key="8"] { grid-area: d8; }
+  .key[data-key="9"] { grid-area: d9; }
+  .key[data-key="."] { grid-area: dot; }
+
+  .key[data-key="backspace"] {
+    grid-area: back;
+    color: #fecdd3;
+    font-size: 16px;
+  }
+
+  .key[data-key="enter"] {
+    grid-area: enter;
+    border-color: rgba(56, 189, 248, 0.3);
+    background: linear-gradient(180deg, #1e3a5f, #14263f);
+    color: #bae6fd;
+    font-size: 16px;
+  }
+
+  .key[data-key="equals"] {
+    grid-area: eq;
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: var(--accent-ink);
+    font-size: 28px;
+    font-weight: 800;
+  }
+
+  .edit-draft {
+    min-width: 0;
+    margin-top: 6px;
+    padding: 8px;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 16px;
+    background: rgba(245, 158, 11, 0.08);
+  }
+
+  .edit-draft[hidden] {
+    display: none;
+  }
+
+  .edit-draft-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: #fde68a;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .edit-operator {
+    display: inline-grid;
+    place-items: center;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0 8px;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    border-radius: 9px;
+    background: rgba(245, 158, 11, 0.16);
+    color: #fef3c7;
+    font-size: 20px;
+  }
+
+  .edit-cancel {
+    flex: 0 0 auto;
+    min-width: 64px;
+    min-height: 44px;
+    padding: 0 14px;
+    border-color: rgba(251, 113, 133, 0.32);
+    background: rgba(190, 24, 93, 0.2);
+    color: #fecdd3;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .operand-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+    margin-top: 10px;
+  }
+
+  .operand-chips:empty::after {
+    content: "暂无可计算数字";
+    color: #c7b68f;
+    font-size: 13px;
+    line-height: 44px;
+  }
+
+  .operand-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    max-width: 100%;
+    padding-left: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.26);
+    border-radius: 12px;
+    background: rgba(13, 21, 36, 0.92);
+  }
+
+  .operand-input {
+    width: 76px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px 10px;
+    border: 1px solid rgba(148, 163, 184, 0.42);
+    border-radius: 9px;
+    background: #111c2e;
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .operand-remove {
+    flex: 0 0 auto;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-color: rgba(251, 113, 133, 0.28);
+    background: rgba(190, 24, 93, 0.2);
+    color: #fecdd3;
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .history {
+    min-width: 0;
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid var(--panel-edge);
+    border-radius: 20px;
+    background: var(--panel);
+  }
+
+  .history-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 0;
+    margin-bottom: 10px;
+  }
+
+  .history-title {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.3;
+  }
+
+  .history-note {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .history-list {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .history-empty {
+    margin: 0;
+    color: #8291aa;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .history-item {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 14px;
+    background: rgba(7, 12, 22, 0.58);
+  }
+
+  .history-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 10px;
+    min-width: 0;
+  }
+
+  .history-expression {
+    flex: 1 1 130px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: #dbeafe;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .history-result {
+    flex: 0 0 auto;
+    overflow-wrap: anywhere;
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 750;
+    line-height: 1.3;
+  }
+
+  .history-edit {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 8px;
+    border-color: rgba(251, 191, 36, 0.24);
+    background: #1c293f;
+    color: #fde68a;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .settings-toggle {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    border: 1px solid var(--panel-edge);
+    border-radius: 13px;
+    background: #18243a;
+    color: #fde68a;
+    font-size: 22px;
+    line-height: 1;
+    z-index: 30;
+  }
+
+  .settings-toggle:active {
+    transform: translateY(1px);
+  }
+
+  .settings-indicator {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px #18243a;
+  }
+
+  .settings-summary {
+    position: absolute;
+    top: 16px;
+    right: 62px;
+    z-index: 29;
+    padding: 3px 8px;
+    border: 1px solid rgba(251, 191, 36, 0.34);
+    border-radius: 999px;
+    background: rgba(24, 36, 58, 0.94);
+    color: #fde68a;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+
+  .settings-summary[data-voice-availability]::before {
+    display: inline-block;
+    margin-right: 5px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .settings-summary[data-voice-availability="ready"]::before {
+    content: "✓";
+    color: #34d399;
+  }
+
+  .settings-summary[data-voice-availability="loading"]::before {
+    content: "…";
+    color: #fbbf24;
+  }
+
+  .settings-summary[data-voice-availability="error"]::before {
+    content: "!";
+    color: #f87171;
+  }
+
+  .status-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 106px;
+    height: 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .state-row:has(.auto-confirm-feedback:not([hidden])) .state-label,
+  .state-row:has(.undo-hint:not([hidden])) .state-label {
+    visibility: hidden;
+  }
+
+  .state-row:has(.auto-confirm-feedback:not([hidden])) .undo-hint {
+    display: none;
+  }
+
+  .auto-confirm-feedback {
+    display: grid;
+    gap: 3px;
+    width: 100%;
+    min-width: 0;
+    max-height: 44px;
+    padding: 3px 6px;
+    overflow: hidden;
+    border: 1px solid rgba(251, 191, 36, 0.28);
+    border-radius: 9px;
+    background: rgba(9, 15, 27, 0.96);
+  }
+
+  .auto-confirm-feedback[hidden] {
+    display: none;
+  }
+
+  .auto-confirm-progress {
+    position: relative;
+    height: 2px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: rgba(148, 163, 184, 0.28);
+  }
+
+  .auto-confirm-progress::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    transform-origin: left center;
+    transform: scaleX(1);
+  }
+
+  .auto-confirm-progress[data-active="true"]::before {
+    animation: auto-confirm-drain var(--auto-confirm-duration, 1s) linear forwards;
+  }
+
+  .auto-confirm-countdown {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: #fde68a;
+    font-size: 12px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.35;
+  }
+
+  .undo-hint {
+    width: 100%;
+    max-height: 44px;
+    margin: 0;
+    padding: 3px 6px;
+    overflow: hidden;
+    border: 1px solid rgba(251, 191, 36, 0.34);
+    border-radius: 9px;
+    background: rgba(28, 22, 8, 0.97);
+    color: #fef3c7;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  @keyframes auto-confirm-drain {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .auto-confirm-progress[data-active="true"]::before {
+      animation: none;
+    }
+  }
+
+  .base-marker {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    margin-bottom: 3px;
+    padding: 0 8px;
+    border: 1px solid rgba(245, 158, 11, 0.42);
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.14);
+    color: #fde68a;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .settings-panel {
+    position: fixed;
+    inset: auto;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    width: min(calc(100vw - 16px), 320px);
+    max-width: min(calc(100vw - 16px), 320px);
+    max-height: calc(100dvh - 64px);
+    overflow-y: auto;
+    padding: 14px;
+    border: 1px solid var(--panel-edge);
+    border-radius: 16px;
+    background: #101a2c;
+    color: var(--ink);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+    z-index: 50;
+  }
+
+  .settings-panel > * {
+    flex: 0 0 auto;
+  }
+
+  .settings-panel:not([open]) {
+    display: none;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .settings-title {
+    order: 0;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .settings-subtitle {
+    order: 1;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .voice-settings {
+    order: 2;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .settings-field:not(.voice-settings) {
+    order: 3;
+  }
+
+  .app[data-voice-state="error"] .settings-panel .settings-done {
+    order: 4;
+  }
+
+  .settings-panel::backdrop {
+    background: rgba(3, 7, 15, 0.62);
+  }
+
+  .settings-title {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  .settings-subtitle {
+    margin: 4px 0 14px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .settings-field {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+    margin: 0 0 14px;
+  }
+
+  .settings-label {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 650;
+  }
+
+  .settings-select,
+  .settings-input {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid rgba(148, 163, 184, 0.34);
+    border-radius: 11px;
+    background: var(--field);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.25;
+  }
+
+  .settings-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  .settings-checkbox {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    margin: 0;
+    border: 1px solid rgba(148, 163, 184, 0.42);
+    border-radius: 11px;
+    background: var(--field);
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .settings-checkbox:checked {
+    border-color: var(--accent);
+    background: rgba(245, 158, 11, 0.22);
+  }
+
+  .settings-checkbox:checked::after {
+    content: "✓";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #fde68a;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .settings-hint {
+    color: #8291aa;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .settings-done {
+    width: 100%;
+    min-height: 44px;
+    border-color: rgba(251, 191, 36, 0.35);
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: var(--accent-ink);
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .voice-settings {
+    padding-top: 12px;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+  }
+
+  .voice-group-label {
+    color: #fde68a;
+    font-size: 14px;
+    font-weight: 750;
+  }
+
+  .voice-lead-hint {
+    padding: 7px 9px;
+    border: 1px solid rgba(251, 191, 36, 0.26);
+    border-radius: 10px;
+    background: rgba(251, 191, 36, 0.08);
+    color: #fde68a;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+
+  .voice-status {
+    min-width: 0;
+    padding: 8px 10px;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 10px;
+    background: rgba(9, 15, 27, 0.72);
+    color: #dbeafe;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .voice-status[data-state="loading"],
+  .voice-status[data-state="preparing"] {
+    border-color: rgba(251, 191, 36, 0.5);
+    background: rgba(251, 191, 36, 0.1);
+  }
+
+  .voice-status[data-state="ready"] {
+    border-color: rgba(52, 211, 153, 0.5);
+    background: rgba(16, 185, 129, 0.1);
+  }
+
+  .voice-status[data-state="error"] {
+    border-color: rgba(248, 113, 113, 0.55);
+    background: rgba(239, 68, 68, 0.1);
+    color: #fecaca;
+  }
+
+  .voice-status[hidden] {
+    display: none;
+  }
+
+  .voice-error-details {
+    margin-top: 6px;
+    color: #93a3b8;
+    font-size: 11px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+
+  .voice-error-details summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    cursor: pointer;
+  }
+
+  .voice-progress {
+    position: relative;
+    height: 14px;
+    min-height: 14px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.24);
+  }
+
+  .voice-progress[hidden] {
+    display: none;
+  }
+
+  .voice-progress > span {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    transition: width 120ms linear;
+  }
+
+  .voice-progress-label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #f8fafc;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 2px rgba(3, 7, 15, 0.9);
+  }
+
+  .nowrap {
+    white-space: nowrap;
+  }
+
+  .voice-progress[data-state="ready"] > span {
+    background: linear-gradient(90deg, #34d399, #10b981);
+  }
+
+  .voice-progress[data-state="error"] > span {
+    background: linear-gradient(90deg, #f87171, #ef4444);
+  }
+
+  .voice-retry {
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid rgba(251, 191, 36, 0.42);
+    border-radius: 11px;
+    background: #1c293f;
+    color: #fde68a;
+    font-size: 15px;
+    font-weight: 750;
+    cursor: pointer;
+  }
+
+  .voice-retry[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 350px) {
+    .app {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    .panel {
+      padding: 10px;
+    }
+
+    .op-picker {
+      gap: 7px;
+    }
+  }
+
+  .roster-presence {
+    margin: 6px 0 0;
+    padding: 6px 9px;
+    border: 1px solid rgba(251, 191, 36, 0.28);
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.1);
+    color: #fde68a;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .roster-presence[hidden] {
+    display: none;
+  }
+
+  .edit-draft.floating-roster {
+    position: fixed;
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    left: 10px;
+    z-index: 30;
+    width: auto;
+    max-width: 440px;
+    max-height: calc(100dvh - 20px);
+    margin: 0 auto;
+    overflow: auto;
+    background: #241c12;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.62);
+  }
+
+  body.roster-edit-floating {
+    padding-bottom: 180px;
+  }
+
+  .edit-done {
+    flex: 0 0 auto;
+    min-width: 104px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid rgba(251, 191, 36, 0.5);
+    border-radius: 11px;
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: #231303;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  .history-head {
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .history-heading {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .history-tools {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .roster-tool {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 11px;
+    background: #17243a;
+    color: #dbeafe;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .roster-tool[data-testid="roster-clear"] {
+    border-color: rgba(251, 113, 133, 0.3);
+    background: transparent;
+    color: #fecdd3;
+    margin-left: auto;
+  }
+
+  .storage-warning,
+  .roster-data-warning {
+    margin: 0 0 10px;
+    padding: 9px 10px;
+    border: 1px solid rgba(251, 191, 36, 0.38);
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.12);
+    color: #fde68a;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .roster-summary {
+    margin: 0 0 9px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .roster-next {
+    color: #fde68a;
+    font-weight: 750;
+  }
+
+  .roster-list {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .roster-row {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px 8px;
+    padding: 4px 8px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 10px;
+    background: rgba(7, 12, 22, 0.58);
+  }
+
+  .roster-row[data-next="true"] {
+    border-color: rgba(251, 191, 36, 0.55);
+    background: rgba(245, 158, 11, 0.1);
+    box-shadow: inset 3px 0 0 var(--accent);
+  }
+
+  .roster-row[data-skipped="true"] {
+    opacity: 0.62;
+  }
+
+  .roster-row.editing {
+    border-color: rgba(56, 189, 248, 0.78);
+    background: rgba(14, 116, 144, 0.2);
+    box-shadow: inset 4px 0 0 #38bdf8, 0 0 0 1px rgba(56, 189, 248, 0.24);
+  }
+
+  .roster.editing .roster-row[data-next="true"] {
+    border-color: rgba(148, 163, 184, 0.22);
+    background: rgba(7, 12, 22, 0.58);
+    box-shadow: none;
+    opacity: 0.58;
+  }
+
+  .roster.editing .roster-row[data-next="true"] .roster-next-badge {
+    border-color: rgba(148, 163, 184, 0.24);
+    background: rgba(148, 163, 184, 0.1);
+    color: #cbd5e1;
+  }
+
+  .roster-top,
+  .roster-bottom {
+    display: contents;
+  }
+
+  .roster-seq {
+    flex: 0 0 auto;
+    min-width: 20px;
+    color: #fde68a;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .roster-identity {
+    display: flex;
+    flex: 1 1 90px;
+    flex-wrap: nowrap;
+    align-items: baseline;
+    gap: 2px 6px;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.25;
+  }
+
+  .roster-name,
+  .roster-id {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .roster-name {
+    color: var(--ink);
+    font-weight: 750;
+  }
+
+  .roster-id {
+    color: var(--muted);
+  }
+
+  .roster-next-badge {
+    flex: 0 0 auto;
+    padding: 1px 6px;
+    border: 1px solid rgba(251, 191, 36, 0.45);
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.16);
+    color: #fef3c7;
+    font-size: 12px;
+    font-weight: 750;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+
+  .roster-edit-badge {
+    flex: 0 0 auto;
+    padding: 1px 6px;
+    border: 1px solid rgba(56, 189, 248, 0.6);
+    border-radius: 999px;
+    background: rgba(14, 116, 144, 0.28);
+    color: #e0f2fe;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+
+  .roster-expression {
+    flex: 1 1 60px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #dbeafe;
+    font-size: 12.5px;
+    line-height: 1.3;
+  }
+
+  .roster-expression:empty {
+    display: none;
+  }
+
+  .roster-score {
+    flex: 0 0 auto;
+    min-width: 0;
+    max-width: 40%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .roster-score.empty {
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .roster-edit {
+    flex: 0 0 auto;
+    min-width: 44px;
+    min-height: 28px;
+    padding: 2px 8px;
+    border: 1px solid rgba(251, 191, 36, 0.28);
+    border-radius: 8px;
+    background: #1c293f;
+    color: #fde68a;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
+    cursor: pointer;
+  }
+
+  .import-dialog {
+    width: min(430px, calc(100vw - 20px));
+    max-width: none;
+    max-height: calc(100dvh - 20px);
+    margin: auto;
+    padding: 0;
+    overflow: auto;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 18px;
+    background: #101a2b;
+    color: var(--ink);
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+  }
+
+  .import-dialog::backdrop {
+    background: rgba(2, 6, 14, 0.75);
+  }
+
+  .import-body {
+    display: grid;
+    gap: 11px;
+    padding: 16px;
+    min-width: 0;
+  }
+
+  .import-title {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.25;
+  }
+
+  .import-copy,
+  .import-warning,
+  .import-error {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+  }
+
+  .import-copy {
+    color: #cbd5e1;
+  }
+
+  .import-copy[data-testid="import-summary"] {
+    color: #fef3c7;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .import-warning {
+    padding: 9px 10px;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.13);
+    color: #fef3c7;
+    font-weight: 700;
+  }
+
+  .import-warning.danger {
+    border-color: rgba(251, 113, 133, 0.55);
+    background: rgba(127, 29, 29, 0.35);
+    color: #fecdd3;
+  }
+
+  .import-error {
+    padding: 9px 10px;
+    border: 1px solid rgba(251, 113, 133, 0.4);
+    border-radius: 10px;
+    background: var(--danger-bg);
+    color: var(--danger);
+  }
+
+  .import-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .import-action {
+    flex: 1 1 130px;
+    min-height: 48px;
+    white-space: nowrap;
+    padding: 0 12px;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 11px;
+    background: #1a2941;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  @media (max-width: 360px) {
+    .import-stage[data-import-stage="preview"] .import-actions > .import-action {
+      flex-basis: 100%;
+    }
+  }
+
+  .import-action.primary {
+    border-color: rgba(251, 191, 36, 0.55);
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: #231303;
+  }
+
+  .import-action.danger {
+    border-color: rgba(251, 113, 133, 0.6);
+    background: linear-gradient(180deg, #f87171, #dc2626);
+    color: #fff1f2;
+  }
+
+  .import-action.secondary {
+    flex-grow: 0;
+    background: #142137;
+    color: #dbeafe;
+  }
+
+  .import-stage {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .import-paste-text {
+    width: 100%;
+    min-height: 132px;
+    padding: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 11px;
+    background: rgba(7, 12, 22, 0.7);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.5;
+    resize: vertical;
+  }
+
+  .import-map {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .import-field {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .import-label {
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .import-select {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 8px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 11px;
+    background: rgba(7, 12, 22, 0.7);
+    color: var(--ink);
+    font-size: 16px;
+  }
+
+  .import-map-note {
+    margin: 0;
+    color: #fde68a;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .import-columns,
+  .import-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .import-chip {
+    max-width: 100%;
+    padding: 4px 8px;
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    border-radius: 999px;
+    background: rgba(30, 41, 59, 0.72);
+    color: #dbeafe;
+    font-size: 13px;
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .import-chip.active {
+    border-color: rgba(251, 191, 36, 0.7);
+    background: rgba(245, 158, 11, 0.22);
+    color: #fef3c7;
+  }
+
+  .import-preview-row span.active {
+    outline: 2px solid rgba(251, 191, 36, 0.7);
+    border-radius: 6px;
+    background: rgba(245, 158, 11, 0.18);
+  }
+
+  .import-preview-row {
+    flex: 1 1 100%;
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1fr) 48px;
+    gap: 7px;
+    min-width: 0;
+    padding: 7px 8px;
+    border-radius: 9px;
+    background: rgba(7, 12, 22, 0.64);
+    color: #dbeafe;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .import-preview-row span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .import-mode {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 6px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 11px;
+    min-width: 0;
+  }
+
+  .import-mode legend {
+    padding: 0 6px;
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .import-mode-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 30px;
+    padding: 4px 8px;
+    border-radius: 9px;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+    cursor: pointer;
+  }
+
+  .import-mode-option input {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+    margin: 0;
+    accent-color: #f59e0b;
+  }
+
+  .import-file {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 350px) {
+    .history-tools {
+      width: 100%;
+      justify-content: stretch;
+    }
+
+    .roster-tool {
+      flex: 1 1 0;
+      padding: 0 6px;
+    }
+
+    .roster-edit {
+      min-width: 58px;
+      padding: 0 9px;
+    }
+
+    .import-body {
+      padding: 14px;
+    }
+
+    .import-map {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
+</head>
+<body>
+<main class="app" data-state="select">
+  <span class="settings-summary" data-testid="settings-summary" hidden>已自定义</span>
+  <button class="settings-toggle" type="button" data-testid="settings-toggle" aria-label="打开统分设置" aria-haspopup="dialog" aria-expanded="false">
+    <span aria-hidden="true">⚙</span>
+    <span class="settings-indicator" data-testid="settings-indicator" hidden aria-hidden="true"></span>
+  </button>
+
+  <header class="app-header">
+    <h1>手机计算器</h1>
+    <p class="subtitle">选运算符，用屏幕数字键盘输入；= 后沿用运算符</p>
+  </header>
+
+  <section class="panel" aria-label="计算器">
+    <div class="state-row">
+      <span class="state-label" id="state-label" aria-live="polite">请选择运算类型</span>
+      <div class="status-overlay">
+        <div class="auto-confirm-feedback" data-testid="auto-confirm-feedback" data-active="false" hidden>
+          <div class="auto-confirm-progress" data-testid="auto-confirm-progress" data-active="false" aria-hidden="true"></div>
+          <div class="auto-confirm-countdown" data-testid="auto-confirm-countdown"></div>
+        </div>
+        <p class="undo-hint" data-testid="undo-hint" hidden>输错了？按“退格”可撤回上一笔。</p>
+      </div>
+      <button class="reset-button" type="button" data-testid="key-op" disabled>运算类型</button>
+    </div>
+
+    <input
+      class="calc-input"
+      id="calc-input"
+      data-testid="calc-input"
+      type="text"
+      inputmode="none"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder="用下方数字键盘输入"
+      aria-describedby="calc-hint"
+      aria-label="数字显示"
+      readonly
+    >
+    <p class="roster-presence" id="roster-presence" hidden></p>
+    <p class="hint" id="calc-hint">用屏幕数字键盘输入；按“确认”收下数字，按 = 计算。</p>
+
+    <div class="display" aria-label="计算过程">
+      <div class="display-label">算式</div>
+      <div class="base-marker" data-testid="base-marker" hidden></div>
+      <div class="expression" data-testid="expression" aria-live="polite"></div>
+      <div class="display-label">结果</div>
+      <div class="result" data-testid="result" aria-live="polite"></div>
+    </div>
+
+    <section class="keypad" data-testid="keypad" aria-label="数字键盘">
+      <div class="op-picker" data-testid="op-picker" role="group" aria-label="选择运算类型">
+        <button class="op-button" type="button" data-op="+" aria-label="加法">+</button>
+        <button class="op-button" type="button" data-op="-" aria-label="减法">-</button>
+        <button class="op-button" type="button" data-op="*" aria-label="乘法">*</button>
+        <button class="op-button" type="button" data-op="/" aria-label="除法">/</button>
+      </div>
+
+      <div class="keypad-pad">
+        <button class="key" type="button" data-key="7" aria-label="数字 7">7</button>
+        <button class="key" type="button" data-key="8" aria-label="数字 8">8</button>
+        <button class="key" type="button" data-key="9" aria-label="数字 9">9</button>
+        <button class="key" type="button" data-key="backspace" aria-label="退格">退格</button>
+        <button class="key" type="button" data-key="4" aria-label="数字 4">4</button>
+        <button class="key" type="button" data-key="5" aria-label="数字 5">5</button>
+        <button class="key" type="button" data-key="6" aria-label="数字 6">6</button>
+        <button class="key" type="button" data-key="enter" data-testid="enter" aria-label="确认当前输入（回车）">确认</button>
+        <button class="key" type="button" data-key="1" aria-label="数字 1">1</button>
+        <button class="key" type="button" data-key="2" aria-label="数字 2">2</button>
+        <button class="key" type="button" data-key="3" aria-label="数字 3">3</button>
+        <button class="key" type="button" data-key="0" aria-label="数字 0">0</button>
+        <button class="key" type="button" data-key="." aria-label="小数点">.</button>
+        <button class="key" type="button" data-key="equals" data-testid="key-equals" aria-label="等于">=</button>
+      </div>
+    </section>
+
+    <section class="edit-draft" data-testid="edit-draft" aria-label="编辑草稿" hidden>
+      <div class="edit-draft-head">
+        <span data-testid="edit-draft-title">编辑草稿</span>
+        <span class="edit-operator" data-testid="edit-operator" aria-hidden="true">+</span>
+        <span class="base-marker" data-testid="edit-base-marker" hidden></span>
+        <span id="edit-hint">换运算符不会清空数字；按“确认”追加数字。</span>
+        <button class="edit-cancel" type="button" data-testid="edit-cancel" aria-label="关闭编辑">关闭</button>
+      </div>
+      <div class="operand-chips" data-testid="operand-chips"></div>
+    </section>
+  </section>
+
+  <section class="history" data-testid="history" aria-label="计算历史">
+    <div class="history-head">
+      <div class="history-heading">
+        <h2 class="history-title" id="history-title">计算历史</h2>
+        <span class="history-note" id="history-note">仅当前页面</span>
+      </div>
+      <div class="history-tools" id="history-tools">
+        <button class="roster-tool" type="button" data-testid="roster-import">导入名单</button>
+        <button class="roster-tool" type="button" data-testid="roster-export" hidden>导出</button>
+        <button class="roster-tool" type="button" data-testid="roster-clear" hidden>清除</button>
+      </div>
+    </div>
+    <p class="storage-warning" data-testid="storage-warning" hidden>本机存储不可用，刷新会丢失成绩。</p>
+    <p class="roster-data-warning" data-testid="roster-data-warning" hidden>本机名单数据无法读取，已忽略；原数据未覆盖。</p>
+    <div class="history-list" data-testid="history-list"></div>
+    <p class="history-empty" data-testid="history-empty">还没有计算记录。</p>
+    <section class="roster" data-testid="roster" role="list" aria-label="名单成绩" hidden>
+      <p class="roster-summary" data-testid="roster-summary"></p>
+      <div class="roster-list" data-testid="roster-list"></div>
+    </section>
+  </section>
+
+  <dialog class="import-dialog" data-testid="import-dialog" aria-labelledby="import-title">
+    <div class="import-body">
+      <h2 class="import-title" id="import-title">导入名单</h2>
+      <p class="import-copy">第一行是<b>表头</b>（至少要有「姓名」或「学号」），例如：<b>学号,姓名,成绩</b>。<br>如有多列成绩，下一步会让你指定哪一列为成绩，其余忽略。<br>Excel 请另存为 <b>CSV UTF-8（逗号分隔）</b>。</p>
+      <p class="import-copy import-steps">流程：选文件 → 选列 → 选保留/清空 → 逐个录入 → 导出共 5 步。</p>
+      <p class="import-error" data-testid="import-error" role="alert" hidden></p>
+
+      <div class="import-stage" data-import-stage="start">
+        <div class="import-actions">
+          <button class="import-action primary" type="button" data-testid="import-select">选择文件</button>
+          <button class="import-action" type="button" data-testid="import-paste">粘贴名单</button>
+          <button class="import-action" type="button" data-testid="import-sample">下载样例名单</button>
+        </div>
+        <input class="import-file" data-testid="roster-file" type="file" accept=".csv,text/csv" hidden>
+      </div>
+
+      <div class="import-stage" data-import-stage="paste" hidden>
+        <label class="import-label" for="import-paste-text">粘贴名单文本（CSV，同文件规则）</label>
+        <textarea class="import-paste-text" data-testid="import-paste-text" id="import-paste-text" autocomplete="off" spellcheck="false"></textarea>
+        <div class="import-actions">
+          <button class="import-action primary" type="button" data-testid="import-paste-parse">解析</button>
+          <button class="import-action" type="button" data-testid="import-paste-back">返回</button>
+        </div>
+      </div>
+
+      <div class="import-stage" data-import-stage="preview" hidden>
+        <p class="import-copy" data-testid="import-summary" hidden></p>
+        <div class="import-map" data-testid="import-map" data-id-index="" data-name-index="" data-score-index="" data-seq-index="">
+          <div class="import-field">
+            <label class="import-label" for="import-id-column">学号列</label>
+            <select class="import-select" data-testid="import-id-column" id="import-id-column"></select>
+          </div>
+          <div class="import-field">
+            <label class="import-label" for="import-name-column">姓名列</label>
+            <select class="import-select" data-testid="import-name-column" id="import-name-column"></select>
+          </div>
+          <div class="import-field">
+            <label class="import-label" for="import-score-column">成绩列</label>
+            <select class="import-select" data-testid="import-score-column" id="import-score-column"></select>
+          </div>
+          <div class="import-field">
+            <label class="import-label" for="import-seq-column">序号列（可选）</label>
+            <select class="import-select" data-testid="import-seq-column" id="import-seq-column"></select>
+          </div>
+        </div>
+        <p class="import-map-note" data-testid="import-map-note" hidden></p>
+        <div class="import-columns" data-testid="import-columns" aria-label="识别到的列"></div>
+        <div class="import-preview" data-testid="import-preview" aria-label="前 3 行预览"></div>
+        <fieldset class="import-mode" data-testid="import-mode" hidden>
+          <legend>导入方式</legend>
+          <label class="import-mode-option"><input type="radio" name="import-mode" data-testid="import-mode-keep" value="keep"><span data-testid="import-mode-keep-label"></span></label>
+          <label class="import-mode-option"><input type="radio" name="import-mode" data-testid="import-mode-clear" value="clear"><span data-testid="import-mode-clear-label"></span></label>
+        </fieldset>
+        <p class="import-warning" data-testid="import-warning" hidden></p>
+        <div class="import-actions">
+          <button class="import-action primary" type="button" data-testid="import-confirm">开始录入</button>
+          <button class="import-action" type="button" data-testid="import-reselect">重新选择</button>
+        </div>
+      </div>
+
+      <div class="import-actions">
+        <button class="import-action secondary" type="button" data-testid="import-cancel">取消</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="settings-panel" data-testid="settings-panel" aria-label="统分设置">
+    <h2 class="settings-title">统分设置</h2>
+    <p class="settings-subtitle">输入停顿后自动确认；启用基数后每笔成绩自动带上同一个基数。</p>
+
+    <div class="settings-field">
+      <label class="settings-label" for="settings-auto-confirm">自动确认停顿</label>
+      <select class="settings-select" id="settings-auto-confirm" data-testid="settings-auto-confirm" aria-label="自动确认秒数"></select>
+    </div>
+
+    <div class="settings-field">
+      <label class="settings-label" for="settings-auto-equals">自动按等号</label>
+      <input
+        class="settings-input"
+        id="settings-auto-equals"
+        data-testid="settings-auto-equals"
+        type="text"
+        inputmode="numeric"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="自动按等号笔数"
+        value="0"
+      >
+      <span class="settings-hint" data-testid="auto-equals-hint">输入满 N 笔后自动按 =；0 或留空为关闭。</span>
+    </div>
+
+    <div class="settings-field">
+      <label class="settings-label" for="settings-result-pause">结果后暂停输入</label>
+      <input
+        class="settings-input"
+        id="settings-result-pause"
+        data-testid="settings-result-pause"
+        type="text"
+        inputmode="decimal"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="结果后暂停秒数"
+        value="1"
+        min="0"
+        max="10"
+        step="0.1"
+      >
+      <span class="settings-hint">结果出现后数字输入暂停 N 秒；0 为关闭。</span>
+    </div>
+
+    <div class="settings-field">
+      <label class="settings-toggle-row" for="settings-base-toggle">
+        <input class="settings-checkbox" id="settings-base-toggle" type="checkbox" data-testid="settings-base-toggle">
+        <span>启用基数</span>
+      </label>
+      <input
+        class="settings-input"
+        id="settings-base-value"
+        data-testid="settings-base-value"
+        type="text"
+        inputmode="decimal"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="基数数值"
+        value="0"
+        disabled
+      >
+      <span class="settings-hint">基数作为第一笔数字，可为 0、负数或小数，不计入除数。</span>
+    </div>
+
+    <div class="settings-field">
+      <label class="settings-toggle-row" for="settings-haptics">
+        <input class="settings-checkbox" id="settings-haptics" type="checkbox" data-testid="settings-haptics" checked>
+        <span>按键震动</span>
+      </label>
+      <span class="settings-hint">每次按下屏幕计算键时轻微震动一次；关闭后完全静默。</span>
+    </div>
+
+    <div class="settings-field voice-settings" data-testid="settings-voice-group">
+      <span class="voice-group-label">语音播报</span>
+      <div class="voice-status" data-testid="voice-status" hidden aria-live="polite">
+        <span data-testid="voice-status-text"></span>
+        <details class="voice-error-details" data-testid="voice-error-details" hidden>
+          <summary>技术详情</summary>
+          <span data-testid="voice-error-detail"></span>
+        </details>
+      </div>
+      <div class="voice-progress" data-testid="voice-progress" data-state="idle" hidden aria-hidden="true">
+        <span></span>
+        <em class="voice-progress-label" data-testid="voice-progress-label"></em>
+      </div>
+      <button class="voice-retry" type="button" data-testid="voice-retry" hidden>重试加载语音</button>
+      <p class="settings-hint voice-lead-hint" data-testid="voice-hint">首次开启约需下载 <span class="nowrap">96MB</span> 离线语音资源。<span class="nowrap">手机静音</span>或媒体音量为 0 时不会出声；<span class="nowrap">模型仅限非商用</span>。</p>
+      <label class="settings-toggle-row" for="settings-voice-keys">
+        <input class="settings-checkbox" id="settings-voice-keys" type="checkbox" data-testid="settings-voice-keys">
+        <span>按键播报</span>
+      </label>
+      <label class="settings-toggle-row" for="settings-voice-result">
+        <input class="settings-checkbox" id="settings-voice-result" type="checkbox" data-testid="settings-voice-result">
+        <span>结果播报</span>
+      </label>
+    </div>
+
+    <button class="settings-done" type="button" data-testid="settings-done">完成</button>
+  </dialog>
+</main>
+
+<script>
+  (() => {
+    "use strict";
+
+    const app = document.querySelector(".app");
+    const picker = document.querySelector('[data-testid="op-picker"]');
+    const input = document.querySelector('[data-testid="calc-input"]');
+    const expression = document.querySelector('[data-testid="expression"]');
+    const result = document.querySelector('[data-testid="result"]');
+    const equalsButton = document.querySelector('[data-testid="key-equals"]');
+    const resetButton = document.querySelector('[data-testid="key-op"]');
+    const keypad = document.querySelector('[data-testid="keypad"]');
+    const keyButtons = Array.from(keypad.querySelectorAll('[data-key]'));
+    const opButtons = Array.from(picker.querySelectorAll('[data-op]'));
+    const stateLabel = document.querySelector("#state-label");
+    const historyList = document.querySelector('[data-testid="history-list"]');
+    const historyEmpty = document.querySelector('[data-testid="history-empty"]');
+    const editDraftView = document.querySelector('[data-testid="edit-draft"]');
+    const editOperatorView = document.querySelector('[data-testid="edit-operator"]');
+    const operandChips = document.querySelector('[data-testid="operand-chips"]');
+    const editCancelButton = document.querySelector('[data-testid="edit-cancel"]');
+    const editDraftTitle = document.querySelector('[data-testid="edit-draft-title"]');
+    const editHint = document.getElementById("edit-hint");
+    const historySection = document.querySelector('[data-testid="history"]');
+    const historyTitle = document.getElementById("history-title");
+    const historyNote = document.getElementById("history-note");
+    const rosterImportButton = document.querySelector('[data-testid="roster-import"]');
+    const rosterExportButton = document.querySelector('[data-testid="roster-export"]');
+    const rosterClearButton = document.querySelector('[data-testid="roster-clear"]');
+    const storageWarning = document.querySelector('[data-testid="storage-warning"]');
+    const rosterDataWarning = document.querySelector('[data-testid="roster-data-warning"]');
+    const rosterView = document.querySelector('[data-testid="roster"]');
+    const rosterSummary = document.querySelector('[data-testid="roster-summary"]');
+    const rosterList = document.querySelector('[data-testid="roster-list"]');
+    const rosterPresence = document.getElementById("roster-presence");
+    const importDialog = document.querySelector('[data-testid="import-dialog"]');
+    const importError = document.querySelector('[data-testid="import-error"]');
+    const importStages = Array.from(importDialog.querySelectorAll("[data-import-stage]"));
+    const importSelectButton = document.querySelector('[data-testid="import-select"]');
+    const importPasteButton = document.querySelector('[data-testid="import-paste"]');
+    const importSampleButton = document.querySelector('[data-testid="import-sample"]');
+    const rosterFileInput = document.querySelector('[data-testid="roster-file"]');
+    const importPasteText = document.querySelector('[data-testid="import-paste-text"]');
+    const importPasteParse = document.querySelector('[data-testid="import-paste-parse"]');
+    const importPasteBack = document.querySelector('[data-testid="import-paste-back"]');
+    const importMap = document.querySelector('[data-testid="import-map"]');
+    const importMapNote = document.querySelector('[data-testid="import-map-note"]');
+    const importColumns = document.querySelector('[data-testid="import-columns"]');
+    const importPreview = document.querySelector('[data-testid="import-preview"]');
+    const importSummary = document.querySelector('[data-testid="import-summary"]');
+    const importMode = document.querySelector('[data-testid="import-mode"]');
+    const importModeKeep = document.querySelector('[data-testid="import-mode-keep"]');
+    const importModeKeepLabel = document.querySelector('[data-testid="import-mode-keep-label"]');
+    const importModeClear = document.querySelector('[data-testid="import-mode-clear"]');
+    const importModeClearLabel = document.querySelector('[data-testid="import-mode-clear-label"]');
+    const importWarning = document.querySelector('[data-testid="import-warning"]');
+    const importConfirmButton = document.querySelector('[data-testid="import-confirm"]');
+    const importReselectButton = document.querySelector('[data-testid="import-reselect"]');
+    const importCancelButton = document.querySelector('[data-testid="import-cancel"]');
+    const importColumnSelects = {
+      id: document.querySelector('[data-testid="import-id-column"]'),
+      name: document.querySelector('[data-testid="import-name-column"]'),
+      score: document.querySelector('[data-testid="import-score-column"]'),
+      seq: document.querySelector('[data-testid="import-seq-column"]')
+    };
+    const EDIT_HINT_DEFAULT = editHint ? editHint.textContent : "";
+    const EDIT_HINT_ROSTER = "改好数字后按「保存并完成」或 =；取消会放弃本次修改。";
+    const settingsToggle = document.querySelector('[data-testid="settings-toggle"]');
+    const settingsIndicator = document.querySelector('[data-testid="settings-indicator"]');
+    const settingsSummary = document.querySelector('[data-testid="settings-summary"]');
+    const settingsPanel = document.querySelector('[data-testid="settings-panel"]');
+    const autoConfirmSelect = document.querySelector('[data-testid="settings-auto-confirm"]');
+    const autoEqualsInput = document.querySelector('[data-testid="settings-auto-equals"]');
+    const resultPauseInput = document.querySelector('[data-testid="settings-result-pause"]');
+    const autoEqualsHint = document.querySelector('[data-testid="auto-equals-hint"]');
+    const baseToggle = document.querySelector('[data-testid="settings-base-toggle"]');
+    const baseValueInput = document.querySelector('[data-testid="settings-base-value"]');
+    const hapticsToggle = document.querySelector('[data-testid="settings-haptics"]');
+    const voiceGroup = document.querySelector('[data-testid="settings-voice-group"]');
+    const voiceKeysToggle = document.querySelector('[data-testid="settings-voice-keys"]');
+    const voiceResultToggle = document.querySelector('[data-testid="settings-voice-result"]');
+    const voiceHint = document.querySelector('[data-testid="voice-hint"]');
+    const voiceStatus = document.querySelector('[data-testid="voice-status"]');
+    const voiceStatusText = document.querySelector('[data-testid="voice-status-text"]');
+    const voiceErrorDetails = document.querySelector('[data-testid="voice-error-details"]');
+    const voiceErrorDetail = document.querySelector('[data-testid="voice-error-detail"]');
+    const voiceProgress = document.querySelector('[data-testid="voice-progress"]');
+    const voiceProgressFill = voiceProgress.querySelector("span");
+    const voiceProgressLabel = document.querySelector('[data-testid="voice-progress-label"]');
+    const voiceRetry = document.querySelector('[data-testid="voice-retry"]');
+    const settingsDone = document.querySelector('[data-testid="settings-done"]');
+    const autoConfirmFeedback = document.querySelector('[data-testid="auto-confirm-feedback"]');
+    const autoConfirmProgress = document.querySelector('[data-testid="auto-confirm-progress"]');
+    const autoConfirmCountdown = document.querySelector('[data-testid="auto-confirm-countdown"]');
+    const undoHint = document.querySelector('[data-testid="undo-hint"]');
+    const baseMarkerView = document.querySelector('[data-testid="base-marker"]');
+    const editBaseMarkerView = document.querySelector('[data-testid="edit-base-marker"]');
+
+    const operatorGlyphs = {
+      "+": "+",
+      "-": "-",
+      "*": "*",
+      "/": "/"
+    };
+
+    let state = "select";
+    let operator = null;
+    let operands = [];
+    let history = [];
+    let editDraft = null;
+    let editSnapshot = null;
+    let pendingEdit = null;
+    let editRosterSeq = null;
+    let roster = null;
+    let skippedSeqs = new Set();
+    let pendingImport = null;
+    let importOpener = null;
+    let storageUnavailable = false;
+    let editDraftHome = null;
+    let editDoneButton = null;
+
+    const ROSTER_KEY = "cal-phone.roster.v1";
+    const ROSTER_VERSION = 1;
+    const ROSTER_ROLES = ["seq", "id", "name", "score", "extra"];
+    const HEADER_ALIASES = {
+      seq: ["序号"],
+      id: ["学号", "考号", "学籍号"],
+      name: ["姓名", "名字", "学生姓名"],
+      score: ["成绩", "分数", "得分"]
+    };
+    const ROLE_LABELS = { seq: "序号", id: "学号", name: "姓名", score: "成绩" };
+    let inputStartedFromResult = false;
+
+    const SETTINGS_KEY = "cal-phone.settings.v1";
+    const AUTO_CONFIRM_STEPS = [0, 0.1, 0.2, 0.4, ...Array.from({ length: 20 }, (_, index) => (index + 1) / 2)];
+    const settings = {
+      autoConfirm: 0,
+      autoEquals: 0,
+      resultPause: 1,
+      baseEnabled: false,
+      baseText: "0",
+      haptics: true,
+      voiceKeys: false,
+      voiceResult: false
+    };
+    let autoConfirmTimer = null;
+    let autoConfirmCountdownTimer = null;
+    let autoConfirmDeadline = 0;
+    let resultPauseUntil = 0;
+
+    function resultPauseMs() {
+      const seconds = Number(settings.resultPause);
+      if (!Number.isFinite(seconds) || seconds <= 0) {
+        return 0;
+      }
+      return Math.round(Math.min(10, seconds) * 1000);
+    }
+
+    function resultPauseActive() {
+      return state === "result" && resultPauseUntil > 0 && Date.now() < resultPauseUntil;
+    }
+
+    function startResultPause() {
+      const ms = resultPauseMs();
+      resultPauseUntil = ms > 0 ? Date.now() + ms : 0;
+    }
+
+    function clearResultPause() {
+      resultPauseUntil = 0;
+    }
+
+    function parseResultPause(raw) {
+      const text = String(raw).trim();
+      if (text === "") {
+        return null;
+      }
+      const value = Number(text);
+      if (!Number.isFinite(value) || value < 0 || value > 10) {
+        return null;
+      }
+      return Math.round(value * 10) / 10;
+    }
+
+    const VOICE_HINT_HTTP = '首次开启约需下载 <span class="nowrap">96MB</span> 离线语音资源。<span class="nowrap">手机静音</span>或媒体音量为 0 时不会出声；<span class="nowrap">模型仅限非商用</span>。';
+    const VOICE_HINT_FILE = "语音播报需要 http(s) 网页地址；请改用网页地址打开（本地 file:// 下已禁用）。";
+    const voiceSupported = typeof window !== "undefined"
+      && window.location.protocol !== "file:"
+      && typeof WebAssembly !== "undefined"
+      && Boolean(window.AudioContext || window.webkitAudioContext);
+
+    const KEY_SPEECH = {
+      "0": "零",
+      "1": "一",
+      "2": "二",
+      "3": "三",
+      "4": "四",
+      "5": "五",
+      "6": "六",
+      "7": "七",
+      "8": "八",
+      "9": "九",
+      ".": "点",
+      "backspace": "退格",
+      "enter": "确认",
+      "+": "加",
+      "-": "减",
+      "*": "乘",
+      "/": "除"
+    };
+    const VOICE_PREWARM_WORDS = [
+      "零", "一", "二", "三", "四", "五", "六", "七", "八", "九",
+      "点", "退格", "确认", "加", "减", "乘", "除", "不能除以零"
+    ];
+    const VOICE_MODEL_FILES = [
+      { url: "voice/sherpa-tts/matcha-zh-baker.onnx", name: "model.onnx", size: 75624188 },
+      { url: "voice/sherpa-tts/hifigan_v2.onnx", name: "vocoder.onnx", size: 3749714 },
+      { url: "voice/sherpa-tts/lexicon.txt", name: "lexicon.txt", size: 1363705 },
+      { url: "voice/sherpa-tts/tokens.txt", name: "tokens.txt", size: 19591 }
+    ];
+
+    const voice = {
+      state: "idle",
+      progress: 0,
+      message: "",
+      error: "",
+      enginePromise: null,
+      tts: null,
+      audioContext: null,
+      source: null,
+      cache: new Map(),
+      queue: [],
+      running: false,
+      log: [],
+      played: [],
+      count: 0,
+      lastText: "",
+      lastKind: "",
+      lastMs: 0
+    };
+
+    /* ================= Roster roster ================= */
+
+    function rosterLabel(row) {
+      if (!row) {
+        return "";
+      }
+      return row.name || row.id || `第 ${row.seq} 位`;
+    }
+
+    function nextUnskippedRow(afterSeq) {
+      if (!roster) {
+        return null;
+      }
+      let next = null;
+      let first = null;
+      for (const row of roster.rows) {
+        if (row.entry === null && !skippedSeqs.has(row.seq)) {
+          if (first === null || row.seq < first.seq) {
+            first = row;
+          }
+          if (row.seq > afterSeq && (next === null || row.seq < next.seq)) {
+            next = row;
+          }
+        }
+      }
+      return next === null ? first : next;
+    }
+
+    function firstUnfilledRow(afterSeq) {
+      if (!roster) {
+        return null;
+      }
+      let next = null;
+      let first = null;
+      for (const row of roster.rows) {
+        if (row.entry === null) {
+          if (first === null || row.seq < first.seq) {
+            first = row;
+          }
+          if (row.seq > afterSeq && (next === null || row.seq < next.seq)) {
+            next = row;
+          }
+        }
+      }
+      return next === null ? first : next;
+    }
+
+    function nextEmptyRow() {
+      return nextUnskippedRow(-Infinity) || firstUnfilledRow(-Infinity);
+    }
+
+    function maybeSkipRoster() {
+      if (!roster) {
+        return false;
+      }
+      if (editRosterSeq !== null) {
+        return false;
+      }
+      if (state !== "select" && state !== "input" && state !== "result" && state !== "error") {
+        return false;
+      }
+      if (input.value.trim() !== "") {
+        return false;
+      }
+      if (operands.length !== 0) {
+        return false;
+      }
+      const current = nextEmptyRow();
+      if (!current) {
+        updateStateLabel("名单已录满；按 = 只计算结果，不再写入名单");
+        input.focus();
+        return true;
+      }
+      skippedSeqs.add(current.seq);
+      let next = nextUnskippedRow(current.seq);
+      if (!next) {
+        skippedSeqs.clear();
+        next = firstUnfilledRow(current.seq);
+      }
+      renderRoster();
+      if (next) {
+        updateStateLabel(`已跳过 ${current.seq} ${rosterLabel(current)}；下一位 ${next.seq} ${rosterLabel(next)}`);
+      } else {
+        updateStateLabel(`已跳过 ${current.seq} ${rosterLabel(current)}；名单已录满`);
+      }
+      input.focus();
+      return true;
+    }
+
+    function showStorageUnavailable() {
+      storageUnavailable = true;
+      storageWarning.hidden = false;
+    }
+
+    function persistRoster() {
+      if (!roster) {
+        return;
+      }
+      try {
+        window.localStorage.setItem(ROSTER_KEY, JSON.stringify(roster));
+      } catch (error) {
+        showStorageUnavailable();
+      }
+    }
+
+    function removeRosterStorage() {
+      try {
+        window.localStorage.removeItem(ROSTER_KEY);
+      } catch (error) {
+        showStorageUnavailable();
+      }
+    }
+
+    function validStoredEntry(entry, seq) {
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+        return false;
+      }
+      if (entry.seq !== seq || typeof entry.operator !== "string" || entry.operator === "") {
+        return false;
+      }
+      if (typeof entry.expression !== "string" || !Number.isFinite(entry.result)) {
+        return false;
+      }
+      if (!Array.isArray(entry.operands) || entry.operands.length === 0) {
+        return false;
+      }
+      const operandsOk = entry.operands.every(
+        (operand) =>
+          operand &&
+          typeof operand === "object" &&
+          typeof operand.display === "string" &&
+          Number.isFinite(operand.value),
+      );
+      if (!operandsOk) {
+        return false;
+      }
+      if (entry.base !== null && entry.base !== undefined) {
+        if (
+          !entry.base ||
+          typeof entry.base !== "object" ||
+          typeof entry.base.display !== "string" ||
+          !Number.isFinite(entry.base.value)
+        ) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function validStoredRoster(value) {
+      if (!value || typeof value !== "object" || Array.isArray(value)) {
+        return false;
+      }
+      if (value.version !== ROSTER_VERSION) {
+        return false;
+      }
+      if (typeof value.fileName !== "string" || !Array.isArray(value.headers) || !Array.isArray(value.rows)) {
+        return false;
+      }
+      if (value.rows.length === 0 || !value.headers.every((header) => typeof header === "string")) {
+        return false;
+      }
+      if (!Array.isArray(value.roles) || value.roles.length !== value.headers.length) {
+        return false;
+      }
+      const seen = {};
+      for (const role of value.roles) {
+        if (!ROSTER_ROLES.includes(role)) {
+          return false;
+        }
+        if (role !== "extra") {
+          if (seen[role]) {
+            return false;
+          }
+          seen[role] = true;
+        }
+      }
+      const extraCount = value.roles.filter((role) => role === "extra").length;
+      for (let index = 0; index < value.rows.length; index += 1) {
+        const row = value.rows[index];
+        if (!row || typeof row !== "object" || row.seq !== index + 1) {
+          return false;
+        }
+        if (typeof row.id !== "string" || typeof row.name !== "string") {
+          return false;
+        }
+        if (!Array.isArray(row.extra) || row.extra.length !== extraCount) {
+          return false;
+        }
+        if (!row.extra.every((item) => typeof item === "string")) {
+          return false;
+        }
+        if (!(row.entry === null || validStoredEntry(row.entry, row.seq))) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function restoreRoster() {
+      let raw = null;
+      try {
+        raw = window.localStorage.getItem(ROSTER_KEY);
+      } catch (error) {
+        showStorageUnavailable();
+        return;
+      }
+      if (raw === null) {
+        return;
+      }
+      let parsed = null;
+      try {
+        parsed = JSON.parse(raw);
+      } catch (error) {
+        parsed = null;
+      }
+      if (!validStoredRoster(parsed)) {
+        rosterDataWarning.hidden = false;
+        return;
+      }
+      roster = parsed;
+    }
+
+    function ensureEditDoneButton() {
+      if (editDoneButton && editDoneButton.isConnected) {
+        return editDoneButton;
+      }
+      editDoneButton = document.createElement("button");
+      editDoneButton.type = "button";
+      editDoneButton.className = "edit-done";
+      editDoneButton.setAttribute("data-testid", "edit-done");
+      editDoneButton.textContent = "保存并完成";
+      editDoneButton.addEventListener("click", calculate);
+      return editDoneButton;
+    }
+
+    function removeEditDoneButton() {
+      if (editDoneButton && editDoneButton.isConnected) {
+        editDoneButton.remove();
+      }
+    }
+
+    function focusRosterEdit(seq) {
+      const button = rosterList.querySelector(
+        `[data-testid="roster-row"][data-seq="${seq}"] [data-testid="roster-edit"]`,
+      );
+      if (!button) {
+        return;
+      }
+      button.focus({ preventScroll: true });
+      button.scrollIntoView({ block: "nearest" });
+    }
+
+    function floatEditDraft(seq) {
+      if (!editDraftHome) {
+        editDraftHome = { parent: editDraftView.parentNode, next: editDraftView.nextSibling };
+      }
+      editDraftView.classList.add("floating-roster");
+      document.body.classList.add("roster-edit-floating");
+      document.body.append(editDraftView);
+      requestAnimationFrame(() => {
+        const row = rosterList.querySelector(`[data-testid="roster-row"][data-seq="${seq}"]`);
+        if (!row) {
+          return;
+        }
+        const rowRect = row.getBoundingClientRect();
+        const draftHeight = editDraftView.getBoundingClientRect().height;
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const maxTop = Math.max(0, window.scrollY + viewportHeight - draftHeight - 12);
+        const top = Math.min(maxTop, rowRect.top + window.scrollY - 12);
+        window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
+      });
+    }
+
+    function restoreEditDraftHome() {
+      if (!editDraftHome) {
+        return;
+      }
+      const home = editDraftHome;
+      editDraftHome = null;
+      editDraftView.classList.remove("floating-roster");
+      document.body.classList.remove("roster-edit-floating");
+      if (home.parent) {
+        home.parent.insertBefore(editDraftView, home.next);
+      }
+    }
+    function renderRoster() {
+      const hasRoster = roster !== null;
+      rosterView.hidden = !hasRoster;
+      rosterView.classList.toggle("editing", hasRoster && editRosterSeq !== null);
+      historyList.hidden = hasRoster;
+      historyEmpty.hidden = hasRoster || history.length > 0;
+      rosterImportButton.textContent = hasRoster ? "导入" : "导入名单";
+      rosterExportButton.hidden = !hasRoster;
+      rosterClearButton.hidden = !hasRoster;
+      historyTitle.textContent = hasRoster ? "名单成绩" : "计算历史";
+      historyNote.textContent = hasRoster ? roster.fileName : "仅当前页面";
+      historySection.setAttribute("aria-label", hasRoster ? "名单成绩" : "计算历史");
+      rosterList.textContent = "";
+      rosterSummary.textContent = "";
+      rosterPresence.textContent = "";
+      rosterPresence.hidden = true;
+
+      if (!hasRoster) {
+        return;
+      }
+
+      const next = nextEmptyRow();
+      const filled = roster.rows.filter((row) => row.entry !== null).length;
+      rosterSummary.append(`${roster.rows.length} 人 · 已录 ${filled} · `);
+      if (next) {
+        rosterPresence.hidden = false;
+        const presenceNext = document.createElement("span");
+        presenceNext.setAttribute("data-testid", "roster-next");
+        presenceNext.setAttribute("data-seq", String(next.seq));
+        presenceNext.textContent = `下一位 ${next.seq} ${rosterLabel(next)} · 按 = 记入成绩`;
+        rosterPresence.append(presenceNext);
+        const nextLabel = document.createElement("span");
+        nextLabel.className = "roster-next";
+        nextLabel.textContent = `下一位 ${next.seq} ${rosterLabel(next)}`;
+        rosterSummary.append(nextLabel);
+      } else {
+        rosterSummary.append("名单已录满");
+        rosterPresence.hidden = false;
+        rosterPresence.textContent = "名单已录满；按 = 只计算结果，不再写入名单";
+      }
+
+      const fragment = document.createDocumentFragment();
+      roster.rows.forEach((row) => {
+        const item = document.createElement("article");
+        item.className = "roster-row";
+        item.setAttribute("data-testid", "roster-row");
+        item.setAttribute("role", "listitem");
+        item.setAttribute("data-seq", String(row.seq));
+        item.setAttribute("data-filled", row.entry ? "true" : "false");
+        item.setAttribute("data-name", row.name);
+        item.setAttribute("data-id", row.id);
+        if (next && next.seq === row.seq) {
+          item.setAttribute("data-next", "true");
+        }
+        if (skippedSeqs.has(row.seq) && row.entry === null) {
+          item.setAttribute("data-skipped", "true");
+          item.setAttribute("title", "已跳过（本次会话内跳过，不计成绩）");
+        }
+        if (editRosterSeq !== null && editRosterSeq === row.seq) {
+          item.classList.add("editing");
+        }
+
+        const top = document.createElement("div");
+        top.className = "roster-top";
+        const seq = document.createElement("span");
+        seq.className = "roster-seq";
+        seq.textContent = String(row.seq);
+        const identity = document.createElement("span");
+        identity.className = "roster-identity";
+        const name = document.createElement("span");
+        name.className = "roster-name";
+        name.textContent = row.name || `第 ${row.seq} 位`;
+        identity.append(name);
+        if (row.id) {
+          const id = document.createElement("span");
+          id.className = "roster-id";
+          id.textContent = row.id;
+          identity.append(id);
+        }
+        top.append(seq, identity);
+        if (editRosterSeq !== null && editRosterSeq === row.seq) {
+          const badge = document.createElement("span");
+          badge.className = "roster-edit-badge";
+          badge.textContent = "编辑中";
+          top.append(badge);
+        }
+        if (next && next.seq === row.seq) {
+          const badge = document.createElement("span");
+          badge.className = "roster-next-badge";
+          badge.textContent = "下一位";
+          top.append(badge);
+        }
+
+        const bottom = document.createElement("div");
+        bottom.className = "roster-bottom";
+        const expressionView = document.createElement("span");
+        expressionView.className = "roster-expression";
+        expressionView.setAttribute("data-testid", "roster-expression");
+        expressionView.textContent = row.entry ? row.entry.expression : "";
+        const score = document.createElement("span");
+        score.className = "roster-score";
+        score.setAttribute("data-testid", "roster-score");
+        if (row.entry) {
+          const formatted = formatValue(row.entry.result);
+          score.setAttribute("data-value", formatted);
+          score.textContent = formatted;
+        } else {
+          score.classList.add("empty");
+          score.textContent = "—";
+        }
+        bottom.append(expressionView, score);
+
+        if (row.entry) {
+          const editButton = document.createElement("button");
+          editButton.type = "button";
+          editButton.className = "roster-edit";
+          editButton.setAttribute("data-testid", "roster-edit");
+          if (row.name || row.id) {
+            editButton.setAttribute("aria-label", `编辑第 ${row.seq} 位 ${rosterLabel(row)} 的成绩`);
+          } else {
+            editButton.setAttribute("aria-label", `编辑第 ${row.seq} 位的成绩`);
+          }
+          editButton.textContent = "编辑";
+          editButton.addEventListener("click", () => beginEdit(row.entry, row));
+          bottom.append(editButton);
+        }
+
+        item.append(top, bottom);
+        fragment.append(item);
+      });
+      rosterList.append(fragment);
+    }
+    function decodeRosterBytes(bytes) {
+      let text = new TextDecoder("utf-8").decode(bytes);
+      if (text.includes("\uFFFD")) {
+        try {
+          text = new TextDecoder("gbk", { fatal: true }).decode(bytes);
+        } catch (error) {
+          throw new Error("文件编码无法识别，请另存为 CSV UTF-8 后重试。");
+        }
+      }
+      text = text.replace(/^\uFEFF/, "");
+      if (text.includes("\uFFFD") || text.includes("\u0000")) {
+        throw new Error("文件编码无法识别，请另存为 CSV UTF-8 后重试。");
+      }
+      return text;
+    }
+
+    function headerRecordText(text) {
+      let inQuotes = false;
+      for (let index = 0; index < text.length; index += 1) {
+        const character = text[index];
+        if (character === '"') {
+          if (inQuotes && text[index + 1] === '"') {
+            index += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (!inQuotes && (character === "\r" || character === "\n")) {
+          return text.slice(0, index);
+        }
+      }
+      return text;
+    }
+
+    function countDelimiter(text, delimiter) {
+      let count = 0;
+      let inQuotes = false;
+      for (let index = 0; index < text.length; index += 1) {
+        const character = text[index];
+        if (character === '"') {
+          if (inQuotes && text[index + 1] === '"') {
+            index += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (!inQuotes && character === delimiter) {
+          count += 1;
+        }
+      }
+      return count;
+    }
+
+    function detectDelimiter(text) {
+      const header = headerRecordText(text);
+      let bestDelimiter = ",";
+      let bestCount = -1;
+      for (const delimiter of [",", ";", "\t"]) {
+        const count = countDelimiter(header, delimiter);
+        if (count > bestCount) {
+          bestDelimiter = delimiter;
+          bestCount = count;
+        }
+      }
+      return bestDelimiter;
+    }
+
+    function parseCsvRecords(text, delimiter) {
+      const records = [];
+      let row = [];
+      let field = "";
+      let inQuotes = false;
+
+      for (let index = 0; index < text.length; index += 1) {
+        const character = text[index];
+        if (inQuotes) {
+          if (character === '"') {
+            if (text[index + 1] === '"') {
+              field += '"';
+              index += 1;
+            } else {
+              inQuotes = false;
+            }
+          } else {
+            field += character;
+          }
+        } else if (character === '"' && field === "") {
+          inQuotes = true;
+        } else if (character === delimiter) {
+          row.push(field);
+          field = "";
+        } else if (character === "\r" || character === "\n") {
+          if (character === "\r" && text[index + 1] === "\n") {
+            index += 1;
+          }
+          row.push(field);
+          records.push(row);
+          row = [];
+          field = "";
+        } else {
+          field += character;
+        }
+      }
+
+      if (field !== "" || row.length > 0 || text.endsWith(delimiter)) {
+        row.push(field);
+        records.push(row);
+      }
+      return records;
+    }
+
+    function defaultRoleIndexes(headers) {
+      const used = {};
+      const indexes = { seq: null, id: null, name: null, score: null };
+      ["id", "name", "score", "seq"].forEach((role) => {
+        for (let index = 0; index < headers.length; index += 1) {
+          if (used[index]) {
+            continue;
+          }
+          if (HEADER_ALIASES[role].includes(headers[index])) {
+            indexes[role] = index;
+            used[index] = true;
+            break;
+          }
+        }
+      });
+      return indexes;
+    }
+
+    function buildRoles(headers, indexes) {
+      const roles = headers.map(() => "extra");
+      ["seq", "id", "name", "score"].forEach((role) => {
+        const index = indexes[role];
+        if (index !== null && index !== undefined && index >= 0 && index < headers.length) {
+          roles[index] = role;
+        }
+      });
+      return roles;
+    }
+
+    function buildPreviewRows(records, headers, indexes) {
+      const rows = [];
+      for (let recordIndex = 1; recordIndex < records.length; recordIndex += 1) {
+        const record = records[recordIndex];
+        if (record.every((cell) => cell.trim() === "")) {
+          continue;
+        }
+        const id = indexes.id === null ? "" : String(record[indexes.id] ?? "");
+        const name = indexes.name === null ? "" : String(record[indexes.name] ?? "");
+        if (id.trim() === "" && name.trim() === "") {
+          continue;
+        }
+        rows.push({
+          seq: rows.length + 1,
+          id,
+          name,
+          extra: headers.map((header, index) => String(record[index] ?? "")),
+        });
+      }
+      return rows;
+    }
+
+    function parseRosterText(fileName, bytes) {
+      const text = decodeRosterBytes(bytes);
+      if (text.trim() === "") {
+        throw new Error("文件是空的，请选择含表头和名单的 CSV。");
+      }
+      const records = parseCsvRecords(text, detectDelimiter(text));
+      if (records.length === 0 || records[0].every((cell) => cell.trim() === "")) {
+        throw new Error("第一行必须是表头。");
+      }
+      const headers = records[0].map((cell) => cell.trim());
+      if (headers.every((header) => header === "")) {
+        throw new Error("第一行必须是表头。");
+      }
+      const indexes = defaultRoleIndexes(headers);
+      const preview = buildPreviewRows(records, headers, indexes);
+      return { version: ROSTER_VERSION, fileName: fileName || "名单.csv", headers, indexes, preview, records };
+    }
+    function setImportStage(name) {
+      importStages.forEach((stage) => {
+        stage.hidden = stage.getAttribute("data-import-stage") !== name;
+      });
+    }
+
+    function renderPreviewEmpty() {
+      importSummary.hidden = true;
+      importSummary.textContent = "";
+      importSummary.removeAttribute("data-count");
+      importSummary.removeAttribute("data-keep-count");
+      importSummary.removeAttribute("data-drop-count");
+      importSummary.removeAttribute("data-new-count");
+      importMapNote.hidden = true;
+      importMapNote.textContent = "";
+      importColumns.textContent = "";
+      importPreview.textContent = "";
+      importMode.hidden = true;
+      importWarning.hidden = true;
+      importWarning.textContent = "";
+      importWarning.classList.remove("danger");
+      importConfirmButton.disabled = false;
+      importConfirmButton.classList.remove("danger");
+      importConfirmButton.textContent = "开始录入";
+      rosterFileInput.value = "";
+    }
+
+    function resetImportDialog() {
+      pendingImport = null;
+      delete importDialog.dataset.error;
+      delete importDialog.dataset.mode;
+      importError.hidden = true;
+      importError.textContent = "";
+      importPasteText.value = "";
+      setImportStage("start");
+      renderPreviewEmpty();
+    }
+
+    function showImportError(message) {
+      pendingImport = null;
+      importDialog.dataset.error = "true";
+      importError.hidden = false;
+      importError.textContent = message || "名单无法导入，请重新选择文件。";
+      setImportStage("start");
+      renderPreviewEmpty();
+      importSelectButton.focus();
+    }
+
+    function columnOptionLabel(index, header) {
+      return `第 ${index + 1} 列：${header === "" ? "空列" : header}`;
+    }
+
+    function refreshColumnSelects() {
+      if (!pendingImport) {
+        return;
+      }
+      const chosen = pendingImport.indexes;
+      ["id", "name", "score", "seq"].forEach((role) => {
+        const select = importColumnSelects[role];
+        select.textContent = "";
+        const none = document.createElement("option");
+        none.value = "";
+        none.textContent = "无";
+        select.append(none);
+        pendingImport.headers.forEach((header, index) => {
+          const takenByOther = ["id", "name", "score", "seq"].some(
+            (other) => other !== role && chosen[other] === index,
+          );
+          if (takenByOther) {
+            return;
+          }
+          const option = document.createElement("option");
+          option.value = String(index);
+          option.textContent = columnOptionLabel(index, header);
+          select.append(option);
+        });
+        select.value = chosen[role] === null ? "" : String(chosen[role]);
+      });
+      importMap.dataset.idIndex = chosen.id === null ? "" : String(chosen.id);
+      importMap.dataset.nameIndex = chosen.name === null ? "" : String(chosen.name);
+      importMap.dataset.scoreIndex = chosen.score === null ? "" : String(chosen.score);
+      importMap.dataset.seqIndex = chosen.seq === null ? "" : String(chosen.seq);
+    }
+
+    function currentIdCounts(rows, idIndex) {
+      const counts = new Map();
+      if (idIndex === null) {
+        return counts;
+      }
+      rows.forEach((row) => {
+        const key = String(row.extra[idIndex] ?? "").trim();
+        if (key !== "") {
+          counts.set(key, (counts.get(key) || 0) + 1);
+        }
+      });
+      return counts;
+    }
+
+    function duplicateIds(counts) {
+      const dups = [];
+      counts.forEach((count, key) => {
+        if (count > 1) {
+          dups.push(key);
+        }
+      });
+      return dups.sort();
+    }
+
+    function keepAvailability() {
+      if (!pendingImport) {
+        return { available: false, reason: "" };
+      }
+      const indexes = pendingImport.indexes;
+      const filledOld = roster ? roster.rows.filter((row) => row.entry !== null) : [];
+      if (filledOld.length === 0) {
+        return { available: false, reason: "none" };
+      }
+      if (indexes.id === null) {
+        return { available: false, reason: "no-id" };
+      }
+      const oldCounts = new Map();
+      roster.rows.forEach((row) => {
+        const key = String(row.id).trim();
+        if (key !== "") {
+          oldCounts.set(key, (oldCounts.get(key) || 0) + 1);
+        }
+      });
+      const oldDups = duplicateIds(oldCounts);
+      if (oldDups.length > 0) {
+        return { available: false, reason: "dup", dups: oldDups };
+      }
+      const newCounts = currentIdCounts(pendingImport.preview, indexes.id);
+      const newDups = duplicateIds(newCounts);
+      if (newDups.length > 0) {
+        return { available: false, reason: "dup", dups: newDups };
+      }
+      const oldFilledById = new Map();
+      filledOld.forEach((row) => {
+        oldFilledById.set(String(row.id).trim(), row);
+      });
+      let keep = 0;
+      pendingImport.preview.forEach((row) => {
+        const key = String(row.extra[indexes.id] ?? "").trim();
+        if (key !== "" && oldFilledById.has(key)) {
+          keep += 1;
+        }
+      });
+      if (keep === 0) {
+        return { available: false, reason: "zero" };
+      }
+      return { available: true, keep };
+    }
+
+    function refreshMapHighlight() {
+      document.querySelectorAll(".import-chip.active").forEach((chip) => chip.classList.remove("active"));
+      document.querySelectorAll(".import-preview-row span.active").forEach((cell) => cell.classList.remove("active"));
+      const focused = document.activeElement;
+      if (!focused || !focused.classList || !focused.classList.contains("import-select") || !pendingImport) {
+        return;
+      }
+      const match = /import-(id|name|score|seq)-column/.exec(focused.getAttribute("data-testid") || "");
+      if (!match) {
+        return;
+      }
+      const role = match[1];
+      const index = pendingImport.indexes[role];
+      if (index === null || index === undefined) {
+        return;
+      }
+      document.querySelectorAll(`.import-chip[data-index="${index}"]`).forEach((chip) => chip.classList.add("active"));
+      document.querySelectorAll(`.import-preview-row span[data-preview-role="${role}"]`).forEach((cell) => cell.classList.add("active"));
+    }
+
+    function renderPreview() {
+      if (!pendingImport) {
+        return;
+      }
+      delete importDialog.dataset.error;
+      importError.hidden = true;
+      importError.textContent = "";
+      setImportStage("preview");
+      refreshColumnSelects();
+
+      const preview = pendingImport.preview;
+      importSummary.hidden = false;
+      importSummary.dataset.count = String(preview.length);
+      importSummary.textContent = `识别到 ${preview.length} 人`;
+
+      importMapNote.hidden = true;
+      importMapNote.textContent = "";
+      const noMapping = pendingImport.indexes.id === null && pendingImport.indexes.name === null;
+      const zeroPeople = preview.length === 0;
+      if (noMapping) {
+        importMapNote.hidden = false;
+        importMapNote.textContent = "请指定姓名或学号列。";
+      } else if (zeroPeople) {
+        importMapNote.hidden = false;
+        importMapNote.textContent = "当前映射下没有可导入的学生行。";
+      } else if (pendingImport.indexes.seq === null) {
+        importMapNote.hidden = false;
+        importMapNote.textContent = "序号列可保持「无」，将按导入顺序自动编号。";
+      }
+      importConfirmButton.disabled = noMapping || zeroPeople;
+
+      importColumns.textContent = "";
+      pendingImport.headers.forEach((header, index) => {
+        const chip = document.createElement("span");
+        chip.className = "import-chip";
+        const role = pendingImport.roles[index];
+        chip.dataset.role = role;
+        chip.dataset.index = String(index);
+        chip.textContent = role && role !== "extra"
+          ? ROLE_LABELS[role]
+          : `不导入：${header || "空列"}`;
+        importColumns.append(chip);
+      });
+
+      importPreview.textContent = "";
+      const fileScoreIndex = pendingImport.indexes.score;
+      preview.slice(0, 3).forEach((row) => {
+        const previewRow = document.createElement("div");
+        previewRow.className = "import-preview-row";
+        const fileScore = fileScoreIndex === null ? "" : String(row.extra[fileScoreIndex] ?? "");
+        const previewCells = [String(row.seq), row.id, row.name, fileScore === "" ? "—" : fileScore];
+        const previewRoles = ["seq", "id", "name", "score"];
+        previewCells.forEach((value, cellPosition) => {
+          const cell = document.createElement("span");
+          cell.dataset.previewRole = previewRoles[cellPosition];
+          cell.textContent = value;
+          previewRow.append(cell);
+        });
+        importPreview.append(previewRow);
+      });
+
+      const keepOption = importModeKeep.closest("label");
+      if (keepOption) {
+        keepOption.style.display = "";
+      }
+      const filledOld = roster ? roster.rows.filter((row) => row.entry !== null).length : 0;
+      const keep = keepAvailability();
+      if (filledOld === 0) {
+        importMode.hidden = true;
+        delete importDialog.dataset.mode;
+        importSummary.removeAttribute("data-keep-count");
+        importSummary.removeAttribute("data-drop-count");
+        importSummary.removeAttribute("data-new-count");
+        importModeKeep.checked = false;
+        importModeClear.checked = false;
+        if (preview.length > 0 && !noMapping) {
+          importWarning.hidden = false;
+          importWarning.classList.remove("danger");
+          importWarning.textContent = roster
+            ? "导入会替换当前名单，并从第 1 位重新录入。"
+            : "导入后从第 1 位开始录入。";
+        } else {
+          importWarning.hidden = true;
+          importWarning.textContent = "";
+        }
+        importConfirmButton.classList.remove("danger");
+        importConfirmButton.textContent = "开始录入";
+        return;
+      }
+
+      importMode.hidden = false;
+      if (keep.available) {
+        const keepCount = keep.keep;
+        const oldIds = new Set();
+        roster.rows.forEach((row) => {
+          if (row.entry !== null) {
+            oldIds.add(String(row.id).trim());
+          }
+        });
+        const newIds = new Set();
+        pendingImport.preview.forEach((row) => {
+          const key = String(row.extra[pendingImport.indexes.id] ?? "").trim();
+          if (key !== "") {
+            newIds.add(key);
+          }
+        });
+        let drop = 0;
+        oldIds.forEach((key) => {
+          if (key !== "" && !newIds.has(key)) {
+            drop += 1;
+          }
+        });
+        let added = 0;
+        newIds.forEach((key) => {
+          if (!oldIds.has(key)) {
+            added += 1;
+          }
+        });
+        importSummary.dataset.keepCount = String(keepCount);
+        importSummary.dataset.dropCount = String(drop);
+        importSummary.dataset.newCount = String(added);
+        if (pendingImport.userClear) {
+          if (pendingImport.mode !== "keep" && pendingImport.mode !== "clear") {
+            pendingImport.mode = "clear";
+          }
+        } else {
+          pendingImport.mode = "keep";
+        }
+        importModeKeepLabel.textContent = `保留同学号成绩（命中${keepCount}人）`;
+        importModeClearLabel.textContent = `清空重录（现存${filledOld}条将删）`;
+        importModeKeep.checked = pendingImport.mode === "keep";
+        importModeClear.checked = pendingImport.mode === "clear";
+        importDialog.dataset.mode = pendingImport.mode;
+        importWarning.hidden = false;
+        if (pendingImport.mode === "keep") {
+          importWarning.classList.remove("danger");
+          importWarning.textContent = `命中${keepCount}人保留；旧成绩丢弃${drop}条；新增${added}人。`;
+          importConfirmButton.classList.remove("danger");
+          importConfirmButton.textContent = "保留成绩并开始录入";
+        } else {
+          importWarning.classList.add("danger");
+          importWarning.textContent = `清空后现存${filledOld}条成绩都会删除；本次新入${preview.length}人。`;
+          importConfirmButton.classList.add("danger");
+          importConfirmButton.textContent = "清空并开始录入";
+        }
+      } else {
+        importSummary.removeAttribute("data-keep-count");
+        importSummary.removeAttribute("data-drop-count");
+        importSummary.removeAttribute("data-new-count");
+        pendingImport.mode = "clear";
+        importModeKeep.checked = false;
+        importModeClear.checked = true;
+        if (keepOption) {
+          keepOption.style.display = "none";
+        }
+        importModeClearLabel.textContent = `清空重录（现存${filledOld}条将删）`;
+        importDialog.dataset.mode = "clear";
+        importWarning.hidden = false;
+        importWarning.classList.add("danger");
+        if (keep.reason === "dup") {
+          const listed = (keep.dups || []).slice(0, 3).join("、");
+          importWarning.textContent = `无法按学号保留：学号 ${listed} 重复；只能清空重录。`;
+        } else if (keep.reason === "no-id") {
+          importWarning.textContent = "未指定学号列，只能清空重录。";
+        } else {
+          importWarning.textContent = "没有可保留的同学号成绩，只能清空重录。";
+        }
+        importConfirmButton.classList.add("danger");
+        importConfirmButton.textContent = "清空并开始录入";
+      }
+      refreshMapHighlight();
+    }
+
+    function applyMappingChange(role, value) {
+      if (!pendingImport) {
+        return;
+      }
+      const next = value === "" ? null : Number(value);
+      ["id", "name", "score", "seq"].forEach((other) => {
+        if (other !== role && pendingImport.indexes[other] === next && next !== null) {
+          pendingImport.indexes[other] = null;
+        }
+      });
+      pendingImport.indexes[role] = next;
+      pendingImport.roles = buildRoles(pendingImport.headers, pendingImport.indexes);
+      pendingImport.preview = buildPreviewRows(pendingImport.records, pendingImport.headers, pendingImport.indexes);
+      if (pendingImport.mode === "keep" && !keepAvailability().available) {
+        pendingImport.mode = "clear";
+      }
+      renderPreview();
+    }
+
+    function openImportDialog() {
+      stopAutoConfirm();
+      importOpener = document.activeElement instanceof Element ? document.activeElement : null;
+      resetImportDialog();
+      if (typeof importDialog.showModal === "function") {
+        if (!importDialog.open) {
+          importDialog.showModal();
+        }
+      } else {
+        importDialog.setAttribute("open", "");
+      }
+      importDialog.scrollTop = 0;
+      importSelectButton.focus();
+    }
+
+    function handleRosterFile(file) {
+      if (!file) {
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const bytes = new Uint8Array(reader.result);
+          pendingImport = parseRosterText(file.name || "名单.csv", bytes);
+          pendingImport.mode = null;
+          pendingImport.userClear = false;
+          pendingImport.roles = buildRoles(pendingImport.headers, pendingImport.indexes);
+          pendingImport.preview = buildPreviewRows(pendingImport.records, pendingImport.headers, pendingImport.indexes);
+          renderPreview();
+        } catch (error) {
+          showImportError(error && error.message ? error.message : "名单无法导入，请重新选择文件。");
+        }
+      };
+      reader.onerror = () => {
+        showImportError("文件读取失败，请重新选择文件。");
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function handlePasteParse() {
+      const rawText = importPasteText.value;
+      if (rawText.trim() === "") {
+        pendingImport = null;
+        importDialog.dataset.error = "true";
+        importError.hidden = false;
+        importError.textContent = "粘贴内容是空的，请粘贴含表头和名单的 CSV。";
+        setImportStage("paste");
+        importPasteText.focus();
+        return;
+      }
+      try {
+        const bytes = new TextEncoder().encode(rawText);
+        pendingImport = parseRosterText("粘贴名单", bytes);
+        pendingImport.mode = null;
+        pendingImport.userClear = false;
+        pendingImport.roles = buildRoles(pendingImport.headers, pendingImport.indexes);
+        pendingImport.preview = buildPreviewRows(pendingImport.records, pendingImport.headers, pendingImport.indexes);
+        renderPreview();
+      } catch (error) {
+        pendingImport = null;
+        importDialog.dataset.error = "true";
+        importError.hidden = false;
+        importError.textContent = error && error.message ? error.message : "名单无法导入，请重新粘贴。";
+        setImportStage("paste");
+        importPasteText.focus();
+      }
+    }
+    function buildRosterFromImport() {
+      const parsed = pendingImport;
+      const roles = parsed.roles;
+      const idIndex = parsed.indexes.id;
+      const nameIndex = parsed.indexes.name;
+      const extraIndices = [];
+      roles.forEach((role, index) => {
+        if (role === "extra") {
+          extraIndices.push(index);
+        }
+      });
+      const rows = parsed.preview.map((previewRow, position) => ({
+        seq: position + 1,
+        id: idIndex === null ? "" : String(previewRow.extra[idIndex] ?? ""),
+        name: nameIndex === null ? "" : String(previewRow.extra[nameIndex] ?? ""),
+        extra: extraIndices.map((index) => String(previewRow.extra[index] ?? "")),
+        entry: null,
+      }));
+      return {
+        version: ROSTER_VERSION,
+        fileName: parsed.fileName,
+        headers: parsed.headers.slice(),
+        roles: roles.slice(),
+        rows,
+      };
+    }
+
+    function confirmRosterImport() {
+      if (!pendingImport || importConfirmButton.disabled) {
+        return;
+      }
+      const built = buildRosterFromImport();
+      const useKeep = pendingImport.mode === "keep" && keepAvailability().available && roster;
+      if (useKeep) {
+        const oldById = new Map();
+        roster.rows.forEach((oldRow) => {
+          if (oldRow.entry !== null) {
+            oldById.set(String(oldRow.id).trim(), oldRow.entry);
+          }
+        });
+        built.rows.forEach((row) => {
+          const key = String(row.id).trim();
+          if (key !== "" && oldById.has(key)) {
+            const carried = oldById.get(key);
+            row.entry = {
+              seq: row.seq,
+              operator: carried.operator,
+              operands: carried.operands.map(cloneOperand),
+              base: carried.base ? { value: carried.base.value, display: carried.base.display } : null,
+              expression: carried.expression,
+              result: carried.result,
+            };
+          }
+        });
+      }
+      const keptCount = built.rows.filter((row) => row.entry !== null).length;
+      roster = built;
+      skippedSeqs.clear();
+      pendingImport = null;
+      history = [];
+      historyList.textContent = "";
+      historyEmpty.hidden = true;
+      editRosterSeq = null;
+      dropQueuedSpeech("key");
+      dropPendingResults();
+      resetToSelect();
+      persistRoster();
+      renderRoster();
+      const target = nextEmptyRow();
+      if (!target) {
+        updateStateLabel("名单已导入；名单已录满");
+      } else if (keptCount > 0) {
+        updateStateLabel(`已导入；保留 ${keptCount} 条成绩；下一位 ${target.seq} ${rosterLabel(target)}`);
+      } else {
+        updateStateLabel(`已导入；从第 1 位 ${rosterLabel(target)} 开始`);
+      }
+      if (importDialog.open) {
+        importDialog.close();
+      }
+    }
+
+    function clearRoster() {
+      if (!roster) {
+        return;
+      }
+      const filled = roster.rows.filter((row) => row.entry !== null).length;
+      const accepted = window.confirm(`清除后本机保存的名单和 ${filled} 条成绩都会删除。`);
+      if (!accepted) {
+        return;
+      }
+      roster = null;
+      pendingImport = null;
+      skippedSeqs.clear();
+      editRosterSeq = null;
+      history = [];
+      historyList.textContent = "";
+      removeRosterStorage();
+      resetToSelect();
+      renderRoster();
+      updateStateLabel("名单已清除；已回到无名单模式");
+    }
+
+    function escapeCsvCell(value) {
+      const cell = String(value ?? "");
+      return /[",\r\n]/.test(cell) ? `"${cell.replace(/"/g, '""')}"` : cell;
+    }
+
+    function rosterLayout() {
+      const primary = {};
+      roster.roles.forEach((role, index) => {
+        if (role !== "extra" && primary[role] === undefined) {
+          primary[role] = index;
+        }
+      });
+      const extraPositions = new Map();
+      roster.roles.forEach((role, index) => {
+        if (role === "extra") {
+          extraPositions.set(index, extraPositions.size);
+        }
+      });
+      return { primary, extraPositions };
+    }
+
+    function rosterCsvText() {
+      if (!roster) {
+        return "";
+      }
+      const layout = rosterLayout();
+      const outputHeaders = roster.headers.slice();
+      if (layout.primary.seq === undefined) {
+        outputHeaders.unshift("序号");
+      }
+      if (layout.primary.score === undefined) {
+        outputHeaders.push("成绩");
+      }
+      const lines = [outputHeaders.map(escapeCsvCell).join(",")];
+      roster.rows.forEach((row) => {
+        const cells = [];
+        if (layout.primary.seq === undefined) {
+          cells.push(row.seq);
+        }
+        roster.headers.forEach((header, index) => {
+          const role = roster.roles[index];
+          if (role === "seq") {
+            cells.push(row.seq);
+          } else if (role === "id") {
+            cells.push(row.id);
+          } else if (role === "name") {
+            cells.push(row.name);
+          } else if (role === "score") {
+            cells.push(row.entry ? formatValue(row.entry.result) : "");
+          } else {
+            cells.push(row.extra[layout.extraPositions.get(index)] ?? "");
+          }
+        });
+        if (layout.primary.score === undefined) {
+          cells.push(row.entry ? formatValue(row.entry.result) : "");
+        }
+        lines.push(cells.map(escapeCsvCell).join(","));
+      });
+      return "\uFEFF" + lines.join("\r\n") + "\r\n";
+    }
+
+    function downloadText(fileName, content) {
+      try {
+        const blob = new Blob([content], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        window.setTimeout(() => { link.remove(); URL.revokeObjectURL(url); }, 1000);
+      } catch (error) {
+        updateStateLabel("导出失败：浏览器不支持下载。");
+      }
+    }
+
+    function exportRoster() {
+      if (!roster) {
+        return;
+      }
+      const baseName = (roster.fileName || "名单").replace(/\.[^.]+$/, "").replace(/[\\/:*?"<>|]/g, "_") || "名单";
+      const now = new Date();
+      const date = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
+      downloadText(`${baseName}-成绩-${date}.csv`, rosterCsvText());
+      const filled = roster.rows.filter((row) => row.entry !== null).length;
+      updateStateLabel(`已导出 ${roster.rows.length} 人（${filled} 条成绩）`);
+    }
+
+    function downloadSampleRoster() {
+      const sample = [
+        "序号,学号,姓名,成绩,班级",
+        "1,20230101,张三,,高一3班",
+        "2,20230102,李四,,高一3班",
+        "3,20230103,王五,,高一3班",
+      ].join("\r\n");
+      downloadText("名单样例.csv", "\uFEFF" + sample + "\r\n");
+    }
+    function enterState(nextState) {
+      state = nextState;
+      app.dataset.state = nextState;
+      resetButton.disabled = nextState === "select";
+      syncKeypad();
+      updateBaseMarker();
+      updateUndoHint();
+    }
+
+    function syncOperatorAttribute() {
+      if (operator) {
+        app.dataset.operator = operator;
+        resetButton.textContent = `运算：${operatorGlyphs[operator]}`;
+        resetButton.setAttribute("aria-label", `当前运算 ${operatorGlyphs[operator]}，点击重选`);
+      } else {
+        delete app.dataset.operator;
+        resetButton.textContent = "运算类型";
+        resetButton.setAttribute("aria-label", "重选运算类型");
+      }
+      opButtons.forEach((button) => {
+        const selected = Boolean(operator) && button.getAttribute("data-op") === operator;
+        button.setAttribute("aria-pressed", selected ? "true" : "false");
+      });
+    }
+
+    function syncKeypad() {
+      keyButtons.forEach((button) => {
+        button.disabled = false;
+      });
+      opButtons.forEach((button) => {
+        button.disabled = false;
+      });
+    }
+
+    /**
+     * 数字 → 中文读法（浏览器语音播报用）。
+     * 来源：/ws/voice/src/numbers.js，原样移植；Matcha 模型把阿拉伯数字当 OOV，
+     * 结果必须先转成中文再合成。
+     */
+    const NUMBER_DIGITS = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+    const NUMBER_SMALL_UNITS = ["", "十", "百", "千"];
+    const NUMBER_GROUP_UNITS = ["", "万", "亿", "万亿", "亿亿"];
+
+    function readNumberGroup(digits) {
+      const text = digits.replace(/^0+/, "");
+      if (!text) {
+        return "";
+      }
+      let out = "";
+      let pendingZero = false;
+      for (let index = 0; index < text.length; index += 1) {
+        const digit = Number(text[index]);
+        const unit = NUMBER_SMALL_UNITS[text.length - 1 - index];
+        if (digit === 0) {
+          if (out) {
+            pendingZero = true;
+          }
+          continue;
+        }
+        if (pendingZero && out) {
+          out += "零";
+        }
+        pendingZero = false;
+        out += NUMBER_DIGITS[digit] + unit;
+      }
+      return out;
+    }
+
+    function readNumberInteger(digits) {
+      if (digits === "0") {
+        return "零";
+      }
+      if (digits.length > 20) {
+        return [...digits].map((digit) => NUMBER_DIGITS[Number(digit)]).join("");
+      }
+      const groups = [];
+      for (let end = digits.length; end > 0; end -= 4) {
+        groups.unshift(digits.slice(Math.max(0, end - 4), end));
+      }
+      let out = "";
+      let needZero = false;
+      const topUnit = groups.length - 1;
+      for (let index = 0; index < groups.length; index += 1) {
+        const group = groups[index];
+        if (Number(group) === 0) {
+          if (out) {
+            needZero = true;
+          }
+          continue;
+        }
+        if (out && (needZero || group[0] === "0")) {
+          out += "零";
+        }
+        out += readNumberGroup(group) + NUMBER_GROUP_UNITS[topUnit - index];
+        needZero = false;
+      }
+      if (out.startsWith("一十")) {
+        out = out.slice(1);
+      }
+      return out;
+    }
+
+    function numberToChineseReading(input) {
+      const raw = String(input ?? "").normalize("NFKC").trim();
+      if (!raw) {
+        return "";
+      }
+      const normalized = raw.replace(/[,\s]/g, "").replace(/^\+/, "");
+      const match = normalized.match(/^(-?)(\d*)(?:\.(\d*))?$/);
+      if (!match) {
+        return "";
+      }
+      const negative = match[1] === "-";
+      let integer = match[2] ?? "";
+      let decimal = match[3] ?? "";
+      if (!integer && !decimal) {
+        return "";
+      }
+      integer = integer.replace(/^0+(?=\d)/, "") || "0";
+      decimal = decimal.replace(/0+$/, "");
+      const isZero = integer === "0" && !decimal;
+      const reading = readNumberInteger(integer)
+        + (decimal ? `点${[...decimal].map((digit) => NUMBER_DIGITS[Number(digit)]).join("")}` : "");
+      return negative && !isZero ? `负${reading}` : reading;
+    }
+
+    function syncSpeechDataset() {
+      app.dataset.speechLog = JSON.stringify(voice.log);
+      app.dataset.speechPlayed = JSON.stringify(voice.played);
+      app.dataset.speechCount = String(voice.count);
+      app.dataset.speechLast = voice.lastText;
+      app.dataset.speechKind = voice.lastKind;
+      app.dataset.speechLastMs = String(voice.lastMs);
+    }
+
+    function voiceStatusMessage() {
+      if (voice.state === "loading" || voice.state === "preparing") {
+        return voice.message || "正在加载语音引擎…";
+      }
+      if (voice.state === "ready") {
+        return "语音已就绪";
+      }
+      if (voice.state === "error") {
+        return `语音加载失败：${friendlyVoiceError(voice.error)}`;
+      }
+      return "语音播报默认关闭";
+    }
+
+    function friendlyVoiceError(raw) {
+      const text = String(raw || "");
+      if (/下载|fetch|network|Failed to fetch|HTTP|404|403|500/i.test(text)) {
+        return "语音模型下载失败，请检查网络或语音资源安装后重试。";
+      }
+      if (/初始化|init|createOfflineTts|handle|不兼容/i.test(text)) {
+        return "语音引擎初始化失败，请检查语音资源后重试。";
+      }
+      if (/脚本|script|WASM|wasm|SherpaOnnx/i.test(text)) {
+        return "语音运行时加载失败，请检查语音资源后重试。";
+      }
+      if (/Audio|播放|音频/i.test(text)) {
+        return "当前浏览器无法播放语音，请检查媒体音量后重试。";
+      }
+      return "语音加载失败，请检查网络与语音资源后重试。";
+    }
+
+    function syncVoiceUi() {
+      const progress = Math.max(0, Math.min(100, Math.round(Number(voice.progress) || 0)));
+      app.dataset.voiceState = voice.state;
+      app.dataset.voiceProgress = String(progress);
+      const barProgress = voice.state === "ready" || voice.state === "error" ? 100 : progress;
+      voiceProgressFill.style.width = `${barProgress}%`;
+      voiceProgress.dataset.state = voice.state;
+      voiceProgressLabel.textContent = voice.state === "ready"
+        ? "已完成"
+        : voice.state === "error"
+          ? "已中断"
+          : voice.state === "loading" || voice.state === "preparing"
+            ? `${progress}%`
+            : "";
+      voiceProgress.setAttribute(
+        "aria-label",
+        voice.state === "ready"
+          ? "语音已就绪"
+          : voice.state === "error"
+            ? "语音加载已中断"
+            : `语音准备进度 ${progress}%`
+      );
+      voiceProgress.setAttribute("aria-valuenow", String(progress));
+      voiceStatus.dataset.state = voice.state;
+      voiceStatusText.textContent = voiceStatusMessage();
+      voiceErrorDetail.textContent = voice.error || "";
+      voiceErrorDetails.hidden = !(voice.state === "error" && voice.error);
+      const showStatus = voice.state !== "idle" || settings.voiceKeys || settings.voiceResult;
+      voiceStatus.hidden = !showStatus;
+      voiceProgress.hidden = voice.state === "idle";
+      voiceRetry.hidden = voice.state !== "error";
+      voiceKeysToggle.checked = settings.voiceKeys;
+      voiceResultToggle.checked = settings.voiceResult;
+      if (!voiceSupported) {
+        voiceKeysToggle.disabled = true;
+        voiceResultToggle.disabled = true;
+      }
+      syncSpeechDataset();
+      syncSettingsIndicator();
+    }
+
+    function setVoiceState(nextState, nextProgress, message, errorMessage) {
+      voice.state = nextState;
+      if (nextProgress !== undefined) {
+        voice.progress = nextProgress;
+      }
+      if (message !== undefined) {
+        voice.message = message;
+      }
+      if (nextState === "error") {
+        voice.error = errorMessage || message || "未知错误";
+      } else {
+        voice.error = "";
+      }
+      syncVoiceUi();
+    }
+
+    function appendSpeechLog(kind, text) {
+      voice.count += 1;
+      voice.lastText = text;
+      voice.lastKind = kind;
+      voice.log.push({ kind, text });
+      if (voice.log.length > 80) {
+        voice.log.splice(0, voice.log.length - 80);
+      }
+      syncSpeechDataset();
+    }
+
+    function cancelActiveSpeech(kind) {
+      const active = voice.activeTask;
+      if (active && active.kind === kind && !active.started) {
+        active.cancelled = true;
+      }
+    }
+
+    function dropQueuedSpeech(kind) {
+      voice.queue.forEach((task) => {
+        if (task.kind === kind) {
+          task.cancelled = true;
+        }
+      });
+      voice.queue = voice.queue.filter((task) => !task.cancelled);
+      cancelActiveSpeech(kind);
+    }
+
+    function dropPendingResults() {
+      voice.queue.forEach((task) => {
+        if (task.kind === "result") {
+          task.cancelled = true;
+        }
+      });
+      voice.queue = voice.queue.filter((task) => !task.cancelled);
+      cancelActiveSpeech("result");
+    }
+
+    function enqueueSpeech(kind, text) {
+      if (!voiceSupported) {
+        return;
+      }
+      appendSpeechLog(kind, text);
+      if (kind === "key") {
+        dropPendingResults();
+      }
+      voice.queue.push({ kind, text, cancelled: false, started: false });
+      void processSpeechQueue();
+    }
+
+    function speakKey(text) {
+      if (!voiceSupported || !settings.voiceKeys || !text) {
+        return;
+      }
+      enqueueSpeech("key", text);
+    }
+
+    function speakResult(text) {
+      if (!voiceSupported || !settings.voiceResult || !text) {
+        return;
+      }
+      enqueueSpeech("result", text);
+    }
+
+    function loadVoiceScriptOnce(id, src) {
+      if (document.getElementById(id)) {
+        return Promise.resolve();
+      }
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.id = id;
+        script.src = src;
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error(`语音脚本加载失败：${src}`));
+        document.head.append(script);
+      });
+    }
+
+    async function fetchVoiceBytes(url, expectedSize, onProgress) {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`模型下载失败（${response.status}）：${url}`);
+      }
+      const declared = Number(response.headers.get("Content-Length")) || expectedSize || 0;
+      if (!response.body || typeof response.body.getReader !== "function") {
+        const data = new Uint8Array(await response.arrayBuffer());
+        onProgress(data.byteLength, Math.max(declared, data.byteLength));
+        return data;
+      }
+      const reader = response.body.getReader();
+      const chunks = [];
+      let loaded = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+        chunks.push(value);
+        loaded += value.byteLength;
+        onProgress(loaded, declared || loaded);
+      }
+      const data = new Uint8Array(loaded);
+      let offset = 0;
+      chunks.forEach((chunk) => {
+        data.set(chunk, offset);
+        offset += chunk.byteLength;
+      });
+      onProgress(data.byteLength, Math.max(declared, data.byteLength));
+      return data;
+    }
+
+    function mountVoiceFiles(module) {
+      const fs = module.FS || {};
+      const directory = "/voice-model";
+      if (typeof fs.mkdirTree === "function") {
+        fs.mkdirTree(directory);
+      } else if (typeof module.FS_createPath === "function") {
+        try {
+          module.FS_createPath("/", directory.slice(1), true, true);
+        } catch (error) {
+          /* 目录已存在时忽略。 */
+        }
+      }
+      if (typeof module.FS_createDataFile !== "function" && typeof fs.writeFile !== "function") {
+        throw new Error("sherpa-onnx 运行时缺少文件系统接口");
+      }
+    }
+
+    function writeVoiceFile(module, name, data) {
+      if (typeof module.FS_createDataFile === "function") {
+        module.FS_createDataFile("/voice-model", name, data, true, true);
+      } else {
+        module.FS.writeFile(`/voice-model/${name}`, data);
+      }
+    }
+
+    function synthesizeSpeech(text) {
+      const cached = voice.cache.get(text);
+      if (cached) {
+        return cached;
+      }
+      if (!voice.tts) {
+        throw new Error("语音引擎尚未就绪");
+      }
+      const result = voice.tts.generate({ text, sid: 0, speed: 1 });
+      const sourceSamples = result && result.samples;
+      if (!sourceSamples || !sourceSamples.length) {
+        throw new Error("语音合成结果为空");
+      }
+      const samples = sourceSamples instanceof Float32Array
+        ? sourceSamples
+        : Float32Array.from(sourceSamples);
+      let peak = 0;
+      for (let index = 0; index < samples.length; index += 1) {
+        peak = Math.max(peak, Math.abs(samples[index]));
+      }
+      if (peak === 0) {
+        throw new Error("语音合成结果是静音");
+      }
+      if (peak < 0.95) {
+        const gain = 0.9 / peak;
+        for (let index = 0; index < samples.length; index += 1) {
+          samples[index] *= gain;
+        }
+      }
+      const sampleRate = Number(result.sampleRate || voice.tts.sampleRate) || 22050;
+      const audio = {
+        samples,
+        sampleRate,
+        durationMs: Math.round((samples.length / sampleRate) * 1000)
+      };
+      voice.cache.set(text, audio);
+      if (voice.cache.size > 20) {
+        voice.cache.delete(voice.cache.keys().next().value);
+      }
+      return audio;
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => window.setTimeout(resolve, Math.max(0, ms)));
+    }
+
+    async function playVoiceSamples(audio) {
+      const Context = window.AudioContext || window.webkitAudioContext;
+      if (!Context) {
+        await sleep(audio.durationMs);
+        return;
+      }
+      try {
+        voice.audioContext ??= new Context();
+        const context = voice.audioContext;
+        if (context.state === "suspended") {
+          await context.resume();
+        }
+        const buffer = context.createBuffer(1, audio.samples.length, audio.sampleRate);
+        buffer.getChannelData(0).set(audio.samples);
+        const source = context.createBufferSource();
+        source.buffer = buffer;
+        source.connect(context.destination);
+        voice.source = source;
+        await new Promise((resolve) => {
+          let settled = false;
+          const finish = () => {
+            if (settled) {
+              return;
+            }
+            settled = true;
+            window.clearTimeout(fallback);
+            resolve();
+          };
+          const fallback = window.setTimeout(finish, audio.durationMs + 150);
+          source.onended = finish;
+          source.start();
+        });
+        if (voice.source === source) {
+          voice.source = null;
+        }
+      } catch (error) {
+        await sleep(audio.durationMs);
+      }
+    }
+
+    async function processSpeechQueue() {
+      if (voice.running) {
+        return;
+      }
+      voice.running = true;
+      try {
+        while (voice.queue.length > 0) {
+          const task = voice.queue.shift();
+          if (task.cancelled || !voiceSupported) {
+            continue;
+          }
+          if (!voice.tts) {
+            if (voice.state === "error") {
+              continue;
+            }
+            const engine = await ensureVoiceEngine();
+            if (!engine) {
+              continue;
+            }
+          }
+          if (task.cancelled) {
+            continue;
+          }
+          voice.activeTask = task;
+          let audio;
+          try {
+            audio = synthesizeSpeech(task.text);
+          } catch (error) {
+            voice.activeTask = null;
+            continue;
+          }
+          if (task.cancelled) {
+            voice.activeTask = null;
+            continue;
+          }
+          task.started = true;
+          const started = Date.now();
+          voice.played.push({ kind: task.kind, text: task.text });
+          syncSpeechDataset();
+          await playVoiceSamples(audio);
+          voice.lastMs = Date.now() - started;
+          voice.activeTask = null;
+          syncSpeechDataset();
+        }
+      } finally {
+        voice.running = false;
+        if (voice.queue.length > 0) {
+          void processSpeechQueue();
+        }
+      }
+    }
+
+    async function prepareVoiceWords() {
+      const total = VOICE_PREWARM_WORDS.length;
+      for (let index = 0; index < total; index += 1) {
+        setVoiceState(
+          "preparing",
+          82 + Math.round((index / total) * 17),
+          `正在准备按键语音 ${index}/${total}`
+        );
+        try {
+          synthesizeSpeech(VOICE_PREWARM_WORDS[index]);
+        } catch (error) {
+          /* 单句失败只记日志，回退到按需合成。 */
+        }
+        await sleep(0);
+      }
+      setVoiceState("preparing", 99, `正在准备按键语音 ${total}/${total}`);
+    }
+
+    function ensureVoiceEngine(force = false) {
+      if (!voiceSupported) {
+        return Promise.resolve(null);
+      }
+      if (voice.tts && !force) {
+        return Promise.resolve(voice.tts);
+      }
+      if (voice.enginePromise && !force) {
+        return voice.enginePromise;
+      }
+      if (force) {
+        voice.tts = null;
+        voice.enginePromise = null;
+        voice.cache.clear();
+      }
+      setVoiceState("loading", 0, "正在加载语音引擎…");
+      voice.enginePromise = (async () => {
+        if (typeof window.SherpaOnnx !== "function" || typeof window.createOfflineTts !== "function") {
+          await loadVoiceScriptOnce("cal-phone-sherpa-wasm", "voice/sherpa-onnx-wasm-web.js");
+          await loadVoiceScriptOnce("cal-phone-sherpa-tts", "voice/sherpa-onnx-tts.js");
+        }
+        const factory = window.SherpaOnnx;
+        const createOfflineTts = window.createOfflineTts;
+        if (typeof factory !== "function") {
+          throw new Error("SherpaOnnx 工厂未就绪");
+        }
+        if (typeof createOfflineTts !== "function") {
+          throw new Error("sherpa-onnx TTS 封装未就绪");
+        }
+        const wasmUrl = new URL("voice/sherpa-onnx-wasm-web.wasm", document.baseURI).href;
+        const module = await factory({
+          locateFile: (path) => path.endsWith(".wasm") ? wasmUrl : path
+        });
+        mountVoiceFiles(module);
+
+        for (let index = 0; index < VOICE_MODEL_FILES.length; index += 1) {
+          const file = VOICE_MODEL_FILES[index];
+          const data = await fetchVoiceBytes(file.url, file.size, (loaded, total) => {
+            const fraction = total > 0 ? loaded / total : 0;
+            const percent = Math.min(80, Math.max(1, Math.round(((index + fraction) / VOICE_MODEL_FILES.length) * 80)));
+            setVoiceState("loading", percent, `正在下载语音模型 ${percent}%（约 96MB，仅首次）`);
+          });
+          writeVoiceFile(module, file.name, data);
+        }
+
+        setVoiceState("preparing", 82, "正在初始化语音引擎…");
+        const tts = createOfflineTts(module, {
+          offlineTtsModelConfig: {
+            offlineTtsMatchaModelConfig: {
+              acousticModel: "/voice-model/model.onnx",
+              vocoder: "/voice-model/vocoder.onnx",
+              lexicon: "/voice-model/lexicon.txt",
+              tokens: "/voice-model/tokens.txt",
+              dataDir: "",
+              noiseScale: 0.667,
+              lengthScale: 1.0
+            },
+            numThreads: 1,
+            debug: 0,
+            provider: "cpu"
+          },
+          ruleFsts: "",
+          ruleFars: "",
+          maxNumSentences: 1
+        });
+        if (!tts || !tts.handle) {
+          throw new Error("sherpa-onnx TTS 初始化失败（模型可能不兼容）");
+        }
+        voice.tts = tts;
+        await prepareVoiceWords();
+        setVoiceState("ready", 100, "语音已就绪");
+        return tts;
+      })().catch((error) => {
+        voice.tts = null;
+        voice.enginePromise = null;
+        const message = error && error.message ? error.message : String(error);
+        setVoiceState("error", 0, `语音加载失败：${message}`, message);
+        return null;
+      });
+      return voice.enginePromise;
+    }
+
+    function updateVoiceSupport() {
+      if (!voiceSupported) {
+        voiceHint.textContent = VOICE_HINT_FILE;
+        voiceKeysToggle.disabled = true;
+        voiceResultToggle.disabled = true;
+      } else {
+        voiceHint.innerHTML = VOICE_HINT_HTTP;
+      }
+    }
+
+    function handleVoiceToggle() {
+      settings.voiceKeys = voiceKeysToggle.checked;
+      settings.voiceResult = voiceResultToggle.checked;
+      saveSettings();
+      syncSettingsIndicator();
+      syncVoiceUi();
+      if (!voiceSupported) {
+        return;
+      }
+      if (settings.voiceKeys || settings.voiceResult) {
+        void ensureVoiceEngine();
+      } else {
+        dropQueuedSpeech("key");
+        dropQueuedSpeech("result");
+      }
+    }
+
+    function retryVoiceEngine() {
+      if (!voiceSupported) {
+        return;
+      }
+      void ensureVoiceEngine(true);
+    }
+
+    function appendCharacter(character) {
+      if (resultPauseActive()) {
+        return false;
+      }
+      if (state === "result" || state === "error") {
+        inputStartedFromResult = true;
+        operands = [];
+        clearExpression();
+        clearResult();
+        clearResultPause();
+      }
+      if (state === "select" || state === "result" || state === "error") {
+        enterState("input");
+        updateStateLabel(operator
+          ? `已开始新的 ${operatorGlyphs[operator]} 计算，请继续输入`
+          : "请输入数字，或先选择运算类型");
+      }
+      if (character === "." && input.value.includes(".")) {
+        return false;
+      }
+      input.value += character;
+      startAutoConfirm();
+      updateUndoHint();
+      if (KEY_SPEECH[character]) {
+        speakKey(KEY_SPEECH[character]);
+      }
+      return true;
+    }
+
+    function deleteLastCharacter() {
+      if (input.value !== "") {
+        input.value = input.value.slice(0, -1);
+        startAutoConfirm();
+        updateUndoHint();
+        speakKey("退格");
+        return true;
+      }
+
+      if (state === "edit" && editDraft) {
+        if (editDraft.operands.length > 0) {
+          const removed = editDraft.operands.pop();
+          renderEditDraft();
+          renderExpression();
+          updateUndoHint();
+          updateStateLabel(`已撤回 ${removed.display}`);
+          speakKey("退格");
+          return true;
+        }
+        return false;
+      }
+
+      if (state === "input" && operands.length > 0) {
+        const removed = operands.pop();
+        renderExpression();
+        updateUndoHint();
+        updateStateLabel(`已撤回 ${removed.display}`);
+        speakKey("退格");
+        return true;
+      }
+      return false;
+    }
+
+    function clearResult() {
+      result.textContent = "";
+      result.removeAttribute("data-value");
+      result.removeAttribute("data-error");
+    }
+
+    function clearExpression() {
+      expression.textContent = "";
+    }
+
+    function cloneOperand(operand) {
+      return { value: operand.value, display: operand.display };
+    }
+
+    function expressionText(activeOperator, activeOperands, activeBase = null) {
+      const values = [];
+      if (activeBase) {
+        values.push(activeBase.display);
+      }
+      activeOperands.forEach((operand) => values.push(operand.display));
+      if (values.length === 0) {
+        return "";
+      }
+      return activeOperator ? values.join(` ${operatorGlyphs[activeOperator]} `) : values.join(" ");
+    }
+
+    function liveExpressionText(activeOperator, activeOperands, activeBase = null) {
+      const base = expressionText(activeOperator, activeOperands, activeBase);
+      if (!activeOperator || !base || activeOperands.length === 0) {
+        return base;
+      }
+
+      return `${base} ${operatorGlyphs[activeOperator]}`;
+    }
+
+    function renderExpression() {
+      if (state === "edit" && editDraft) {
+        expression.textContent = liveExpressionText(editDraft.operator, editDraft.operands, editDraft.base);
+        updateBaseMarker();
+        return;
+      }
+
+      const activeBase = operator ? effectiveBase() : null;
+      if (operands.length === 0 && !activeBase) {
+        clearExpression();
+        updateBaseMarker();
+        return;
+      }
+
+      expression.textContent = liveExpressionText(operator, operands, activeBase);
+      updateBaseMarker();
+    }
+
+    function captureEditSnapshot() {
+      return {
+        state,
+        operator,
+        operands: operands.map(cloneOperand),
+        expressionText: expression.textContent || "",
+        resultText: result.textContent || "",
+        resultValue: result.getAttribute("data-value"),
+        resultError: result.getAttribute("data-error"),
+        label: stateLabel.textContent
+      };
+    }
+
+    function settlePendingEdit() {
+      if (!pendingEdit) {
+        return;
+      }
+
+      const pending = pendingEdit;
+      pendingEdit = null;
+      if (pending.chip) {
+        pending.chip.removeAttribute("data-pending");
+      }
+      if (!pending.entered && pending.input && pending.input.isConnected) {
+        pending.input.value = pending.original;
+        if (editDraft && editDraft.operands[pending.index]) {
+          editDraft.operands[pending.index] = {
+            value: Number(pending.original),
+            display: pending.original
+          };
+        }
+        if (pending.chip) {
+          pending.chip.setAttribute("data-value", pending.original);
+        }
+      }
+    }
+
+    function beginPendingEdit(operandInput, chip, index) {
+      if (state !== "edit" || !editDraft || !editDraft.operands[index]) {
+        return;
+      }
+      if (pendingEdit && pendingEdit.input === operandInput) {
+        return;
+      }
+
+      settlePendingEdit();
+      pendingEdit = {
+        index,
+        original: operandInput.value,
+        entered: false,
+        input: operandInput,
+        chip
+      };
+      operandInput.value = "";
+      chip.setAttribute("data-pending", "true");
+    }
+
+    function cancelEdit() {
+      if (state !== "edit" || !editSnapshot) {
+        return;
+      }
+
+      stopAutoConfirm();
+      clearResultPause();
+      const rosterSeq = editRosterSeq;
+      const snapshot = editSnapshot;
+      pendingEdit = null;
+      editSnapshot = null;
+      editDraft = null;
+      editRosterSeq = null;
+      editDraftView.hidden = true;
+      removeEditDoneButton();
+      if (editHint) {
+        editHint.textContent = EDIT_HINT_DEFAULT;
+      }
+      if (editDraftTitle) {
+        editDraftTitle.textContent = "编辑草稿";
+      }
+      if (editCancelButton) {
+        editCancelButton.textContent = "关闭";
+        editCancelButton.setAttribute("aria-label", "关闭编辑");
+      }
+      restoreEditDraftHome();
+      operandChips.textContent = "";
+      operator = snapshot.operator;
+      operands = snapshot.operands.map(cloneOperand);
+      syncOperatorAttribute();
+      expression.textContent = snapshot.expressionText;
+      result.textContent = snapshot.resultText;
+      if (snapshot.resultValue === null) {
+        result.removeAttribute("data-value");
+      } else {
+        result.setAttribute("data-value", snapshot.resultValue);
+      }
+      if (snapshot.resultError === null) {
+        result.removeAttribute("data-error");
+      } else {
+        result.setAttribute("data-error", snapshot.resultError);
+      }
+      input.value = "";
+      resetButton.disabled = snapshot.state === "select";
+      enterState(snapshot.state);
+      updateStateLabel(snapshot.label);
+      renderRoster();
+      if (rosterSeq !== null) {
+        focusRosterEdit(rosterSeq);
+      } else {
+        input.focus();
+      }
+    }
+
+    function updateStateLabel(label) {
+      stateLabel.textContent = label;
+    }
+
+    function populateAutoConfirmOptions() {
+      autoConfirmSelect.textContent = "";
+      AUTO_CONFIRM_STEPS.forEach((value) => {
+        const option = document.createElement("option");
+        option.value = String(value);
+        option.textContent = value === 0 ? "关闭" : `${value} 秒`;
+        autoConfirmSelect.append(option);
+      });
+    }
+
+    function loadSettings() {
+      try {
+        const raw = window.localStorage.getItem(SETTINGS_KEY);
+        if (!raw) {
+          return;
+        }
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object") {
+          return;
+        }
+        const autoConfirm = Number(parsed.autoConfirm);
+        if (AUTO_CONFIRM_STEPS.includes(autoConfirm)) {
+          settings.autoConfirm = autoConfirm;
+        }
+        const autoEquals = Number(parsed.autoEquals);
+        if (Number.isInteger(autoEquals) && autoEquals >= 0 && autoEquals <= 999) {
+          settings.autoEquals = autoEquals;
+        }
+        if (parsed.resultPause !== undefined) {
+          const resultPause = parseResultPause(parsed.resultPause);
+          if (resultPause !== null) {
+            settings.resultPause = resultPause;
+          }
+        }
+        settings.baseEnabled = parsed.baseEnabled === true;
+        const storedBase = String(parsed.baseValue ?? "");
+        if (storedBase.trim() !== "" && Number.isFinite(Number(storedBase))) {
+          settings.baseText = storedBase;
+        }
+        settings.haptics = parsed.haptics !== false;
+        settings.voiceKeys = parsed.voiceKeys === true;
+        settings.voiceResult = parsed.voiceResult === true;
+      } catch (error) {
+        /* localStorage may be disabled; keep the in-memory defaults. */
+      }
+    }
+
+    function saveSettings() {
+      try {
+        window.localStorage.setItem(SETTINGS_KEY, JSON.stringify({
+          autoConfirm: settings.autoConfirm,
+          autoEquals: settings.autoEquals,
+          resultPause: settings.resultPause,
+          baseEnabled: settings.baseEnabled,
+          baseValue: settings.baseText,
+          haptics: settings.haptics,
+          voiceKeys: settings.voiceKeys,
+          voiceResult: settings.voiceResult
+        }));
+      } catch (error) {
+        /* localStorage may be disabled; the page keeps working in memory. */
+      }
+    }
+
+    function vibrateKeyFeedback() {
+      if (settings.haptics !== true) {
+        return;
+      }
+      try {
+        if (typeof navigator === "undefined" || typeof navigator.vibrate !== "function") {
+          return;
+        }
+        navigator.vibrate(10);
+      } catch (error) {
+        /* Vibration unavailable; calculation continues unaffected. */
+      }
+    }
+
+    function effectiveBase() {
+      if (!settings.baseEnabled) {
+        return null;
+      }
+      const raw = String(settings.baseText);
+      if (raw.trim() === "" || !Number.isFinite(Number(raw))) {
+        return null;
+      }
+      return { value: Number(raw), display: raw };
+    }
+
+    function updateBaseMarker() {
+      const base = effectiveBase();
+      const showBase = state !== "edit" && Boolean(operator) && Boolean(base);
+      baseMarkerView.hidden = !showBase;
+      if (showBase) {
+        baseMarkerView.textContent = `基数 ${base.display}`;
+      }
+
+      const showEditBase = state === "edit" && Boolean(editDraft) && Boolean(editDraft.base);
+      editBaseMarkerView.hidden = !showEditBase;
+      if (showEditBase) {
+        editBaseMarkerView.textContent = `基数 ${editDraft.base.display}`;
+      }
+    }
+
+    function syncSettingsIndicator() {
+      const customized = settings.autoConfirm > 0
+        || settings.autoEquals > 0
+        || settings.baseEnabled
+        || settings.voiceKeys
+        || settings.voiceResult;
+      const preparing = voice.state === "loading" || voice.state === "preparing";
+      const failed = voice.state === "error";
+      let summaryText = "已自定义";
+      let showSummary = customized;
+      if (preparing) {
+        summaryText = `语音准备中 ${Math.max(0, Math.min(100, Math.round(voice.progress)))}%`;
+        showSummary = true;
+      } else if (failed) {
+        summaryText = "语音不可用";
+        showSummary = true;
+      }
+      const voiceEnabled = settings.voiceKeys || settings.voiceResult;
+      const availability = !voiceEnabled
+        ? ""
+        : voice.state === "ready"
+          ? "ready"
+          : voice.state === "error"
+            ? "error"
+            : preparing
+              ? "loading"
+              : "";
+      if (availability) {
+        settingsSummary.dataset.voiceAvailability = availability;
+      } else {
+        delete settingsSummary.dataset.voiceAvailability;
+      }
+      const availabilityLabel = availability === "ready"
+        ? "语音已就绪"
+        : availability === "error"
+          ? "语音不可用"
+          : availability === "loading"
+            ? "语音准备中"
+            : "";
+      settingsSummary.textContent = summaryText;
+      settingsSummary.title = availabilityLabel ? `已自定义；${availabilityLabel}` : "已自定义";
+      settingsSummary.setAttribute("aria-label", settingsSummary.title);
+      settingsIndicator.hidden = !customized;
+      settingsSummary.hidden = !showSummary;
+      settingsToggle.setAttribute("aria-label", customized ? "打开统分设置（已自定义）" : "打开统分设置");
+      settingsToggle.title = customized ? "已自定义：自动确认、自动按等号、基数或语音播报已启用" : "打开统分设置";
+    }
+
+    function parseAutoEquals(raw) {
+      const text = String(raw).trim();
+      if (text === "") {
+        return 0;
+      }
+      if (!/^\d+$/.test(text)) {
+        return null;
+      }
+      const value = Number(text);
+      return Number.isInteger(value) && value >= 0 && value <= 999 ? value : null;
+    }
+
+    function updateUndoHint() {
+      const inDraft = state === "edit" && Boolean(editDraft) && editDraft.operands.length > 0;
+      const inInput = state === "input" && operands.length > 0;
+      undoHint.hidden = !(inDraft || inInput);
+      if (!inDraft && !inInput) {
+        return;
+      }
+
+      const activeOperands = inDraft ? editDraft.operands : operands;
+      const target = inDraft ? "草稿最后一笔" : "上一笔";
+      const lastValue = activeOperands[activeOperands.length - 1].display;
+      undoHint.textContent = input.value.trim() === ""
+        ? `撤回${target} ${lastValue}：按“退格”。`
+        : `撤回${target} ${lastValue}：先清空当前输入，再按“退格”。`;
+    }
+
+    function syncSettingsControls() {
+      autoConfirmSelect.value = String(settings.autoConfirm);
+      autoEqualsInput.value = String(settings.autoEquals);
+      resultPauseInput.value = String(settings.resultPause);
+      baseToggle.checked = settings.baseEnabled;
+      baseValueInput.disabled = !settings.baseEnabled;
+      baseValueInput.value = settings.baseText;
+      hapticsToggle.checked = settings.haptics !== false;
+      voiceKeysToggle.checked = settings.voiceKeys;
+      voiceResultToggle.checked = settings.voiceResult;
+      updateVoiceSupport();
+      syncVoiceUi();
+      syncSettingsIndicator();
+      updateBaseMarker();
+    }
+
+    function autoConfirmAllowed() {
+      if (!(settings.autoConfirm > 0)) {
+        return false;
+      }
+      if (settingsPanel.open) {
+        return false;
+      }
+      if (importDialog.open) {
+        return false;
+      }
+      if (input.value === "" || input.value.endsWith(".")) {
+        return false;
+      }
+      return Number.isFinite(Number(input.value));
+    }
+
+    function stopAutoConfirm() {
+      if (autoConfirmTimer !== null) {
+        window.clearTimeout(autoConfirmTimer);
+        autoConfirmTimer = null;
+      }
+      if (autoConfirmCountdownTimer !== null) {
+        window.clearInterval(autoConfirmCountdownTimer);
+        autoConfirmCountdownTimer = null;
+      }
+      autoConfirmDeadline = 0;
+      autoConfirmProgress.setAttribute("data-active", "false");
+      autoConfirmFeedback.setAttribute("data-active", "false");
+      autoConfirmFeedback.hidden = true;
+      autoConfirmCountdown.textContent = "";
+    }
+
+    function syncAutoConfirmCountdown() {
+      if (!autoConfirmDeadline) {
+        return;
+      }
+      const remaining = Math.max(0, autoConfirmDeadline - Date.now());
+      const seconds = (Math.ceil(remaining / 100) / 10).toFixed(1);
+      autoConfirmCountdown.textContent = `正在计时：剩余 ${seconds} 秒，将确认 ${input.value.trim()}`;
+    }
+
+    function startAutoConfirm() {
+      stopAutoConfirm();
+      if (!autoConfirmAllowed()) {
+        return;
+      }
+      const seconds = settings.autoConfirm;
+      autoConfirmProgress.style.setProperty("--auto-confirm-duration", `${seconds}s`);
+      autoConfirmDeadline = Date.now() + Math.round(seconds * 1000);
+      autoConfirmFeedback.hidden = false;
+      autoConfirmFeedback.setAttribute("data-active", "true");
+      autoConfirmProgress.setAttribute("data-active", "false");
+      void autoConfirmProgress.offsetWidth;
+      autoConfirmProgress.setAttribute("data-active", "true");
+      syncAutoConfirmCountdown();
+      autoConfirmCountdownTimer = window.setInterval(syncAutoConfirmCountdown, 100);
+      autoConfirmTimer = window.setTimeout(() => {
+        autoConfirmTimer = null;
+        if (autoConfirmAllowed()) {
+          commitInput();
+        }
+        stopAutoConfirm();
+      }, Math.round(seconds * 1000));
+    }
+
+    function placeSettingsPanel() {
+      const rect = settingsToggle.getBoundingClientRect();
+      const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+      const viewportHeight = document.documentElement.clientHeight || window.innerHeight;
+      const compact = viewportHeight <= 640;
+      settingsPanel.style.top = `${compact ? 8 : Math.round(rect.bottom + 6)}px`;
+      settingsPanel.style.maxHeight = compact ? `${Math.max(320, viewportHeight - 16)}px` : "";
+      settingsPanel.style.right = `${Math.max(8, Math.round(viewportWidth - rect.right))}px`;
+      settingsPanel.style.left = "auto";
+      settingsPanel.style.bottom = "auto";
+    }
+
+    function openSettings() {
+      stopAutoConfirm();
+      settingsToggle.setAttribute("aria-expanded", "true");
+      syncSettingsControls();
+      if (typeof settingsPanel.showModal === "function") {
+        if (!settingsPanel.open) {
+          settingsPanel.showModal();
+        }
+      } else {
+        settingsPanel.setAttribute("open", "");
+      }
+      placeSettingsPanel();
+      if (!settingsPanel.contains(document.activeElement)) {
+        const preferVoice = voice.state !== "idle" || settings.voiceKeys || settings.voiceResult;
+        if (preferVoice && !voiceKeysToggle.disabled) {
+          voiceKeysToggle.focus();
+        } else {
+          autoConfirmSelect.focus();
+        }
+      }
+      settingsPanel.scrollTop = 0;
+    }
+
+    function closeSettings() {
+      if (typeof settingsPanel.close === "function" && settingsPanel.open) {
+        settingsPanel.close();
+        return;
+      }
+      settingsPanel.removeAttribute("open");
+      settingsToggle.setAttribute("aria-expanded", "false");
+      settingsToggle.focus();
+      syncSettingsControls();
+      startAutoConfirm();
+    }
+
+    function renderEditDraft() {
+      if (!editDraft) {
+        editDraftView.hidden = true;
+        operandChips.textContent = "";
+        return;
+      }
+
+      settlePendingEdit();
+
+      editDraftView.hidden = false;
+      editDraftView.setAttribute("data-operator", editDraft.operator);
+      editOperatorView.textContent = operatorGlyphs[editDraft.operator];
+      operandChips.textContent = "";
+
+      editDraft.operands.forEach((operand, index) => {
+        const chip = document.createElement("div");
+        chip.className = "operand-chip";
+        chip.setAttribute("data-testid", "operand-chip");
+        chip.setAttribute("data-value", operand.display);
+
+        const value = document.createElement("input");
+        value.type = "text";
+        value.inputMode = "decimal";
+        value.autocomplete = "off";
+        value.spellcheck = false;
+        value.className = "operand-input";
+        value.setAttribute("data-testid", "operand-input");
+        value.setAttribute("aria-label", `编辑数字 ${operand.display}`);
+        value.value = operand.display;
+        value.addEventListener("focus", () => beginPendingEdit(value, chip, index));
+        value.addEventListener("click", () => beginPendingEdit(value, chip, index));
+        value.addEventListener("focusout", () => {
+          if (pendingEdit && pendingEdit.input === value) {
+            settlePendingEdit();
+          }
+        });
+        value.addEventListener("input", () => {
+          if (state !== "edit" || !editDraft || !editDraft.operands[index]) {
+            return;
+          }
+
+          if (pendingEdit && pendingEdit.input === value) {
+            pendingEdit.entered = true;
+          }
+
+          editDraft.operands[index] = {
+            value: Number(value.value),
+            display: value.value
+          };
+          chip.setAttribute("data-value", value.value);
+          renderExpression();
+        });
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "operand-remove";
+        remove.setAttribute("data-testid", "operand-remove");
+        remove.setAttribute("aria-label", `删除数字 ${operand.display}`);
+        remove.textContent = "×";
+        remove.addEventListener("click", () => {
+          if (state !== "edit" || !editDraft) {
+            return;
+          }
+
+          settlePendingEdit();
+          editDraft.operands.splice(index, 1);
+          renderEditDraft();
+          renderExpression();
+          input.focus();
+        });
+
+        chip.append(value, remove);
+        operandChips.append(chip);
+      });
+    }
+
+    function beginEdit(entry, rosterRow = null) {
+      if (rosterRow && state === "edit" && editDraft && editRosterSeq !== null && editRosterSeq !== rosterRow.seq) {
+        updateStateLabel("先保存或取消当前编辑，再编辑其他行。");
+        return;
+      }
+      if (rosterRow && state === "edit" && editDraft && editRosterSeq !== null && editRosterSeq === rosterRow.seq) {
+        return;
+      }
+      stopAutoConfirm();
+      clearResultPause();
+      if (state !== "edit" || !editSnapshot) {
+        editSnapshot = captureEditSnapshot();
+      }
+      pendingEdit = null;
+      editRosterSeq = rosterRow ? rosterRow.seq : null;
+      renderRoster();
+      if (!rosterRow) {
+        restoreEditDraftHome();
+      }
+      operator = entry.operator;
+      syncOperatorAttribute();
+      editDraft = {
+        operator: entry.operator,
+        operands: entry.operands.map(cloneOperand),
+        base: entry.base ? { value: entry.base.value, display: entry.base.display } : null
+      };
+      input.value = "";
+      resetButton.disabled = false;
+      clearResult();
+      renderEditDraft();
+      enterState("edit");
+      renderExpression();
+      if (rosterRow) {
+        updateStateLabel(`正在编辑 ${rosterRow.seq} ${rosterLabel(rosterRow)} 的成绩`);
+        if (editDraftTitle) {
+          const titleName = (rosterRow.name || "").trim();
+          const titleId = (rosterRow.id || "").trim();
+          const titleCore = [titleName, titleId].filter((part) => part !== "").join(" ") || rosterLabel(rosterRow);
+          editDraftTitle.textContent = `正在编辑 ${rosterRow.seq} ${titleCore}`;
+        }
+        if (editHint) {
+          editHint.textContent = EDIT_HINT_ROSTER;
+        }
+        const done = ensureEditDoneButton();
+        if (!done.isConnected) {
+          editDraftView.querySelector(".edit-draft-head").append(done);
+        }
+        if (editCancelButton) {
+          editCancelButton.textContent = "取消";
+          editCancelButton.setAttribute("aria-label", "取消编辑");
+        }
+        input.focus({ preventScroll: true });
+        floatEditDraft(rosterRow.seq);
+      } else {
+        updateStateLabel(`正在编辑 ${operatorGlyphs[entry.operator]} 记录`);
+        if (editDraftTitle) {
+          editDraftTitle.textContent = "编辑草稿";
+        }
+        if (editHint) {
+          editHint.textContent = EDIT_HINT_DEFAULT;
+        }
+        removeEditDoneButton();
+        if (editCancelButton) {
+          editCancelButton.textContent = "关闭";
+          editCancelButton.setAttribute("aria-label", "关闭编辑");
+        }
+        input.focus();
+      }
+    }
+
+    function renderHistoryItem(entry) {
+      const item = document.createElement("article");
+      item.className = "history-item";
+      item.setAttribute("data-testid", "history-item");
+      item.setAttribute("data-operator", entry.operator);
+      item.setAttribute("data-operands", JSON.stringify(entry.operands.map((operand) => operand.display)));
+      if (entry.base) {
+        item.setAttribute("data-base", entry.base.display);
+      }
+
+      const line = document.createElement("div");
+      line.className = "history-line";
+
+      const historyExpression = document.createElement("span");
+      historyExpression.className = "history-expression";
+      historyExpression.setAttribute("data-testid", "history-expression");
+      historyExpression.textContent = entry.expression;
+
+      const historyResult = document.createElement("span");
+      historyResult.className = "history-result";
+      historyResult.setAttribute("data-testid", "history-result");
+      historyResult.setAttribute("data-value", formatValue(entry.result));
+      historyResult.textContent = formatValue(entry.result);
+
+      line.append(historyExpression, historyResult);
+
+      const editButton = document.createElement("button");
+      editButton.type = "button";
+      editButton.className = "history-edit";
+      editButton.setAttribute("data-testid", "history-edit");
+      editButton.textContent = "编辑";
+      editButton.addEventListener("click", () => beginEdit(entry));
+
+      item.append(line, editButton);
+      return item;
+    }
+
+    function appendHistory(entry) {
+      history.unshift(entry);
+      historyEmpty.hidden = true;
+      historyList.prepend(renderHistoryItem(entry));
+    }
+
+    function resetToSelect() {
+      stopAutoConfirm();
+      clearResultPause();
+      pendingEdit = null;
+      editSnapshot = null;
+      editRosterSeq = null;
+      operator = null;
+      inputStartedFromResult = false;
+      syncOperatorAttribute();
+      operands = [];
+      editDraft = null;
+      editDraftView.hidden = true;
+      removeEditDoneButton();
+      if (editHint) {
+        editHint.textContent = EDIT_HINT_DEFAULT;
+      }
+      if (editDraftTitle) {
+        editDraftTitle.textContent = "编辑草稿";
+      }
+      restoreEditDraftHome();
+      operandChips.textContent = "";
+      input.value = "";
+      resetButton.disabled = true;
+      clearExpression();
+      clearResult();
+      enterState("select");
+      updateStateLabel("请选择运算类型");
+    }
+
+    function chooseOperator(nextOperator) {
+      settlePendingEdit();
+      if (KEY_SPEECH[nextOperator]) {
+        speakKey(KEY_SPEECH[nextOperator]);
+      }
+      if (state === "edit" && editDraft) {
+        editDraft.operator = nextOperator;
+        renderEditDraft();
+        renderExpression();
+        updateStateLabel(`正在编辑 ${operatorGlyphs[nextOperator]} 记录`);
+        input.focus();
+        startAutoConfirm();
+        return;
+      }
+
+      const pendingRaw = input.value.trim();
+      if (
+        pendingRaw !== ""
+        && Number.isFinite(Number(pendingRaw))
+        && (operator === null || inputStartedFromResult)
+      ) {
+        commitInput({ allowAutoEquals: false, announceCommit: false });
+        inputStartedFromResult = false;
+      }
+
+      const preserveOperands = state === "input";
+      operator = nextOperator;
+      syncOperatorAttribute();
+      if (!preserveOperands) {
+        operands = [];
+        input.value = "";
+        clearExpression();
+        clearResult();
+        clearResultPause();
+      }
+      resetButton.disabled = false;
+      enterState("input");
+      renderExpression();
+      const base = effectiveBase();
+      const baseHint = base ? `，基数 ${base.display}` : "";
+      updateStateLabel(preserveOperands
+        ? `已更换为 ${operatorGlyphs[nextOperator]}${baseHint}，已输入的数字会保留`
+        : `已选择 ${operatorGlyphs[nextOperator]}${baseHint}，请输入数字`);
+      input.focus();
+      startAutoConfirm();
+    }
+
+    function commitInput({ allowAutoEquals = true, announceCommit = true } = {}) {
+      if (state !== "select" && state !== "input" && state !== "result" && state !== "error" && state !== "edit") {
+        return false;
+      }
+
+      const rawValue = input.value.trim();
+      if (rawValue === "") {
+        return false;
+      }
+
+      const numericValue = Number(rawValue);
+      if (!Number.isFinite(numericValue)) {
+        return false;
+      }
+
+      if (state === "select") {
+        enterState("input");
+        updateStateLabel("请输入数字，或先选择运算类型");
+      }
+
+      if (state === "edit" && editDraft) {
+        editDraft.operands.push({ value: numericValue, display: rawValue });
+        renderEditDraft();
+        if (editSnapshot && editSnapshot.resultValue !== null) {
+          result.textContent = editSnapshot.resultText;
+          result.setAttribute("data-value", editSnapshot.resultValue);
+          if (editSnapshot.resultError === null) {
+            result.removeAttribute("data-error");
+          } else {
+            result.setAttribute("data-error", editSnapshot.resultError);
+          }
+        }
+      } else {
+        if (state === "result" || state === "error") {
+          operands = [];
+          clearExpression();
+          clearResult();
+          clearResultPause();
+          enterState("input");
+          updateStateLabel(`已开始新的 ${operatorGlyphs[operator]} 计算，请继续输入`);
+        }
+        operands.push({ value: numericValue, display: rawValue });
+      }
+      input.value = "";
+      renderExpression();
+      stopAutoConfirm();
+      inputStartedFromResult = false;
+      updateStateLabel(state === "edit"
+        ? `已加入 ${rawValue}，可继续编辑或按 = 重算`
+        : `已确认 ${rawValue}，可继续输入或按 = 计算`);
+      updateUndoHint();
+      if (allowAutoEquals && settings.autoEquals > 0 && operator && state === "input" && operands.length >= settings.autoEquals) {
+        calculate();
+      }
+      return true;
+    }
+
+    function formatValue(value) {
+      return String(Object.is(value, -0) ? 0 : value);
+    }
+
+    function showDivisionByZero(activeOperator) {
+      stopAutoConfirm();
+      clearResultPause();
+      pendingEdit = null;
+      editSnapshot = null;
+      editRosterSeq = null;
+      operator = activeOperator;
+      syncOperatorAttribute();
+      operands = [];
+      editDraft = null;
+      editDraftView.hidden = true;
+      removeEditDoneButton();
+      if (editHint) {
+        editHint.textContent = EDIT_HINT_DEFAULT;
+      }
+      if (editDraftTitle) {
+        editDraftTitle.textContent = "编辑草稿";
+      }
+      restoreEditDraftHome();
+      operandChips.textContent = "";
+      if (roster) {
+        renderRoster();
+      }
+      clearExpression();
+      result.textContent = "不能除以零";
+      result.removeAttribute("data-value");
+      result.setAttribute("data-error", "true");
+      input.value = "";
+      resetButton.disabled = false;
+      inputStartedFromResult = false;
+      enterState("error");
+      updateStateLabel("不能除以零；直接输入数字可开始新的计算，或更换运算符");
+      input.focus();
+      speakResult("不能除以零");
+    }
+
+    function readOperandInputValues() {
+      return Array.from(operandChips.querySelectorAll('[data-testid="operand-input"]'))
+        .map((element) => element.value);
+    }
+
+    function invalidOperandValue(rawValue) {
+      return rawValue.trim() === "" || !Number.isFinite(Number(rawValue));
+    }
+
+    function calculate() {
+      if (maybeSkipRoster()) {
+        return;
+      }
+      if (state !== "input" && state !== "result" && state !== "error" && state !== "edit") {
+        return;
+      }
+
+      stopAutoConfirm();
+      settlePendingEdit();
+
+      const wasEditing = state === "edit" && editDraft !== null;
+      let activeOperator;
+      let activeOperands;
+      let activeBase;
+
+      if (wasEditing) {
+        const editedValues = readOperandInputValues();
+        if (editedValues.length === 0 || editedValues.some(invalidOperandValue)) {
+          return;
+        }
+
+        editDraft.operands = editedValues.map((rawValue) => ({
+          value: Number(rawValue),
+          display: rawValue
+        }));
+        commitInput({ allowAutoEquals: false, announceCommit: false });
+
+        const currentValues = readOperandInputValues();
+        if (currentValues.length === 0 || currentValues.some(invalidOperandValue)) {
+          return;
+        }
+
+        activeOperator = editDraft.operator;
+        activeOperands = currentValues.map((rawValue) => ({
+          value: Number(rawValue),
+          display: rawValue
+        }));
+        activeBase = editDraft.base ? { value: editDraft.base.value, display: editDraft.base.display } : null;
+      } else {
+        commitInput({ allowAutoEquals: false, announceCommit: false });
+        activeOperator = operator;
+        activeOperands = operands;
+        activeBase = effectiveBase();
+      }
+
+      if (!activeOperator || activeOperands.length === 0) {
+        return;
+      }
+
+      let accumulator = activeBase ? activeBase.value : activeOperands[0].value;
+      for (let index = activeBase ? 0 : 1; index < activeOperands.length; index += 1) {
+        const nextValue = activeOperands[index].value;
+        if (activeOperator === "/" && nextValue === 0) {
+          showDivisionByZero(activeOperator);
+          return;
+        }
+
+        switch (activeOperator) {
+          case "+":
+            accumulator += nextValue;
+            break;
+          case "-":
+            accumulator -= nextValue;
+            break;
+          case "*":
+            accumulator *= nextValue;
+            break;
+          case "/":
+            accumulator /= nextValue;
+            break;
+          default:
+            return;
+        }
+      }
+
+      const displayValue = formatValue(accumulator);
+      const editingSeq = wasEditing ? editRosterSeq : null;
+      let targetRow = null;
+      if (roster) {
+        targetRow = editingSeq !== null
+          ? roster.rows.find((row) => row.seq === editingSeq) || null
+          : nextEmptyRow();
+      }
+      const entry = {
+        operator: activeOperator,
+        operands: activeOperands.map(cloneOperand),
+        base: activeBase,
+        expression: expressionText(activeOperator, activeOperands, activeBase),
+        result: accumulator
+      };
+      if (targetRow) {
+        entry.seq = targetRow.seq;
+      }
+      operator = activeOperator;
+      syncOperatorAttribute();
+      operands = [];
+      expression.textContent = entry.expression;
+      let recordedRow = null;
+      if (roster) {
+        if (targetRow) {
+          targetRow.entry = entry;
+          recordedRow = targetRow;
+          editRosterSeq = null;
+          persistRoster();
+          renderRoster();
+        }
+      } else {
+        appendHistory(entry);
+      }
+      result.textContent = displayValue;
+      result.setAttribute("data-value", displayValue);
+      result.removeAttribute("data-error");
+      input.value = "";
+      resetButton.disabled = false;
+      editDraft = null;
+      editSnapshot = null;
+      editRosterSeq = null;
+      pendingEdit = null;
+      inputStartedFromResult = false;
+      editDraftView.hidden = true;
+      removeEditDoneButton();
+      if (editHint) {
+        editHint.textContent = EDIT_HINT_DEFAULT;
+      }
+      if (editDraftTitle) {
+        editDraftTitle.textContent = "编辑草稿";
+      }
+      if (editCancelButton) {
+        editCancelButton.textContent = "关闭";
+        editCancelButton.setAttribute("aria-label", "关闭编辑");
+      }
+      restoreEditDraftHome();
+      operandChips.textContent = "";
+      enterState("result");
+      startResultPause();
+      if (roster && editingSeq !== null && recordedRow) {
+        const next = nextEmptyRow();
+        updateStateLabel(`已更新 ${recordedRow.seq} ${rosterLabel(recordedRow)}：${displayValue}${next ? `；下一位 ${next.seq} ${rosterLabel(next)}` : "；名单已录满"}`);
+        focusRosterEdit(recordedRow.seq);
+      } else if (roster && recordedRow) {
+        const next = nextEmptyRow();
+        updateStateLabel(`已记录 ${recordedRow.seq} ${rosterLabel(recordedRow)}：${displayValue}${next ? `；下一位 ${next.seq} ${rosterLabel(next)}` : "；名单已录满"}`);
+        input.focus();
+      } else if (roster) {
+        updateStateLabel(`名单已录满（${roster.rows.length} 人）；结果 ${displayValue} 未写入，如需修改请点行内编辑`);
+        input.focus();
+      } else {
+        const baseHint = activeBase ? `，基数 ${activeBase.display}` : "";
+        updateStateLabel(`计算完成${baseHint}；继续输入数字按回车或 = 即可沿用 ${operatorGlyphs[activeOperator]}`);
+        input.focus();
+      }
+      const reading = numberToChineseReading(displayValue);
+      if (reading) {
+        speakResult(reading);
+      }
+    }
+
+    picker.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-op]");
+      if (!button || button.disabled) {
+        return;
+      }
+
+      const nextOperator = button.getAttribute("data-op");
+      if (Object.prototype.hasOwnProperty.call(operatorGlyphs, nextOperator)) {
+        vibrateKeyFeedback();
+        chooseOperator(nextOperator);
+      }
+    });
+
+    keypad.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-key]");
+      if (!button || button.disabled) {
+        return;
+      }
+
+      const key = button.getAttribute("data-key");
+      if (
+        key !== "backspace"
+        && key !== "enter"
+        && key !== "equals"
+        && key !== "."
+        && !/^[0-9]$/.test(key)
+      ) {
+        return;
+      }
+      vibrateKeyFeedback();
+      if (/^[0-9]$/.test(key) || key === ".") {
+        appendCharacter(key);
+      } else if (key === "backspace") {
+        deleteLastCharacter();
+      } else if (key === "enter") {
+        stopAutoConfirm();
+        commitInput();
+      } else if (key === "equals") {
+        calculate();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.ctrlKey || event.metaKey || event.altKey) {
+        return;
+      }
+      if (document.querySelector("dialog[open]")) {
+        return;
+      }
+      if (settingsPanel.open || (event.target instanceof Element && event.target.closest('[data-testid="settings-panel"]'))) {
+        return;
+      }
+      if (event.target instanceof Element && event.target.closest('[data-testid="operand-input"]')) {
+        return;
+      }
+
+      const key = event.key;
+      if (/^[0-9]$/.test(key) || key === ".") {
+        appendCharacter(key);
+      } else if (key === "Backspace") {
+        deleteLastCharacter();
+      } else if (key === "Enter") {
+        stopAutoConfirm();
+        commitInput();
+      } else if (key === "=") {
+        calculate();
+      } else {
+        return;
+      }
+      event.preventDefault();
+    });
+
+    settingsToggle.addEventListener("click", openSettings);
+    settingsDone.addEventListener("click", closeSettings);
+    settingsPanel.addEventListener("close", () => {
+      settingsToggle.setAttribute("aria-expanded", "false");
+      if (baseValueInput.value.trim() === "" || !Number.isFinite(Number(baseValueInput.value))) {
+        baseValueInput.value = settings.baseText;
+      }
+      syncSettingsControls();
+      settingsToggle.focus();
+      startAutoConfirm();
+    });
+    settingsPanel.addEventListener("click", (event) => {
+      if (event.target !== settingsPanel) {
+        return;
+      }
+      const rect = settingsPanel.getBoundingClientRect();
+      if (
+        event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom
+      ) {
+        closeSettings();
+      }
+    });
+    window.addEventListener("resize", () => {
+      if (settingsPanel.open) {
+        placeSettingsPanel();
+      }
+    });
+
+    autoConfirmSelect.addEventListener("change", () => {
+      const value = Number(autoConfirmSelect.value);
+      if (AUTO_CONFIRM_STEPS.includes(value)) {
+        settings.autoConfirm = value;
+        saveSettings();
+        syncSettingsIndicator();
+      }
+    });
+    autoEqualsInput.addEventListener("input", () => {
+      const value = parseAutoEquals(autoEqualsInput.value);
+      if (value !== null) {
+        settings.autoEquals = value;
+        saveSettings();
+        syncSettingsIndicator();
+      }
+    });
+    autoEqualsInput.addEventListener("blur", () => {
+      if (parseAutoEquals(autoEqualsInput.value) === null) {
+        autoEqualsInput.value = String(settings.autoEquals);
+      }
+    });
+    resultPauseInput.addEventListener("input", () => {
+      const value = parseResultPause(resultPauseInput.value);
+      if (value !== null) {
+        settings.resultPause = value;
+        saveSettings();
+        syncSettingsIndicator();
+      }
+    });
+    resultPauseInput.addEventListener("blur", () => {
+      resultPauseInput.value = String(settings.resultPause);
+    });
+    baseToggle.addEventListener("change", () => {
+      settings.baseEnabled = baseToggle.checked;
+      if (settings.baseEnabled && (settings.baseText.trim() === "" || !Number.isFinite(Number(settings.baseText)))) {
+        settings.baseText = "0";
+      }
+      saveSettings();
+      syncSettingsControls();
+      renderExpression();
+    });
+    baseValueInput.addEventListener("input", () => {
+      const raw = baseValueInput.value;
+      if (raw.trim() !== "" && Number.isFinite(Number(raw))) {
+        settings.baseText = raw;
+        saveSettings();
+        syncSettingsIndicator();
+        renderExpression();
+      }
+    });
+    baseValueInput.addEventListener("blur", () => {
+      if (baseValueInput.value.trim() === "" || !Number.isFinite(Number(baseValueInput.value))) {
+        baseValueInput.value = settings.baseText;
+      }
+    });
+    hapticsToggle.addEventListener("change", () => {
+      settings.haptics = hapticsToggle.checked;
+      saveSettings();
+      syncSettingsIndicator();
+    });
+    voiceKeysToggle.addEventListener("change", handleVoiceToggle);
+    voiceResultToggle.addEventListener("change", handleVoiceToggle);
+    voiceRetry.addEventListener("click", retryVoiceEngine);
+
+    resetButton.addEventListener("click", resetToSelect);
+    editCancelButton.addEventListener("click", cancelEdit);
+    input.addEventListener("focus", settlePendingEdit);
+    rosterImportButton.addEventListener("click", openImportDialog);
+    rosterExportButton.addEventListener("click", exportRoster);
+    rosterClearButton.addEventListener("click", clearRoster);
+    importSelectButton.addEventListener("click", () => rosterFileInput.click());
+    importPasteButton.addEventListener("click", () => {
+      setImportStage("paste");
+      importPasteText.focus();
+    });
+    importSampleButton.addEventListener("click", downloadSampleRoster);
+    importConfirmButton.addEventListener("click", confirmRosterImport);
+    importReselectButton.addEventListener("click", () => {
+      rosterFileInput.value = "";
+      rosterFileInput.click();
+    });
+    importPasteBack.addEventListener("click", () => {
+      setImportStage("start");
+      importSelectButton.focus();
+    });
+    importPasteParse.addEventListener("click", handlePasteParse);
+    importCancelButton.addEventListener("click", () => {
+      if (importDialog.open) {
+        importDialog.close();
+      }
+    });
+    importModeKeep.addEventListener("change", () => {
+      if (pendingImport && importModeKeep.checked) {
+        pendingImport.mode = "keep";
+        pendingImport.userClear = false;
+        renderPreview();
+      }
+    });
+    importModeClear.addEventListener("click", () => {
+      if (pendingImport && importModeClear.checked) {
+        pendingImport.mode = "clear";
+        pendingImport.userClear = true;
+        renderPreview();
+      }
+    });
+    importModeClear.addEventListener("change", () => {
+      if (pendingImport && importModeClear.checked) {
+        pendingImport.mode = "clear";
+        pendingImport.userClear = true;
+        renderPreview();
+      }
+    });
+    ["id", "name", "score", "seq"].forEach((role) => {
+      importColumnSelects[role].addEventListener("change", (event) => {
+        applyMappingChange(role, event.target.value);
+      });
+    });
+    importMap.addEventListener("focusin", refreshMapHighlight);
+    importMap.addEventListener("focusout", () => {
+      document.querySelectorAll(".import-chip.active").forEach((chip) => chip.classList.remove("active"));
+      document.querySelectorAll(".import-preview-row span.active").forEach((cell) => cell.classList.remove("active"));
+    });
+    rosterFileInput.addEventListener("change", () => {
+      handleRosterFile(rosterFileInput.files && rosterFileInput.files[0]);
+    });
+    rosterFileInput.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+    importDialog.addEventListener("close", () => {
+      resetImportDialog();
+      if (importOpener && typeof importOpener.focus === "function" && document.contains(importOpener)) {
+        importOpener.focus();
+      }
+      importOpener = null;
+      startAutoConfirm();
+    });
+    populateAutoConfirmOptions();
+    loadSettings();
+    restoreRoster();
+    syncSettingsControls();
+    resetToSelect();
+    renderRoster();
+    if (roster) {
+      const restoredNext = nextEmptyRow();
+      updateStateLabel(restoredNext
+        ? `名单已恢复；下一位 ${restoredNext.seq} ${rosterLabel(restoredNext)}`
+        : "名单已恢复；名单已录满");
+    }
+    syncKeypad();
+    updateUndoHint();
+    if (voiceSupported && (settings.voiceKeys || settings.voiceResult)) {
+      void ensureVoiceEngine();
+    }
+  })();
+</script>
+</body>
+</html>

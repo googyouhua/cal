@@ -1,0 +1,14 @@
+ROUND: 1
+ARTIFACT_SHA256: 7603aba94655860289a6e33603055ef568d9cd402225b062649d94740e1696f8
+TREE_SHA256: 52518f2a67cec6cb69e54c623bcf45dc7678e4d6c01bfee29ee36269968f5c2f
+VERIFIER_SHA256: 88af35b19523b91ab540c34393e54465c8072a0dba2dd3e59b2ee885f185ceec
+KEKKAI_RUNNER_SHA256: f64c09f1682296fadec35aa27808611b6399f512e2b78a82e9d48eab4842bc1a
+
+ROUND: 1
+ARTIFACT_SHA256: 7603aba94655860289a6e33603055ef568d9cd402225b062649d94740e1696f8
+H1 PASS — 390行高[38,29.6,28] 320行高[38,29.6,28] 已录38≤46.0 未录≤29.6≤38.0 字号16≥12.5 area>0 无重叠 行内 溢出0/0 scrollH2390≤2800 5人复测[38,38,29.6,28,28] err0
+H2 PASS — count3 keepLabel390[322,36] 320[256,36]≤42 radio28x28 fieldset[336,107]/[270,107]≤120 keep文案保留命中1人 keep选中true→clear选中true confirm清空并开始录入 新侧重复S1时mode可见 keep隐藏 clear选中 warn只能清空重录 err0
+H3 PASS — next1→2→3→1→键2 label已跳过X 存储逐字一致 写回seq2空seq1 next3 录1后跳过next3 满员空=名单已录满存储不变 输入5走记录非跳过 编辑行=走保存非跳过 +10Enter回填seq1=10next2 无名单空=存储历史结果不变 跳过后reload回1
+H4 PASS — core等5sha256全匹配 layout仅43.5→28.0两处 ID集合一致 voice仅回归30/538两处 suite分片30场景538checks全PASS含roster-compact voice首跑失败3项=result.crash+queue两项⊆允许集
+H5 PASS — </html>有 字节167968 ext0 双context rows/next/存储逐字一致 err0 跳过前后cal-phone.roster.v1逐字一致
+HARD: PASS
