@@ -46,6 +46,20 @@ kekkai status /ws/cal_phone-worktrees/keypad/Telos/phone-calculator-keypad-11151
 <!-- archives:start -->
 | 时间 | 分支 | gate | STOP | artifact | TREE | 归档目录 |
 |---|---|---|---|---|---|---|
+| 2026-11-24T00:53:52.587Z | score-tally-settings | phone-calculator-voice-tests-112108 | STOP: rounds=0 reason=blocked by=host | `9aa1325b354d` | `—` | `score-tally-settings/phone-calculator-voice-tests-112108` |
+| 2026-11-24T00:53:52.504Z | score-tally-settings | phone-calculator-voice-number-only-112109 | STOP: rounds=1 reason=converged | `10e98f81de84` | `d8548b6cdc30` | `score-tally-settings/phone-calculator-voice-number-only-112109` |
+| 2026-11-24T00:53:52.387Z | score-tally-settings | phone-calculator-voice-announcements-112105 | STOP: rounds=7 reason=converged P0=0 | `26224e9c1c4b` | `4adb9b4d8d54` | `score-tally-settings/phone-calculator-voice-announcements-112105` |
+| 2026-11-24T00:53:52.162Z | score-tally-settings | phone-calculator-sticky-operator-111512 | STOP: rounds=1 reason=converged | `908c79d399b8` | `a393dfad3c26` | `score-tally-settings/phone-calculator-sticky-operator-111512` |
+| 2026-11-24T00:53:52.064Z | score-tally-settings | phone-calculator-stable-keypad-countdown-112012 | STOP: rounds=1 reason=converged | `f147010796dc` | `ca3df0db93d8` | `score-tally-settings/phone-calculator-stable-keypad-countdown-112012` |
+| 2026-11-24T00:53:51.967Z | score-tally-settings | phone-calculator-score-tally-settings-converge-112004 | STOP: rounds=5 reason=converged P0=0 | `31d7e739ea60` | `4cf69d5fce95` | `score-tally-settings/phone-calculator-score-tally-settings-converge-112004` |
+| 2026-11-24T00:53:51.748Z | score-tally-settings | phone-calculator-score-tally-settings-111912 | STOP: rounds=8 reason=blocked by=host | `8ad74b699fff` | `440b38599a11` | `score-tally-settings/phone-calculator-score-tally-settings-111912` |
+| 2026-11-24T00:53:51.419Z | score-tally-settings | phone-calculator-number-entry-2-111723 | STOP: rounds=1 reason=converged | `d97565f096ed` | `6185a012a353` | `score-tally-settings/phone-calculator-number-entry-2-111723` |
+| 2026-11-24T00:53:51.331Z | score-tally-settings | phone-calculator-number-entry-111612 | STOP: rounds=4 reason=blocked by=instrument | `d97565f096ed` | `6185a012a353` | `score-tally-settings/phone-calculator-number-entry-111612` |
+| 2026-11-24T00:53:51.212Z | score-tally-settings | phone-calculator-history-111508 | STOP: rounds=1 reason=converged | `7decfae74dc4` | `db9d3c7cbe26` | `score-tally-settings/phone-calculator-history-111508` |
+| 2026-11-24T00:53:51.124Z | score-tally-settings | phone-calculator-edit-close-replace-111800 | STOP: rounds=3 reason=converged | `1a9f6d64f887` | `d5d47e388b72` | `score-tally-settings/phone-calculator-edit-close-replace-111800` |
+| 2026-11-24T00:53:50.991Z | score-tally-settings | phone-calculator-continue-edit-numbers-111511 | STOP: rounds=1 reason=converged | `fb2cbdd84530` | `72f1d0ac1100` | `score-tally-settings/phone-calculator-continue-edit-numbers-111511` |
+| 2026-11-24T00:53:50.907Z | score-tally-settings | phone-calculator-auto-equals-count-11202346-112023 | STOP: rounds=1 reason=converged | `3088b89cfe82` | `ef337e8aac78` | `score-tally-settings/phone-calculator-auto-equals-count-11202346-112023` |
+| 2026-11-24T00:53:50.817Z | score-tally-settings | phone-calculator-111507 | STOP: rounds=1 reason=converged | `0d408190bfc2` | `32734f1a4e93` | `score-tally-settings/phone-calculator-111507` |
 | 2026-11-24T00:46:06.126Z | score-tally-settings | roster-compact-skip-11230638-112306 | STOP: rounds=3 reason=converged P0=0 | `9aa1325b354d` | `4c10b8c5153f` | `score-tally-settings/roster-compact-skip-11230638-112306` |
 | 2026-11-24T00:46:05.913Z | score-tally-settings | roster-import-v3-112206 | STOP: rounds=8 reason=converged P0=0 | `ed2e034f537a` | `af7cd82dc573` | `score-tally-settings/roster-import-v3-112206` |
 | 2026-11-24T00:43:12.935Z | score-tally-settings | roster-import-v2-112203 | STOP: rounds=0 reason=blocked by=instrument | `9aa1325b354d` | `—` | `score-tally-settings/roster-import-v2-112203` |

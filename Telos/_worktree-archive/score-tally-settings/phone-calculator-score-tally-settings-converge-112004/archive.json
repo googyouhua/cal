@@ -1,0 +1,35 @@
+{
+  "archived_at": "2026-11-24T00:53:51.967Z",
+  "source_worktree": "/ws/cal_phone",
+  "source_branch": "score-tally-settings",
+  "source_head": "2d241f1199f62007de0b6dd746c010c649939a22",
+  "gate_slug": "phone-calculator-score-tally-settings-converge-112004",
+  "gate_status": "converged",
+  "gate_repo": "/ws/cal_phone",
+  "gate_artifact": "/ws/cal_phone/index.html",
+  "stop": "STOP: rounds=5 reason=converged P0=0",
+  "declared": {
+    "round": 5,
+    "artifact_sha256": "31d7e739ea60e699bc70c0b7a9efd8cc592e8b1a16bbd246825665cd3fe97410",
+    "tree_sha256": "4cf69d5fce9590764474743fdb88c79988f42999b9199a2b328026aff66dd936",
+    "verifier_sha256": "34d6ce4357e7e52f6c7d38021d2523b1623352449c8ee1b7998d711ef88d9c64",
+    "run_file": "evidence/runs/hard-r5.txt"
+  },
+  "artifact": {
+    "path": "/ws/cal_phone/index.html",
+    "sha256": "9aa1325b354d7695842884040c92200175fa2ecc6f121b3008cf28a305dfdb21",
+    "declared_sha256": "31d7e739ea60e699bc70c0b7a9efd8cc592e8b1a16bbd246825665cd3fe97410",
+    "matches_declared": false,
+    "stale": true,
+    "copy": null,
+    "main_path": "/ws/cal_phone/index.html",
+    "main_sha256": "9aa1325b354d7695842884040c92200175fa2ecc6f121b3008cf28a305dfdb21",
+    "matches_main": true
+  },
+  "tree": {
+    "source_sha256_at_archive": "e3080591ecc981cdd3c2b8e2e11981289cc1eab5a02ef732a6f8e3f2c26ba136",
+    "main_sha256_at_archive": "f844aa20ae260aa77b80137f9f25630943c498a28e2b7a0084e3a09f50cc4551",
+    "note": "TREE_SHA256 is content-based and includes every non-gate file; adding tooling/docs later changes it. The declared value comes from the gate run and is the authoritative one for that run."
+  },
+  "note": "Archived evidence belongs to the source worktree/checkout. It is not an active gate and does not attest later edits in the main worktree."
+}
