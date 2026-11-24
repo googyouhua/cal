@@ -44,6 +44,7 @@ tests/
   scenarios/roster-determinism.mjs two fresh contexts, same import+fill+edit, deep-compare rows/storage/CSV
   scenarios/roster-layout.mjs  320/390 overflow, 44px targets, font sizes, focus, list semantics
   scenarios/roster-compact.mjs compact roster rows, headcount, min-width guarantees
+  scenarios/roster-two-line.mjs  two-line roster rows: 学号+姓名 on line 1, expression+score+编辑 on line 2, no ellipsis at 320/390
   lib/settings.mjs             calc-settings helpers: one-shot seeding, panel open/close, stored shape, stored values
   scenarios/settings-pause.mjs 结果后暂停输入: digit blocking, timer expiry by polling, operator passthrough, panel clamp/persist
   scenarios/settings-storage-corrupt.mjs     corrupt JSON and out-of-range values fall back per field
@@ -58,6 +59,7 @@ tests/
   scenarios/keyboard-result-state.mjs    a digit after a result starts a new calculation
   scenarios/keyboard-edit-draft.mjs      keyboard entry appends an operand to the edit draft; Esc characterization
   scenarios/keyboard-operand-input.mjs   a focused operand input keeps its own keystrokes
+  evidence/roster-two-line.mjs  PNG + metrics evidence run for the two-line rows (320/390, 50-row, red/green/suite logs)
   examples/verify-adapter.mjs  runnable example of a Kekkai instrument
   suite.mjs                   CLI + `runSuite({ artifact, only })`
 ```

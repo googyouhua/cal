@@ -1117,8 +1117,9 @@
   .roster-row {
     min-width: 0;
     display: flex;
-    align-items: center;
-    gap: 4px 8px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3px;
     padding: 4px 8px;
     border: 1px solid rgba(148, 163, 184, 0.18);
     border-radius: 10px;
@@ -1156,7 +1157,11 @@
 
   .roster-top,
   .roster-bottom {
-    display: contents;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 6px;
+    min-width: 0;
   }
 
   .roster-seq {
@@ -1171,11 +1176,10 @@
   .roster-identity {
     display: flex;
     flex: 1 1 90px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: baseline;
     gap: 2px 6px;
     min-width: 0;
-    overflow: hidden;
     font-size: 13px;
     line-height: 1.25;
   }
@@ -1184,9 +1188,8 @@
   .roster-id {
     min-width: 0;
     max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 
   .roster-name {
@@ -2453,13 +2456,13 @@
         const name = document.createElement("span");
         name.className = "roster-name";
         name.textContent = row.name || `第 ${row.seq} 位`;
-        identity.append(name);
         if (row.id) {
           const id = document.createElement("span");
           id.className = "roster-id";
           id.textContent = row.id;
           identity.append(id);
         }
+        identity.append(name);
         top.append(seq, identity);
         if (editRosterSeq !== null && editRosterSeq === row.seq) {
           const badge = document.createElement("span");
