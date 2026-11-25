@@ -31,7 +31,7 @@ node .agents/skills/verify-calculator/scripts/drive.mjs --scenario <场景>
 | `auto-equals` | AEQ-02 … AEQ-14 | auto-equals |
 | `mobile-layout` | LAY-01 … LAY-08 | mobile-layout |
 
-仓库自带的 `tests/suite.mjs`（44 场景、705 检查）是独立回归基线；本目录的驱动额外负责设置持久化、截图与 ARIA 证据。改动计算/历史/编辑语义时两者都要跑。
+仓库自带的 `tests/suite.mjs`（44 场景、721 检查）是独立回归基线；本目录的驱动额外负责设置持久化、截图与 ARIA 证据。改动计算/历史/编辑语义时两者都要跑。
 
 ---
 
