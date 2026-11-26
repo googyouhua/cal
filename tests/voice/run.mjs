@@ -260,7 +260,7 @@ async function openPage(browser, target, {
     window.AudioContext = FakeAudioContext;
     window.webkitAudioContext = FakeAudioContext;
   }, {
-    // 结果后暂停输入 (resultPause, default 1 s) is a scoring feature with its own
+    // 结果后暂停输入 (resultPause, default 2 s) is a scoring feature with its own
     // coverage in tests/suite.mjs > settings-pause. These scenarios speak about
     // speech, and several of them type a digit right after "=" to prove a result
     // is dropped when the teacher keeps going; the pause would swallow that
@@ -838,8 +838,8 @@ function testRegression() {
   const results = Array.isArray(parsed?.results) ? parsed.results : [];
   const scenarioChecks = results.flatMap((result) => (Array.isArray(result.checks) ? result.checks : []));
   eq(checks, "regression.suite-exit", run.status, 0, String(run.stderr || "").slice(0, 500));
-  eq(checks, "regression.scenarios", results.length, 44);
-  eq(checks, "regression.checks", scenarioChecks.length, 721);
+  eq(checks, "regression.scenarios", results.length, 45);
+  eq(checks, "regression.checks", scenarioChecks.length, 766);
   eq(
     checks,
     "regression.every-scenario-pass",

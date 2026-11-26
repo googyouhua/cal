@@ -21,7 +21,7 @@ export const settingsStorageCorrupt = {
         checks,
         "settings-storage-corrupt.defaults",
         await settingsValues(page),
-        { autoConfirm: "0", autoEquals: "0", resultPause: "1", baseEnabled: false, baseValue: "0", haptics: true },
+        { autoConfirm: "0", autoEquals: "0", resultPause: "2", baseEnabled: false, baseValue: "0", haptics: true },
       );
 
       // Well-formed JSON can still carry values the product cannot honor. Each
@@ -37,7 +37,7 @@ export const settingsStorageCorrupt = {
         checks,
         "settings-storage-corrupt.range-controls",
         await settingsValues(page),
-        { autoConfirm: "0", autoEquals: "0", resultPause: "1", baseEnabled: true, baseValue: "0", haptics: true },
+        { autoConfirm: "0", autoEquals: "0", resultPause: "2", baseEnabled: true, baseValue: "0", haptics: true },
       );
 
       clean(checks, "settings-storage-corrupt.clean", app.pageErrors, app.consoleErrors);

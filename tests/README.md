@@ -46,7 +46,9 @@ tests/
   scenarios/roster-compact.mjs compact roster rows, headcount, min-width guarantees
   scenarios/roster-two-line.mjs  two-line roster rows: 学号+姓名 on line 1, expression+score+编辑 on line 2, no ellipsis at 320/390
   lib/settings.mjs             calc-settings helpers: one-shot seeding, panel open/close, stored shape, stored values
+  lib/audio.mjs                recording AudioContext double: counts oscillator starts for the pause warning
   scenarios/settings-pause.mjs 结果后暂停输入: digit blocking, timer expiry by polling, operator passthrough, panel clamp/persist
+  scenarios/result-pause-warning.mjs 默认 2 秒暂停、2 秒释放、被拦截键双音警告、按键路径、语音解耦、0 关闭、旧值不迁移
   scenarios/settings-storage-corrupt.mjs     corrupt JSON and out-of-range values fall back per field
   scenarios/settings-storage-round-trip.mjs  panel write, stored shape, reload, persisted pause still gates input
   scenarios/settings-storage-denied.mjs      localStorage throwing: visible warning, in-memory scoring

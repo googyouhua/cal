@@ -13,7 +13,7 @@ export const keyboardResultState = {
     const app = await openApp(browser, artifact);
     try {
       const { page } = app;
-      // The default 1 s result pause would swallow the keypress this scenario is
+      // The default 2 s result pause would swallow the keypress this scenario is
       // about; the pause has its own scenario.
       await seedSettings(app, { resultPause: 0 }, "keyboard-result-state");
 

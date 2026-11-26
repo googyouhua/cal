@@ -15,7 +15,7 @@ bash .agents/skills/verify-calculator/scripts/launch.sh   # → http://127.0.0.1
 ## 功能
 
 - 屏幕键盘与物理键盘；运算符可选，数字先输入后选运算符；`回车` 提交一笔，`=` 左到右折叠；`=` 后沿用运算符。
-- 统分设置（右上齿轮）：自动确认 23 档（0、0.2、0.4、0.5、1 … 10 秒）、基数（作为第一笔操作数，快照进历史）、自动按等号（满 N 笔提交后自动计算，基数不计入 N）。
+- 统分设置（右上齿轮）：自动确认 23 档（0、0.2、0.4、0.5、1 … 10 秒）、基数（作为第一笔操作数，快照进历史）、自动按等号（满 N 笔提交后自动计算，基数不计入 N）、结果后暂停输入（默认 2 秒；暂停中按数字/小数点/退格会发一声提示音）。
 - 语音播报（默认关闭）：按键播报念数字、点、退格、确认与运算符；结果播报念中文结果，除零念「不能除以零」。加载、准备、失败与重试状态在主界面胶囊和设置面板中可见。
 - 计算历史（新建、编辑、改运算符、删除操作数、关闭放弃）、退格撤回上一笔、除零错误与恢复。
 - 320×568 / 390×844 移动布局。
@@ -38,7 +38,7 @@ kekkai lint "Telos/<gate>" --post          # Kekkai 证据与终态一致性
 node .agents/skills/verify-calculator/scripts/doctor.mjs        # doctor=ok
 node .agents/skills/verify-calculator/scripts/drive.mjs --list  # 12 个场景
 node .agents/skills/verify-calculator/scripts/drive.mjs --scenario auto-equals
-cd tests && node suite.mjs                 # 44 场景 / 721 检查的独立回归基线
+cd tests && node suite.mjs                 # 45 场景 / 766 检查的独立回归基线
 ```
 
 语音播报有常驻仓库的独立套件（本地 HTTP + Playwright + 假引擎，不依赖 `voice/` 或公网）：

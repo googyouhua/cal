@@ -22,6 +22,7 @@ Preconditions:
 
 - `doctor.mjs` reports `doctor=ok`.
 - The page is freshly loaded; the operator row is visible.
+- 结果后暂停输入已关闭（`resultPause=0`）：`drive.mjs` 在本场景注入该设置，因为默认 2 秒暂停会吞掉紧跟结果的数字键；暂停行为由 `settings-pause` 与 `result-pause-warning` 覆盖。
 
 - **First result.** Run `node .agents/skills/verify-calculator/scripts/drive.mjs --feature chained-calculations`. It chooses `+`, enters `6`, `回车`, `7`, `回车`, `=` and asserts result `13`, expression `6 + 7`, history 1 (`01-first-result.png`).
 - **Continue with the same operator.** Tap `5`, then `=`. The driver asserts result `5`, expression `5`, `.app[data-operator]` still `+`, history 2 (`02-continue-with-same-operator.png`). No operator selection was needed.

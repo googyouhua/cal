@@ -1793,12 +1793,12 @@
         autocomplete="off"
         spellcheck="false"
         aria-label="结果后暂停秒数"
-        value="1"
+        value="2"
         min="0"
         max="10"
         step="0.1"
       >
-      <span class="settings-hint">结果出现后数字输入暂停 N 秒；0 为关闭。</span>
+      <span class="settings-hint">结果出现后数字输入暂停 N 秒；暂停中数字、小数点与退格会被丢弃并发出提示音，0 为关闭。</span>
     </div>
 
     <div class="settings-field">
@@ -1996,7 +1996,7 @@
     const settings = {
       autoConfirm: 0,
       autoEquals: 0,
-      resultPause: 1,
+      resultPause: 2,
       baseEnabled: false,
       baseText: "0",
       haptics: true,
@@ -2027,6 +2027,47 @@
 
     function clearResultPause() {
       resultPauseUntil = 0;
+    }
+
+    let pauseWarningContext = null;
+
+    // A blocked key must be audible, not just ignored: a short double tone from a
+    // lazily created AudioContext. It never touches the offline voice engine, so it
+    // works with voice off and on file:// as well as http(s).
+    function playPauseWarning() {
+      const Context = window.AudioContext || window.webkitAudioContext;
+      if (!Context) {
+        return;
+      }
+      const schedule = (context) => {
+        const now = context.currentTime;
+        for (const [index, frequency] of [880, 660].entries()) {
+          const startAt = now + index * 0.09;
+          const oscillator = context.createOscillator();
+          const gain = context.createGain();
+          oscillator.type = "square";
+          oscillator.frequency.setValueAtTime(frequency, startAt);
+          gain.gain.setValueAtTime(0.12, startAt);
+          gain.gain.linearRampToValueAtTime(0.0001, startAt + 0.07);
+          oscillator.connect(gain);
+          gain.connect(context.destination);
+          oscillator.start(startAt);
+          oscillator.stop(startAt + 0.08);
+        }
+      };
+      try {
+        pauseWarningContext ??= new Context();
+        const context = pauseWarningContext;
+        if (context.state === "suspended") {
+          // A suspended context freezes currentTime, so scheduling now would put
+          // both notes in the past and collapse the double tone into one click.
+          context.resume().then(() => schedule(context)).catch(() => {});
+          return;
+        }
+        schedule(context);
+      } catch (error) {
+        /* Audio unavailable; the key press stays discarded either way. */
+      }
     }
 
     function parseResultPause(raw) {
@@ -3957,6 +3998,7 @@
 
     function appendCharacter(character) {
       if (resultPauseActive()) {
+        playPauseWarning();
         return false;
       }
       if (state === "result" || state === "error") {
@@ -3985,6 +4027,10 @@
     }
 
     function deleteLastCharacter() {
+      if (resultPauseActive()) {
+        playPauseWarning();
+        return false;
+      }
       if (input.value !== "") {
         input.value = input.value.slice(0, -1);
         startAutoConfirm();

@@ -77,7 +77,7 @@ async function pressReset(page) {
   await page.locator(SEL.reset).click();
 }
 
-async function setSettings(page, { autoConfirm, autoEquals, baseEnabled, baseValue } = {}) {
+async function setSettings(page, { autoConfirm, autoEquals, baseEnabled, baseValue, resultPause } = {}) {
   await page.locator('[data-testid="settings-toggle"]').click();
   if (autoConfirm !== undefined) {
     await page.locator('[data-testid="settings-auto-confirm"]').selectOption(String(autoConfirm));
@@ -90,6 +90,9 @@ async function setSettings(page, { autoConfirm, autoEquals, baseEnabled, baseVal
   }
   if (baseValue !== undefined) {
     await page.locator('[data-testid="settings-base-value"]').fill(String(baseValue));
+  }
+  if (resultPause !== undefined) {
+    await page.locator('[data-testid="settings-result-pause"]').fill(String(resultPause));
   }
   await page.locator('[data-testid="settings-done"]').click();
 }
@@ -871,6 +874,11 @@ async function autoEquals({ openPage, run }) {
 
 async function stickyChaining({ openPage, run }) {
   const page = await openPage();
+
+  // 结果后暂停输入（默认 2 秒）会吞掉紧跟结果的数字键。这条 recipe 只关心
+  // 运算符是否沿用，所以先用设置面板把暂停关掉；暂停本身由 settings-pause 与
+  // result-pause-warning 两个套件覆盖。
+  await setSettings(page, { resultPause: 0 });
 
   await chooseOperator(page, "+");
   await commitNumber(page, "6");

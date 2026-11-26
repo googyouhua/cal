@@ -2,6 +2,7 @@ import { openApp } from "../lib/browser.mjs";
 import { S } from "../lib/selectors.mjs";
 import { eq, clean } from "../lib/check.mjs";
 import { appState, expressionText, resultValue, resultError, isVisible, calcInputState } from "../lib/dom.mjs";
+import { seedSettings } from "../lib/settings.mjs";
 
 export const continuity = {
   id: "continuity",
@@ -106,6 +107,9 @@ export const stickyOperator = {
     const app = await openApp(browser, artifact);
     try {
       const { page } = app;
+      // This scenario is about the operator staying attached to the next result,
+      // not about the result pause, so it turns the pause off instead of racing it.
+      await seedSettings(app, { resultPause: 0 }, "sticky-operator");
       await page.click(`${S.picker} [data-op="+"]`);
       for (const character of "12") await page.click(`${S.keypad} [data-key="${character}"]`);
       await page.click(`${S.picker} [data-op="*"]`);
@@ -115,7 +119,6 @@ export const stickyOperator = {
       await page.click(`${S.keypad} [data-key="enter"]`);
       await page.click(S.equals);
       eq(checks, "sticky.switch-draft.result", await resultValue(page), "36");
-      await page.waitForTimeout(1200);
       eq(checks, "sticky.switch-draft.operator", await page.$eval(S.historyItem, (el) => el.getAttribute("data-operator")), "*");
 
       for (const value of ["5", "6"]) {
@@ -124,7 +127,6 @@ export const stickyOperator = {
       }
       await page.click(S.equals);
       eq(checks, "sticky.continue.result", await resultValue(page), "30");
-      await page.waitForTimeout(1200);
       eq(checks, "sticky.continue.history", await page.$$eval(S.historyItem, (els) => els.length), 2);
       eq(
         checks,

@@ -37,7 +37,7 @@ export const settingsPause = {
     try {
       const { page } = app;
 
-      // ---- default (1 s) ----
+      // ---- default (2 s) ----
       await compute(page, "+", ["5", "6"]);
       let view = await snapshot(page);
       eq(checks, "settings-pause.default.result", view.resultText, "11");
