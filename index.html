@@ -2056,11 +2056,15 @@
         }
       };
       try {
+        if (pauseWarningContext && pauseWarningContext.state === "closed") {
+          pauseWarningContext = null;
+        }
         pauseWarningContext ??= new Context();
         const context = pauseWarningContext;
-        if (context.state === "suspended") {
-          // A suspended context freezes currentTime, so scheduling now would put
-          // both notes in the past and collapse the double tone into one click.
+        if (context.state !== "running") {
+          // "suspended" (and Safari's "interrupted") freezes currentTime, so
+          // scheduling now would put both notes in the past and collapse the
+          // double tone into one click.
           context.resume().then(() => schedule(context)).catch(() => {});
           return;
         }
@@ -5125,6 +5129,11 @@
       }
 
       const key = event.key;
+      // A held key repeats at the OS rate; one warning per physical press is
+      // enough, and a burst of double tones would overlap into noise.
+      if (event.repeat && resultPauseActive() && (/^[0-9]$/.test(key) || key === "." || key === "Backspace")) {
+        return;
+      }
       if (/^[0-9]$/.test(key) || key === ".") {
         appendCharacter(key);
       } else if (key === "Backspace") {

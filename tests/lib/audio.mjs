@@ -10,8 +10,8 @@
 // line. Init scripts accumulate across reloads (same as `seedSettings`), which
 // is fine and keeps a seeded reload instrumented too.
 
-async function installProbe() {
-  const probe = { contexts: 0, instances: [], oscillatorStarts: [], bufferStarts: 0 };
+async function installProbe({ startSuspended = false } = {}) {
+  const probe = { contexts: 0, instances: [], oscillatorStarts: [], bufferStarts: 0, events: [] };
   window.__audioProbe = probe;
 
   const createParam = (initial = 0) => {
@@ -68,6 +68,7 @@ async function installProbe() {
           type: String(node.type),
           when: Number(when) || 0,
         });
+        probe.events.push({ type: "start", frequency: Number(node.frequency.value) });
       },
       stop() {},
       setPeriodicWave() {},
@@ -138,7 +139,7 @@ async function installProbe() {
 
   class ProbeAudioContext {
     constructor() {
-      this.state = "running";
+      this.state = startSuspended ? "suspended" : "running";
       this.sampleRate = 44100;
       this.baseLatency = 0;
       this.outputLatency = 0;
@@ -154,12 +155,20 @@ async function installProbe() {
     }
 
     get currentTime() {
+      // A suspended/interrupted context freezes currentTime; the product must
+      // schedule only after resume resolves, or both notes land in the past.
+      if (this.state !== "running") {
+        return 0;
+      }
       return (Date.now() - created) / 1000;
     }
 
     resume() {
-      this.state = "running";
-      return Promise.resolve();
+      probe.events.push({ type: "resume" });
+      return Promise.resolve().then(() => {
+        this.state = "running";
+        probe.events.push({ type: "resumed" });
+      });
     }
 
     suspend() {
@@ -213,8 +222,8 @@ async function installProbe() {
   window.webkitAudioContext = ProbeAudioContext;
 }
 
-export async function installAudioProbe(app) {
-  await app.context.addInitScript(installProbe);
+export async function installAudioProbe(app, options = {}) {
+  await app.context.addInitScript(installProbe, options);
   await app.page.reload({ waitUntil: "load" });
 }
 
@@ -230,6 +239,7 @@ export async function audioProbe(page) {
         when: entry.when,
       })),
       bufferStarts: probe.bufferStarts,
+      events: probe.events.map((entry) => ({ ...entry })),
     };
   });
   if (!snapshot) {

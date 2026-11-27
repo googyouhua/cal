@@ -1,6 +1,6 @@
 # Score-tally settings (auto-confirm and base)
 
-The gear in the top-right opens 统分设置. It controls **auto-confirm** — commit the current number after a pause instead of tapping `回车` — and a **base score** added as the first operand of every calculation. The third control, **auto-equals**, folds the calculation after a configured number of committed numbers; its full recipe lives in [auto-equals.md](./auto-equals.md). All three persist in `localStorage` and are independent of the in-memory history.
+The gear in the top-right opens 统分设置. It controls **auto-confirm** — commit the current number after a pause instead of tapping `回车` — and a **base score** added as the first operand of every calculation. The third control, **auto-equals**, folds the calculation after a configured number of committed numbers; its full recipe lives in [auto-equals.md](./auto-equals.md). A fourth control, **结果后暂停输入** (`resultPause`, default 2 s), parks the keypad after every result and answers a blocked digit, `.` or Backspace with a short double tone. All three persist in `localStorage` and are independent of the in-memory history.
 
 ## Sub-features
 
@@ -13,11 +13,12 @@ The gear in the top-right opens 统分设置. It controls **auto-confirm** — c
 - `settings-base` adds the base as the first operand, shows it in the expression, marker, status line, and history.
 - `settings-base-snapshot` freezes the base into each history record; editing an old record uses its own base.
 - `settings-persist` survives a reload; reset (运算类型) does not clear settings.
+- `settings-result-pause` gates digits, `.` and Backspace for 2 s after a result (0–10 s, one decimal, `0` off); its acceptance scenario is `result-pause-warning`.
 
 ## How to get to it (user POV)
 
 - Tap the gear at the top-right of the header.
-- Choose a pause in 自动确认停顿; enable 启用基数 and type a base value (0, negative, or decimal).
+- Choose a pause in 自动确认停顿; enable 启用基数 and type a base value (0, negative, or decimal); adjust 结果后暂停输入 (default 2).
 - Tap 完成, `Esc`, or outside the dialog to close.
 - Type digits and stop: after the pause the number is committed automatically (never `=`).
 - With base enabled, every new calculation starts from the base.

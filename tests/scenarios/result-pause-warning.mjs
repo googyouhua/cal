@@ -3,7 +3,7 @@ import { S } from "../lib/selectors.mjs";
 import { check, eq, clean } from "../lib/check.mjs";
 import { clickKey, compute, clickEquals, historySnapshots } from "../lib/dom.mjs";
 import { seedSettings, storedSettings } from "../lib/settings.mjs";
-import { installAudioProbe } from "../lib/audio.mjs";
+import { audioProbe, installAudioProbe } from "../lib/audio.mjs";
 
 // Voice toggles live in the settings panel; every other hook lives in S.
 const VOICE_KEYS = '[data-testid="settings-voice-keys"]';
@@ -168,6 +168,16 @@ export const resultPauseWarning = {
         lastTones.length === 2 && lastTones[0] !== lastTones[1],
         `frequencies=${lastTones.join(",")}`,
       );
+      const lastStarts = await page.evaluate(() => window.__audioProbe.oscillatorStarts.slice(-2).map((e) => e.when));
+      const spacing = Math.abs(lastStarts[1] - lastStarts[0]);
+      check(
+        checks,
+        "result-pause-warning.warning.tone-spacing",
+        Math.abs(spacing - 0.09) <= 0.005,
+        `spacing=${spacing}s (expected 0.09s, both notes must be sequenced)`,
+      );
+      const probeAfterPresses = await audioProbe(page);
+      eq(checks, "result-pause-warning.warning.contexts-reused", probeAfterPresses.contexts, 1);
 
       view = await snapshot(page);
       eq(checks, "result-pause-warning.warning.blocked-input", view.input, "");
@@ -208,9 +218,56 @@ export const resultPauseWarning = {
       eq(checks, "result-pause-warning.keyboard.tones", keyboard.map((entry) => entry.delta), [2, 2, 2]);
       eq(checks, "result-pause-warning.keyboard.input", await page.$eval(S.calcInput, (el) => el.value), "");
 
+      // A held key repeats at the OS rate. Only a real repeated keydown carries
+      // event.repeat, so this drives CDP instead of the keypad button.
+      await compute(page, "+", ["5", "6"]);
+      const cdp = await page.context().newCDPSession(page);
+      const key8 = { type: "keyDown", key: "8", code: "Digit8", windowsVirtualKeyCode: 56, nativeVirtualKeyCode: 56 };
+      const beforeRepeat = await page.evaluate(() => window.__audioProbe.oscillatorStarts.length);
+      await cdp.send("Input.dispatchKeyEvent", { ...key8, autoRepeat: true, text: "8" });
+      await flush(page);
+      eq(
+        checks,
+        "result-pause-warning.repeat.ignored",
+        (await page.evaluate(() => window.__audioProbe.oscillatorStarts.length)) - beforeRepeat,
+        0,
+      );
+      await cdp.send("Input.dispatchKeyEvent", { ...key8, autoRepeat: false, text: "8" });
+      await flush(page);
+      eq(
+        checks,
+        "result-pause-warning.repeat.first-press-warns",
+        (await page.evaluate(() => window.__audioProbe.oscillatorStarts.length)) - beforeRepeat,
+        2,
+      );
+      eq(checks, "result-pause-warning.repeat.input", await page.$eval(S.calcInput, (el) => el.value), "");
+
       clean(checks, "result-pause-warning.warning.clean", warning.pageErrors, warning.consoleErrors);
     } finally {
       await warning.close();
+    }
+
+    // ---- AC-3b: a suspended context resumes before the notes are scheduled ----
+    const suspended = await openApp(browser, artifact);
+    try {
+      const { page } = suspended;
+      await installAudioProbe(suspended, { startSuspended: true });
+
+      await compute(page, "+", ["5", "6"]);
+      const blocked = await toneDelta(page, () => clickKey(page, "9"));
+      eq(checks, "result-pause-warning.suspended.tones", blocked.delta, 2);
+
+      const probeSuspended = await audioProbe(page);
+      eq(
+        checks,
+        "result-pause-warning.suspended.resume-first",
+        probeSuspended.events.slice(0, 4).map((entry) => entry.type),
+        ["resume", "resumed", "start", "start"],
+      );
+
+      clean(checks, "result-pause-warning.suspended.clean", suspended.pageErrors, suspended.consoleErrors);
+    } finally {
+      await suspended.close();
     }
 
     // ---- AC-5: the warning does not depend on the voice engine ----
@@ -254,6 +311,9 @@ export const resultPauseWarning = {
       eq(checks, "result-pause-warning.zero.tones", press.delta, 0);
       eq(checks, "result-pause-warning.zero.input", await page.$eval(S.calcInput, (el) => el.value), "9");
       eq(checks, "result-pause-warning.zero.state", await page.$eval(S.app, (el) => el.dataset.state), "input");
+      const silentBackspace = await toneDelta(page, () => clickKey(page, "backspace"));
+      eq(checks, "result-pause-warning.zero.backspace-tones", silentBackspace.delta, 0);
+      eq(checks, "result-pause-warning.zero.backspace-input", await page.$eval(S.calcInput, (el) => el.value), "");
 
       clean(checks, "result-pause-warning.zero.clean", zero.pageErrors, zero.consoleErrors);
     } finally {
@@ -275,7 +335,7 @@ export const resultPauseWarning = {
       check(
         checks,
         "result-pause-warning.legacy.released-before-2s",
-        poll.accepted && poll.elapsed >= 700 && poll.elapsed <= 1950,
+        poll.accepted && poll.elapsed >= 700 && poll.elapsed <= 1700,
         `accepted=${poll.accepted}, elapsed=${poll.elapsed}ms, presses=${poll.presses}` +
           (poll.error ? `, error=${poll.error}` : ""),
       );

@@ -31,7 +31,7 @@ node .agents/skills/verify-calculator/scripts/drive.mjs --scenario <场景>
 | `auto-equals` | AEQ-02 … AEQ-14 | auto-equals |
 | `mobile-layout` | LAY-01 … LAY-08 | mobile-layout |
 
-仓库自带的 `tests/suite.mjs`（45 场景、766 检查）是独立回归基线；本目录的驱动额外负责设置持久化、截图与 ARIA 证据。改动计算/历史/编辑语义时两者都要跑。
+仓库自带的 `tests/suite.mjs`（45 场景、776 检查）是独立回归基线；本目录的驱动额外负责设置持久化、截图与 ARIA 证据。改动计算/历史/编辑语义时两者都要跑。
 
 ---
 
@@ -179,15 +179,16 @@ node .agents/skills/verify-calculator/scripts/drive.mjs --scenario <场景>
 
 | ID | P | 前置/入口 | 步骤 | 预期结果 | 断言前缀 | 场景 |
 | --- | --- | --- | --- | --- | --- | --- |
-| PAUSE-01 | P1 | 默认设置，算完 `5 + 6 =` | 立即点 `9` | 显示区仍空；算式 `5 + 6`、结果 `11`、状态 `result`（输入被丢弃并发提示音） | `settings-pause.default.blocked-*` | settings-pause |
+| PAUSE-01 | P1 | 默认设置，算完 `5 + 6 =` | 立即点 `9` | 显示区仍空；算式 `5 + 6`、结果 `11`、状态 `result`（输入被丢弃；提示音由 PAUSE-09 覆盖） | `settings-pause.default.blocked-*` | settings-pause |
 | PAUSE-02 | P1 | 上一条状态 | 点 `退格` | 算式/结果/状态都不变 | `settings-pause.default.backspace-*` | settings-pause |
 | PAUSE-03 | P1 | 上一条状态 | 点 `-`，再点 `8` | 运算符照常生效：状态转 `input`、结果清空；`8` 进入显示区 | `settings-pause.default.operator-*` | settings-pause |
 | PAUSE-04 | P1 | `resultPause=0` | 算完后立即点 `9` | 立即进入 `input`，显示区 `9`，算式/结果清空 | `settings-pause.zero.*` | settings-pause |
 | PAUSE-05 | P1 | `resultPause=0.5` | 算完后轮询点击 `9` | 首次点击被拒；至少第 2 次轮询后接受（证明暂停按时间结束而非立即失效） | `settings-pause.restore.polls`、`restore.*` | settings-pause |
 | PAUSE-06 | P1 | 设置面板 | 输入 `12` 后失焦 | 字段回到原值，存储值不变（越界不接受） | `settings-pause.panel.reject-*`、`revert-*` | settings-pause |
 | PAUSE-07 | P1 | 设置面板 | 输入 `2.5`，关闭面板并刷新 | 字段与 `localStorage.resultPause` 均为 `2.5` | `settings-pause.panel.accepted/persisted/*-after-reload` | settings-pause |
-| PAUSE-08 | P0 | 全新配置 | 读面板字段；算完 `5 + 6 =` 后轮询点 `9` | 字段为 `2`；1.8–4 秒后才接受，`9` 进入显示区、状态转 `input` | `result-pause-warning.default.*` | result-pause-warning |
-| PAUSE-09 | P0 | 默认设置，算完一题 | 依次点 `9`、`.`、`退格`，再用物理键盘重复 | 每次恰好启动两个不同频率的振荡器（双音）；显示区/算式/结果/历史都不变 | `result-pause-warning.warning.*-tones`、`keyboard.*` | result-pause-warning |
+| PAUSE-08 | P0 | 全新配置 | 读面板字段；算完 `5 + 6 =` 后轮询点 `9` | 字段为 `2`；1.5–4 秒后才接受，`9` 进入显示区、状态转 `input` | `result-pause-warning.default.*` | result-pause-warning |
+| PAUSE-09 | P0 | 默认设置，算完一题 | 依次点 `9`、`.`、`退格`，再用物理键盘重复 | 每次恰好启动两个不同频率、相隔 0.09s 的振荡器（双音）且只建一个 AudioContext；显示区/算式/结果/历史都不变 | `result-pause-warning.warning.*`、`keyboard.*` | result-pause-warning |
+| PAUSE-14 | P1 | 暂停中；挂起/重复键上下文 | 按住 `8` 触发 OS 重复键；在 `state=suspended` 的 AudioContext 下点 `9` | 重复键 0 音、正常按下 2 音；挂起上下文先 `resume` 后 `resumed` 再排两个音 | `result-pause-warning.repeat.*`、`suspended.*` | result-pause-warning |
 | PAUSE-10 | P0 | 暂停中 | 按 `+`、`=`、`回车` | 0 个振荡器；运算符照常生效 | `result-pause-warning.guard.*` | result-pause-warning |
 | PAUSE-11 | P0 | 语音播报关闭、file:// | 暂停中点 `9` | 仍启动两个振荡器；不请求 `voice/`；无 pageerror | `result-pause-warning.voice-off.*` | result-pause-warning |
 | PAUSE-12 | P1 | `resultPause=0` | 算完立即点 `9` | 立即接受、0 个振荡器 | `result-pause-warning.zero.*` | result-pause-warning |
@@ -211,7 +212,7 @@ node .agents/skills/verify-calculator/scripts/drive.mjs --scenario <场景>
 
 | ID | P | 前置/入口 | 步骤 | 预期结果 | 断言前缀 | 场景 |
 | --- | --- | --- | --- | --- | --- | --- |
-| STORE-01 | P1 | 键值写成 `{not json` | 加载页面并打开设置 | 页面进入 `select`、无 pageerror；面板为默认值（0/0/1/未勾选/震动勾选） | `settings-storage-corrupt.*` | settings-storage-corrupt |
+| STORE-01 | P1 | 键值写成 `{not json` | 加载页面并打开设置 | 页面进入 `select`、无 pageerror；面板为默认值（0/0/2/未勾选/震动勾选） | `settings-storage-corrupt.*` | settings-storage-corrupt |
 | STORE-02 | P1 | 写入越界值 | 加载并打开设置 | `autoConfirm 999→0`、`autoEquals -3→0`、`resultPause 99→2`；`baseEnabled:true` 保留；`baseValue:"abc"→"0"`；`haptics:"no"→勾选` | `settings-storage-corrupt.range-*` | settings-storage-corrupt |
 | STORE-03 | P1 | 面板改暂停 `2.5`、关震动 | 读存储并刷新 | 存储含 8 个键且仅此一键；刷新后面板保持，且暂停行为仍生效 | `settings-storage-round-trip.*` | settings-storage-round-trip |
 | STORE-04 | P1 | `localStorage` 读写抛错 | 加载并计算 `2 + 3 =` | 显示"本机存储不可用"警告；结果 `5`；无 pageerror | `settings-storage-denied.*` | settings-storage-denied |
